@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <!-- falco -->
+  <node name="paths_falco_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_1.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_2.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_2.csv
+    --input_format tum --output_topic /paths_falco --tf_frame odom --timer_period 0.1"/>
+  
+
+  <node name="paths_falco_publisher_1" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_1.csv
+    --input_format tum --output_topic /paths_falco1 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_2" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_2.csv
+    --input_format tum --output_topic /paths_falco2 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_3" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_3.csv
+    --input_format tum --output_topic /paths_falco3 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_4" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_4.csv
+    --input_format tum --output_topic /paths_falco4 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_5" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_5.csv
+    --input_format tum --output_topic /paths_falco5 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_6" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_6.csv
+    --input_format tum --output_topic /paths_falco6 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_7" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_7.csv
+    --input_format tum --output_topic /paths_falco7 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_8" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_8.csv
+    --input_format tum --output_topic /paths_falco8 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_9" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_9.csv
+    --input_format tum --output_topic /paths_falco9 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_falco_publisher_10" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/falco/poses_10.csv
+    --input_format tum --output_topic /paths_falco10 --tf_frame odom --timer_period 1"/>
+
+
+
+
+  <node name="paths_rmp_publisher_1" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_1.csv
+    --input_format tum --output_topic /paths_rmp1 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_2" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_2.csv
+    --input_format tum --output_topic /paths_rmp2 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_3" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_3.csv
+    --input_format tum --output_topic /paths_rmp3 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_4" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_4.csv
+    --input_format tum --output_topic /paths_rmp4 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_5" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_5.csv
+    --input_format tum --output_topic /paths_rmp5 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_6" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_6.csv
+    --input_format tum --output_topic /paths_rmp6 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_7" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_7.csv
+    --input_format tum --output_topic /paths_rmp7 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_8" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_8.csv
+    --input_format tum --output_topic /paths_rmp8 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_9" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_9.csv
+    --input_format tum --output_topic /paths_rmp9 --tf_frame odom --timer_period 1"/>
+
+  <node name="paths_rmp_publisher_10" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/rmp/poses_10.csv
+    --input_format tum --output_topic /paths_rmp10 --tf_frame odom --timer_period 1"/> -->
+
+
+
+</launch>

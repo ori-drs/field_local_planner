@@ -1,0 +1,75 @@
+# If the controller is perceptive (uses external sensing)
+is_perceptive: true
+use_elevation_map_cloud: false
+
+# Tune the sphere radius used for the control points
+rmp/sphere_radius_factor: 1.2
+
+# Geodesic Goal RMP parameters
+# This weights the contribution of the acceleration
+rmp/geodesic_goal_weight: 1.0
+# This gain scales the force that points toward the goal
+rmp/geodesic_goal_gain: 20.0
+# This factor determines when the rmp is disabled
+rmp/geodesic_goal_offset: 1.0
+# Steepness to disable heading to goal
+rmp/geodesic_goal_steepness: 20.0
+# # Enable when close to the goal
+# rmp/goal_enable_when_close: false
+
+# This weights the contribution of the acceleration
+rmp/euclidean_goal_weight: 1.0
+# # This gain scales the force that corrects for the goal pose
+rmp/euclidean_goal_gain: 20.0
+# # This factor scales the velocity to damp the force
+rmp/euclidean_goal_offset: 1.0
+# # Steepness to enable heading to goal
+rmp/euclidean_goal_steepness: 20.0
+# # Enable when close to the goal
+# rmp/euclidean_goal_enable_when_close: true
+
+# Heading RMP
+# This weights the contribution of the acceleration
+rmp/heading_weight: 1.0
+# Tries to keep the robot heading in the same direction 
+# of the twist command
+# This gain scales the force changes the heading
+rmp/heading_gain: 10.0
+# This factor determines when the rmp is disabled
+rmp/heading_offset: 1.0
+# Steepness to disable heading to goal
+rmp/heading_steepness: 20.0
+
+# Damping RMP
+# This weights the contribution of the acceleration
+rmp/damping_weight: 1.0
+# Opposes the force by applying a damping proportional to velocity
+rmp/damping: 1.0
+
+# Obstacle RMP parameters
+# The obstacle RMPs are created for each potential 
+# collision point 
+
+# This weights the contribution of the acceleration
+rmp/obstacle_weight: 1.0
+# This gain scales the force exerted by the obstacles
+rmp/obstacle_gain: 1.0
+# Clearance distance from the obstacles
+rmp/obstacle_offset: 0.3 # meters
+# Clearance distance from the obstacles
+rmp/obstacle_steepness: 10.0 # meters
+
+# Regularization RMP
+# As with factor graphs, we can add a prior to smooth
+# the solution a bit. This factor scales the importance
+# of the lastly optimized acceleration which is added
+# as a prior
+rmp/acceleration_regularization: 1e-6
+
+# RMP computes an optimal acceleration (force) that
+# Must be integrated to get a velocity
+# This basically scales the acceleration
+rmp/integration_time: 0.1
+
+# Check possible points that fall inside the body
+rmp/check_internal_collisions: true

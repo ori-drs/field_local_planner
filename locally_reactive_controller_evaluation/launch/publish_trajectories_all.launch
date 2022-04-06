@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <!-- falco -->
+  <node name="paths_falco_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_1.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_2.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_3.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_4.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_5.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_6.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_7.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_8.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_9.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_10.csv
+    --input_format tum --output_topic /paths_falco --tf_frame odom --timer_period 1"/>
+  
+  <!-- RMP -->
+  <node name="paths_rmp_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_1.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_2.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_3.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_4.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_5.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_6.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_7.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_8.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_9.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_10.csv
+    --input_format tum --output_topic /paths_rmp --tf_frame odom --timer_period 1"/>
+
+  <!-- GDF -->
+  <node name="paths_gdf_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_1.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_2.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_3.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_4.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_5.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_6.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_7.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_8.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_9.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_10.csv
+    --input_format tum --output_topic /paths_gdf_only --tf_frame odom --timer_period 1"/>
+  
+  <!-- Potential Field -->
+  <node name="paths_pf_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_1.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_2.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_3.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_4.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_5.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_6.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_7.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_8.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_9.csv
+                            /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_10.csv
+    --input_format tum --output_topic /paths_potential_field --tf_frame odom --timer_period 1"/>
+  
+    <!-- Testing path -->
+  <node name="paths_testing_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/config/test_trajectories/test_trajectory.csv
+    --input_format tum --output_topic /simulation_experiment/testing_path --tf_frame odom --timer_period 1"/>
+
+</launch>

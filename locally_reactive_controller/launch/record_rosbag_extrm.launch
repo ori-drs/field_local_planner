@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <!--rosparam command="dump" param="/quadruped_description" file="$(env HOME)/logs/raw/anymal_description.yaml" /-->
+
+
+  <!--Note: recording location consistent with the ORI Anymal wiki page:
+      https://wiki.oxfordrobots.com/display/DRS/Anymal-->
+  <node name="rosbag" pkg="rosbag" type="record"
+    args="-o $(env HOME)/logs/raw/rooster.bag
+    --chunksize=15360 --split --size=10240 --buffsize=2048
+
+    /camera/infra1/image_rect_raw/compressed
+    /camera/infra1/camera_info
+    /camera/infra2/image_rect_raw/compressed
+    /camera/infra2/camera_info
+    /camera/imu
+    /camera/gyro/sample
+    /camera/accel/sample
+
+    /os_cloud_node/imu
+    /os_node/imu_packets
+    /os_node/lidar_packets
+    /os_cloud_node/points
+
+    /tf
+    /tf_static
+
+    /pronto_slam/reading_cloud
+    /pronto_slam/reference_cloud
+    /pronto_slam/map_cloud
+    /pronto_slam/prior_map_cloud
+    /pronto_slam/footstep_plan_request_list
+    /pronto_slam/pose_corrected
+    /pronto_slam/poses
+    /pronto_slam/slam_poses
+    /pronto_slam/pose_graph
+
+    /base_vilens_optimized
+    /base_vilens
+    /vilens/labelled_image/compressed
+    /vilens/pose
+    /vilens/propagated_pose
+    /vilens/point_cloud_transformed_processed
+    /elevation_mapping_lidar/elevation_map
+
+    /rr_robot/mobile_base_controller/odom
+
+    /locally_reactive_controller/cancel
+    /locally_reactive_controller/collision_box
+    /locally_reactive_controller/collision_map
+    /locally_reactive_controller/collision_map/decimated
+    /locally_reactive_controller/control_points
+    /locally_reactive_controller/control_points_goal
+    /locally_reactive_controller/controller_status
+    /locally_reactive_controller/current_goal
+    /locally_reactive_controller/feedback
+    /locally_reactive_controller/free_paths
+    /locally_reactive_controller/goal
+    /locally_reactive_controller/goal_pose
+    /locally_reactive_controller/goal_pose_list
+    /locally_reactive_controller/parameter_descriptions
+    /locally_reactive_controller/parameter_updates
+    /locally_reactive_controller/reference_path
+    /locally_reactive_controller/remaining_goals
+    /locally_reactive_controller/result
+    /locally_reactive_controller/starting_pose
+    /locally_reactive_controller/status
+    /locally_reactive_controller/velocity_combined
+    /locally_reactive_controller/velocity_goal
+    /locally_reactive_controller/velocity_trackline
+    /locally_reactive_controller/visualization_marker
+
+    /lidar_exploration/new_ultimate_goal
+
+    /state_estimator/robot_state
+
+    /terrain_exploration/all_frontiers
+    /terrain_exploration/explored_areas
+    /terrain_exploration/filtered_map
+    /terrain_exploration/frontiers
+    /terrain_exploration/frontier_search_status
+    /terrain_exploration/nodes_to_explore
+    /terrain_exploration/planner_status
+    /terrain_exploration/path
+    /terrain_exploration/rejected_frontiers
+    /terrain_exploration/return_to_node
+
+    /spectrum_without_dose_live
+
+    " output="screen">
+    <!-- /camera/color/camera_info
+         /camera/color/image_raw/compressed -->
+  </node>
+</launch>

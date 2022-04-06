@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+   <xacro:macro name="obstacle" params="name:=obstacle1
+                                        parent:=fixed
+                                        height:=2.0
+                                        width=0.3
+                                        length=0.3
+                                        *origin">
+
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child  link="${name}_link"/>
+      <xacro:insert_block name="origin" />
+    </joint>
+
+    <link name="${name}_link">
+      <inertial>
+        <mass value="10"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+      </inertial>
+
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 ${0.5*height}"/>
+        <geometry>
+          <box size="${width} ${length} ${height}"/>
+        </geometry>
+      </visual>
+      
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 ${0.5*height}"/>
+        <geometry>
+          <box size="${width} ${length} ${height}"/>
+        </geometry>
+      </collision>
+    
+    </link>
+    
+    <gazebo reference="${name}_link">
+      <material>Gazebo/Red</material>
+      <gravity>0</gravity>
+
+      <sensor name="${name}_sensor" type="contact">
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <contact>
+          <collision>${name}_link_collision</collision> <!-- This should be the same name as the collision layer above-->
+        </contact>
+        <plugin name="bumper_plugin" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>/gazebo/${name}_link_collisions</bumperTopicName>
+          <frameName>odom</frameName>
+        </plugin>
+      </sensor>
+
+    </gazebo>
+
+  </xacro:macro>
+</robot>

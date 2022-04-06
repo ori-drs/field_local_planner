@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <!-- RMP -->
+  <node name="paths_rmp_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/rmp/poses_6.csv
+    --input_format tum --output_topic /paths_rmp --tf_frame odom --timer_period 1"/>
+
+  <!-- falco -->
+  <node name="paths_falco_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/falco/poses_6.csv
+    --input_format tum --output_topic /paths_falco --tf_frame odom --timer_period 1"/>
+  
+  <!-- GDF -->
+  <node name="paths_gdf_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/gdf_only/poses_6.csv
+    --input_format tum --output_topic /paths_gdf_only --tf_frame odom --timer_period 1"/>
+  
+  <!-- Potential Field -->
+  <node name="paths_pf_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/results/results_10_trials/potential_field/poses_6.csv
+    --input_format tum --output_topic /paths_potential_field --tf_frame odom --timer_period 1"/>
+  
+  <!-- Testing path -->
+  <node name="paths_testing_publisher" pkg="data_tools_evaluation" type="publish_csv_as_ros_path.py" output="screen"
+	  args="--trajectory_file /home/matias/catkin_ws/src/navigation_drs/locally_reactive_controller_evaluation/config/test_trajectories/test_trajectory.csv
+    --input_format tum --output_topic /simulation_experiment/testing_path --tf_frame odom --timer_period 1"/>
+
+</launch>

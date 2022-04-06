@@ -1,0 +1,3420 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 0
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /ANYmal1/RobotModel1
+        - /Depth Cameras1/Depth Camera Front1/Autocompute Value Bounds1
+        - /Depth Cameras1/Depth Camera Rear1/Autocompute Value Bounds1
+        - /Depth Cameras1/Depth Camera Left1/Autocompute Value Bounds1
+        - /Depth Cameras1/Depth Camera Right1/Autocompute Value Bounds1
+        - /LIDAR1/LIDAR1
+        - /Elevation Map1/Elevation Map1
+      Splitter Ratio: 0.7377521395683289
+    Tree Height: 441
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /Interact1
+      - /2D Nav Goal1
+      - /Center Frame1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Displays
+    Help Height: 0
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /World1
+        - /World1/Visual1
+        - /World1/Visual1/Namespaces1
+        - /ANYmal1/RobotModel1
+        - /Depth Cameras1/Depth Camera Front1/Autocompute Value Bounds1
+        - /Depth Cameras1/Depth Camera Rear1/Autocompute Value Bounds1
+        - /Depth Cameras1/Depth Camera Left1/Autocompute Value Bounds1
+        - /Depth Cameras1/Depth Camera Right1/Autocompute Value Bounds1
+        - /Elevation Map1/Elevation Map1
+        - /Locally Reactive Controller1
+        - /Locally Reactive Controller1/RMP1
+        - /Locally Reactive Controller1/RMP1/Accelerations1
+        - /Locally Reactive Controller1/RMP1/Accelerations1/Namespaces1
+        - /Locally Reactive Controller1/RMP1/Grid Map Filters DRS1
+        - /Locally Reactive Controller1/FALCO1
+        - /Waypoints1
+        - /RMP Paths1/Path1
+        - /FALCO Paths1
+        - /FALCO Paths1/Path2/Status1
+        - /GDF ONLY Paths1/Path9/Status1
+        - /Obstacles Model1/Status1
+      Splitter Ratio: 0.7721179723739624
+    Tree Height: 579
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.10000000149011612
+      Cell Size: 0.25
+      Class: rviz/Grid
+      Color: 0; 0; 0
+      Enabled: false
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 100
+      Reference Frame: <Fixed Frame>
+      Value: false
+    - Class: rviz/TF
+      Enabled: false
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Marker Alpha: 1
+      Marker Scale: 0.25
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        {}
+      Update Interval: 0
+      Value: false
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /rviz_world_loader/markers_visual
+          Name: Visual
+          Namespaces:
+            batcave__block00__visual__visual: true
+            batcave__block01__visual__visual: true
+            batcave__block02__visual__visual: true
+            batcave__block03__visual__visual: true
+            batcave__block04__visual__visual: true
+            batcave__block05__visual__visual: true
+            batcave__block06__visual__visual: true
+            batcave__block07__visual__visual: true
+            batcave__block08__visual__visual: true
+            batcave__block09__visual__visual: false
+            batcave__block10__visual__visual: true
+            batcave__block11__visual__visual: true
+            batcave__block12__visual__visual: true
+            batcave__block13__visual__visual: true
+            batcave__block14__visual__visual: true
+            batcave__block15__visual__visual: true
+            batcave__block16__visual__visual: true
+            batcave__block17__visual__visual: true
+            batcave__block18__visual__visual: true
+            batcave__block19__visual__visual: true
+            batcave__block20__visual__visual: true
+            batcave__block21__visual__visual: true
+          Queue Size: 0
+          Value: true
+        - Class: rviz/MarkerArray
+          Enabled: false
+          Marker Topic: /rviz_world_loader/markers_collision
+          Name: Collision
+          Namespaces:
+            {}
+          Queue Size: 0
+          Value: false
+      Enabled: true
+      Name: World
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 0.5
+          Class: rviz/RobotModel
+          Collision Enabled: false
+          Enabled: true
+          Links:
+            All Links Enabled: true
+            Expand Joint Details: false
+            Expand Link Details: false
+            Expand Tree: false
+            LF_FOOT:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LF_HAA:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LF_HFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LF_HIP:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            LF_KFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LF_SHANK:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            LF_THIGH:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            LF_hip_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LF_shank_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LF_thigh_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LH_FOOT:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LH_HAA:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LH_HFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LH_HIP:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            LH_KFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LH_SHANK:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            LH_THIGH:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            LH_hip_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LH_shank_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            LH_thigh_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            Link Tree Style: Links in Alphabetic Order
+            RF_FOOT:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RF_HAA:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RF_HFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RF_HIP:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            RF_KFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RF_SHANK:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            RF_THIGH:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            RF_hip_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RF_shank_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RF_thigh_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RH_FOOT:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RH_HAA:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RH_HFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RH_HIP:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            RH_KFE:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RH_SHANK:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            RH_THIGH:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            RH_hip_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RH_shank_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            RH_thigh_fixed:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            base:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            base_inertia:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            battery:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            body_top:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            bottom_shell:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            depth_camera_front_camera:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            depth_camera_front_camera_parent:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_front_color_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_front_color_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_front_depth_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_left_camera:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            depth_camera_left_camera_parent:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_left_color_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_left_color_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_left_depth_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_rear_camera:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            depth_camera_rear_camera_parent:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_rear_color_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_rear_color_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_rear_depth_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_right_camera:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            depth_camera_right_camera_parent:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_right_color_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_right_color_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_camera_right_depth_optical_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            docking_hatch_cover:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            face_front:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            face_rear:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            front_handle:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            handle:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            hatch:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            imu_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            interface_hatch:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            lidar:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            lidar_cage:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            remote:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_shell:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            wide_angle_camera_front_camera:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            wide_angle_camera_front_camera_parent:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            wide_angle_camera_rear_camera:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            wide_angle_camera_rear_camera_parent:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+          Name: RobotModel
+          Robot Description: anymal_description
+          TF Prefix: ""
+          Update Interval: 0
+          Value: true
+          Visual Enabled: true
+        - Alpha: 0.5
+          Class: rviz/Effort
+          Enabled: false
+          History Length: 1
+          Joints:
+            {}
+          Name: Effort
+          Queue Size: 10
+          Robot Description: starleth_description
+          Scale: 0.10000000149011612
+          TF Prefix: ""
+          Topic: /state_estimator/joint_states
+          Unreliable: false
+          Value: false
+          Width: 0.009999999776482582
+        - Class: rviz/InteractiveMarkers
+          Enable Transparency: true
+          Enabled: false
+          Name: Interactive Marker
+          Show Axes: true
+          Show Descriptions: true
+          Show Visual Aids: false
+          Update Topic: /interaction_marker/update
+          Value: false
+        - Alpha: 1
+          Class: rviz_plugin_tutorials/Imu
+          Color: 204; 51; 204
+          Enabled: false
+          History Length: 1
+          Name: IMU
+          Queue Size: 10
+          Topic: ""
+          Unreliable: false
+          Value: false
+        - Class: rviz/Group
+          Displays:
+            - Alpha: 1
+              Arrow Width: 0.5
+              Class: rviz/WrenchStamped
+              Enabled: true
+              Force Arrow Scale: 2
+              Force Color: 204; 51; 51
+              Hide Small Values: true
+              History Length: 1
+              Name: Contact Force Sensor LF
+              Queue Size: 10
+              Topic: /sensors/contact_force_lf_foot
+              Torque Arrow Scale: 2
+              Torque Color: 204; 204; 51
+              Unreliable: false
+              Value: true
+            - Alpha: 1
+              Arrow Width: 0.5
+              Class: rviz/WrenchStamped
+              Enabled: true
+              Force Arrow Scale: 2
+              Force Color: 204; 51; 51
+              Hide Small Values: true
+              History Length: 1
+              Name: Contact Force Sensor RF
+              Queue Size: 10
+              Topic: /sensors/contact_force_rf_foot
+              Torque Arrow Scale: 2
+              Torque Color: 204; 204; 51
+              Unreliable: false
+              Value: true
+            - Alpha: 1
+              Arrow Width: 0.5
+              Class: rviz/WrenchStamped
+              Enabled: true
+              Force Arrow Scale: 2
+              Force Color: 204; 51; 51
+              Hide Small Values: true
+              History Length: 1
+              Name: Contact Force Sensor RH
+              Queue Size: 10
+              Topic: /sensors/contact_force_rh_foot
+              Torque Arrow Scale: 2
+              Torque Color: 204; 204; 51
+              Unreliable: false
+              Value: true
+            - Alpha: 1
+              Arrow Width: 0.5
+              Class: rviz/WrenchStamped
+              Enabled: true
+              Force Arrow Scale: 2
+              Force Color: 204; 51; 51
+              Hide Small Values: true
+              History Length: 1
+              Name: Contact Force Sensor LH
+              Queue Size: 10
+              Topic: /sensors/contact_force_lh_foot
+              Torque Arrow Scale: 2
+              Torque Color: 204; 204; 51
+              Unreliable: false
+              Value: true
+          Enabled: false
+          Name: Contact Force Sensors
+      Enabled: true
+      Name: ANYmal
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /robot_respawner_marker
+      Name: Robot Respawner
+      Namespaces:
+        {}
+      Queue Size: 1
+      Value: true
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/Group
+          Displays:
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 255; 0; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Desired Torso Linear Velocity
+              Queue Size: 10
+              Show text: true
+              Topic: /loco_ros/desired_torso_linear_velocity
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 255; 85; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Desired Torso Angular Velocity
+              Queue Size: 10
+              Show text: true
+              Topic: /loco_ros/desired_torso_angular_velocity
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 0; 85; 255
+              Enabled: true
+              History Length: 1
+              Length scale: 0.20000000298023224
+              Name: Desired Torso Linear Acceleration
+              Queue Size: 10
+              Show text: true
+              Topic: /loco_ros/desired_torso_acceleration
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 0; 255; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Commanded Torso Linear Velocity
+              Queue Size: 10
+              Show text: true
+              Topic: /loco_ros/commanded_torso_linear_velocity
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 0; 255; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Commanded Torso Angular Velocity
+              Queue Size: 10
+              Show text: true
+              Topic: /loco_ros/commanded_torso_angular_velocity
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Class: rviz/MarkerArray
+              Enabled: true
+              Marker Topic: /loco_ros/torso
+              Name: Torso
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: true
+          Enabled: true
+          Name: Torso
+        - Class: rviz/Group
+          Displays:
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 0; 85; 127
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Desired Velocity Left Fore
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_velocty_lf
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 0; 85; 127
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Desired Velocity Right Fore
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_velocty_rf
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 0; 85; 127
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Desired Velocity Left Hind
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_velocty_lh
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 0; 85; 127
+              Enabled: true
+              History Length: 1
+              Length scale: 0.5
+              Name: Desired Velocity Right Hind
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_velocty_rh
+              Unreliable: false
+              Value: true
+              Width scale: 0.20000000298023224
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 255; 0; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.05000000074505806
+              Name: Desored Acceleration Left Fore
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_acceleration_lf
+              Unreliable: false
+              Value: true
+              Width scale: 0.10000000149011612
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 255; 0; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.05000000074505806
+              Name: Desired Acceleration Right Fore
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_acceleration_rf
+              Unreliable: false
+              Value: true
+              Width scale: 0.10000000149011612
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 255; 0; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.05000000074505806
+              Name: Desired Acceleration Left Hind
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_acceleration_lh
+              Unreliable: false
+              Value: true
+              Width scale: 0.10000000149011612
+            - Alpha: 1
+              Class: kindr_rviz_plugins/VectorAtPosition
+              Color: 255; 0; 0
+              Enabled: true
+              History Length: 1
+              Length scale: 0.05000000074505806
+              Name: Desired Acceleration Right Hind
+              Queue Size: 10
+              Show text: false
+              Topic: /loco_ros/desired_linear_acceleration_rh
+              Unreliable: false
+              Value: true
+              Width scale: 0.10000000149011612
+            - Class: rviz/Group
+              Displays:
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 170; 0; 0
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: Left Fore Foot
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/desired_contact_force_lf
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 170; 0; 0
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: Right Fore Foot
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/desired_contact_force_rf
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 170; 0; 0
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: Left Hind Foot
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/desired_contact_force_lh
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 170; 0; 0
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: Right Hind Foot
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/desired_contact_force_rh
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+              Enabled: true
+              Name: Desired Contact Forces
+            - Class: rviz/Group
+              Displays:
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 0; 85; 255
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: LeftFore
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/measured_contact_force_lf
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 0; 85; 255
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: RightFore
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/measured_contact_force_rf
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 0; 85; 255
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: LeftHind
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/measured_contact_force_lh
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 0; 85; 255
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.004999999888241291
+                  Name: RightHind
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/measured_contact_force_rh
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.15000000596046448
+                - Class: rviz/MarkerArray
+                  Enabled: false
+                  Marker Topic: /loco_ros/measured_foot_positions
+                  Name: Measured foot positions
+                  Namespaces:
+                    {}
+                  Queue Size: 100
+                  Value: false
+              Enabled: true
+              Name: Measured contact forces
+            - Class: rviz/MarkerArray
+              Enabled: false
+              Marker Topic: /loco_ros/planned_foot_positions
+              Name: Planned foot positions
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: false
+            - Class: rviz/MarkerArray
+              Enabled: true
+              Marker Topic: /loco_ros/planned_footholds
+              Name: Planned footholds
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: true
+          Enabled: true
+          Name: Legs
+        - Class: rviz/Group
+          Displays:
+            - Class: rviz/Group
+              Displays:
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 255; 0; 0
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.10000000149011612
+                  Name: Desired Torque
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/virtual_torque
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.30000001192092896
+                - Alpha: 1
+                  Class: kindr_rviz_plugins/VectorAtPosition
+                  Color: 255; 0; 0
+                  Enabled: true
+                  History Length: 1
+                  Length scale: 0.0010000000474974513
+                  Name: Desired Force
+                  Queue Size: 10
+                  Show text: false
+                  Topic: /loco_ros/virtual_force
+                  Unreliable: false
+                  Value: true
+                  Width scale: 0.30000001192092896
+              Enabled: false
+              Name: Virtual Model Control
+            - Class: rviz/MarkerArray
+              Enabled: false
+              Marker Topic: /loco_ros/friction_cones
+              Name: Friction cones
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: false
+            - Class: rviz/MarkerArray
+              Enabled: false
+              Marker Topic: /loco_ros/friction_pyramids
+              Name: Friction pyramids
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: false
+          Enabled: true
+          Name: Controller
+        - Class: rviz/Marker
+          Enabled: true
+          Marker Topic: /loco_ros/support_polygon
+          Name: Support Polygon
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /loco_ros/swing_traj
+          Name: Swing Trajectory
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Alpha: 0.5
+          Class: rviz/RobotModel
+          Collision Enabled: false
+          Enabled: false
+          Links:
+            All Links Enabled: true
+            Expand Joint Details: false
+            Expand Link Details: false
+            Expand Tree: false
+            Link Tree Style: Links in Alphabetic Order
+          Name: Desired State
+          Robot Description: anymal_description
+          TF Prefix: ghost_desired
+          Update Interval: 0
+          Value: false
+          Visual Enabled: true
+      Enabled: false
+      Name: Locomotion Controller
+    - Class: rviz/Group
+      Displays:
+        - Class: free_gait_rviz_plugin/FreeGaitPreview
+          Enabled: true
+          Name: Free Gait Virtual Preview
+          Playback:
+            Playback Speed: 3
+          Settings:
+            Auto En/Disable Visuals: true
+            Auto Hide When: Reached End of Preview
+            Auto-Play: true
+            Feedback Topic: ""
+            Goal Topic: /free_gait/preview_steps
+            Preview Rate: 100
+            Result Topic: ""
+            Robot Model: Free Gait Virtual Preview Robot
+            Robot State Topic: /state_estimator/anymal_state
+            Start State: Reset to Real Robot State
+          Value: true
+          Visuals:
+            End Effector Targets:
+              Color: 0; 0; 1
+              Value: true
+            End Effector Trajectories: true
+            Stances: true
+            Surface Normals: true
+            Value: false
+        - Alpha: 0.5
+          Class: rviz/RobotModel
+          Collision Enabled: false
+          Enabled: false
+          Links:
+            All Links Enabled: true
+            Expand Joint Details: false
+            Expand Link Details: false
+            Expand Tree: false
+            Link Tree Style: Links in Alphabetic Order
+          Name: Free Gait Virtual Preview Robot
+          Robot Description: anymal_description
+          TF Prefix: virtual_preview
+          Update Interval: 0
+          Value: false
+          Visual Enabled: true
+        - Class: free_gait_rviz_plugin/FreeGaitPreview
+          Enabled: true
+          Name: Free Gait Real Preview
+          Playback:
+            Playback Speed: 6
+          Settings:
+            Auto En/Disable Visuals: true
+            Auto Hide When: Received Action Result
+            Auto-Play: true
+            Feedback Topic: ""
+            Goal Topic: /anymal_ctrl_free_gait/execute_steps/goal
+            Preview Rate: 30
+            Result Topic: /anymal_ctrl_free_gait/execute_steps/result
+            Robot Model: Free Gait Real Preview Robot
+            Robot State Topic: /state_estimator/anymal_state
+            Start State: Reset to Real Robot State
+          Value: true
+          Visuals:
+            End Effector Targets:
+              Color: 0; 0; 1
+              Value: true
+            End Effector Trajectories: true
+            Stances: true
+            Surface Normals: true
+            Value: false
+        - Alpha: 0.5
+          Class: rviz/RobotModel
+          Collision Enabled: false
+          Enabled: false
+          Links:
+            All Links Enabled: true
+            Expand Joint Details: false
+            Expand Link Details: false
+            Expand Tree: false
+            Link Tree Style: Links in Alphabetic Order
+          Name: Free Gait Real Preview Robot
+          Robot Description: anymal_description
+          TF Prefix: real_preview
+          Update Interval: 0
+          Value: false
+          Visual Enabled: true
+      Enabled: false
+      Name: Free Gait
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /wide_angle_camera_front/image_color_rect
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: Wide Angle Camera Front
+          Normalize Range: true
+          Queue Size: 1
+          Transport Hint: compressed
+          Unreliable: false
+          Value: true
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /wide_angle_camera_rear/image_color_rect
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: Wide Angle Camera Rear
+          Normalize Range: true
+          Queue Size: 1
+          Transport Hint: compressed
+          Unreliable: false
+          Value: true
+      Enabled: false
+      Name: Wide Angle Cameras
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 2
+            Min Value: -0.5
+            Value: false
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Depth Camera Front
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.009999999776482582
+          Style: Points
+          Topic: /depth_camera_front/point_cloud_self_filtered
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 2
+            Min Value: -0.5
+            Value: false
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Depth Camera Rear
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.009999999776482582
+          Style: Points
+          Topic: /depth_camera_rear/point_cloud_self_filtered
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 2
+            Min Value: -0.5
+            Value: false
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Depth Camera Left
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.009999999776482582
+          Style: Points
+          Topic: /depth_camera_left/point_cloud_self_filtered
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 2
+            Min Value: -0.5
+            Value: false
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Depth Camera Right
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.009999999776482582
+          Style: Points
+          Topic: /depth_camera_right/point_cloud_self_filtered
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+      Enabled: false
+      Name: Depth Cameras
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 2.3171963691711426
+            Min Value: 0.5354383587837219
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: LIDAR
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 2
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /lidar/point_cloud
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+      Enabled: false
+      Name: LIDAR
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 4.853307723999023
+            Min Value: -0.010342717170715332
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: LIDAR-Depth Camera
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 2
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /point_cloud_filter/lidar_depth_camera/point_cloud_filtered
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 10
+            Min Value: -10
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Quadruple Depth Cameras
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.009999999776482582
+          Style: Flat Squares
+          Topic: /point_cloud_filter/quadruple_depth_camera/point_cloud_filtered
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+      Enabled: false
+      Name: Point Cloud Filter
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Axes Length: 1
+          Axes Radius: 0.10000000149011612
+          Class: rviz/Pose
+          Color: 255; 155; 155
+          Enabled: true
+          Head Length: 0.30000001192092896
+          Head Radius: 0.10000000149011612
+          Name: Initial Guess
+          Queue Size: 10
+          Shaft Length: 1
+          Shaft Radius: 0.05000000074505806
+          Shape: Arrow
+          Topic: /point_cloud_odometry/initial_guess
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Axes Length: 1
+          Axes Radius: 0.10000000149011612
+          Class: rviz/Pose
+          Color: 255; 25; 0
+          Enabled: true
+          Head Length: 0.30000001192092896
+          Head Radius: 0.10000000149011612
+          Name: Resulting Pose
+          Queue Size: 10
+          Shaft Length: 1
+          Shaft Radius: 0.05000000074505806
+          Shape: Arrow
+          Topic: /point_cloud_odometry/pose_visualizable
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 4.831459999084473
+            Min Value: -0.00835690088570118
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Input Point Cloud (matched)
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 2
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /point_cloud_odometry/input_point_cloud_matched
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: false
+          Autocompute Value Bounds:
+            Max Value: 3.1326000690460205
+            Min Value: -0.05119999870657921
+            Value: true
+          Axis: Z
+          Channel Name: probabilityStatic
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: Map (static)
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 1
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /point_cloud_odometry/map_static
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: false
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: false
+          Autocompute Value Bounds:
+            Max Value: 3.1326000690460205
+            Min Value: -0.05119999870657921
+            Value: true
+          Axis: Z
+          Channel Name: probabilityStatic
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: false
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: Map (dynamic)
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 1
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /point_cloud_odometry/map_dynamic
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: false
+          Value: false
+      Enabled: false
+      Name: Point Cloud based Odometry
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Axes Length: 1
+          Axes Radius: 0.10000000149011612
+          Class: rviz/Pose
+          Color: 255; 155; 155
+          Enabled: true
+          Head Length: 0.30000001192092896
+          Head Radius: 0.10000000149011612
+          Name: Initial Guess
+          Queue Size: 10
+          Shaft Length: 1
+          Shaft Radius: 0.05000000074505806
+          Shape: Arrow
+          Topic: /slam/initial_guess
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Axes Length: 1
+          Axes Radius: 0.10000000149011612
+          Class: rviz/Pose
+          Color: 255; 25; 0
+          Enabled: true
+          Head Length: 0.30000001192092896
+          Head Radius: 0.10000000149011612
+          Name: Resulting Pose
+          Queue Size: 10
+          Shaft Length: 1
+          Shaft Radius: 0.05000000074505806
+          Shape: Arrow
+          Topic: /slam/pose_visualizable
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 14.429849624633789
+            Min Value: -0.7091337442398071
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: AxisColor
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Input Point Cloud (matched)
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 2
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /slam/input_point_cloud_matched
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: false
+          Autocompute Value Bounds:
+            Max Value: 3.1326000690460205
+            Min Value: -0.05119999870657921
+            Value: true
+          Axis: Z
+          Channel Name: probabilityStatic
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: false
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: Map (static)
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 1
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /slam/map_static
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: false
+          Value: false
+        - Alpha: 1
+          Autocompute Intensity Bounds: false
+          Autocompute Value Bounds:
+            Max Value: 3.1326000690460205
+            Min Value: -0.05119999870657921
+            Value: true
+          Axis: Z
+          Channel Name: probabilityStatic
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: false
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: Map (dynamic)
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 1
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /slam/map_dynamic
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: false
+          Value: false
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /slam/pose_graph
+          Name: Submaps pose graph
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /slam/loop_detection_graph
+          Name: Loop detection graph
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 12.371679306030273
+            Min Value: -2.8999826908111572
+            Value: true
+          Axis: Z
+          Channel Name: probabilityStatic
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: Global map
+          Position Transformer: XYZ
+          Queue Size: 1
+          Selectable: true
+          Size (Pixels): 1
+          Size (m): 0.019999999552965164
+          Style: Flat Squares
+          Topic: /slam/global_map
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: false
+          Value: true
+      Enabled: false
+      Name: SLAM
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 0.699999988079071
+          Autocompute Intensity Bounds: true
+          Class: grid_map_rviz_plugin/GridMap
+          Color: 200; 200; 200
+          Color Layer: elevation
+          Color Transformer: GridMapLayer
+          ColorMap: turbo
+          Enabled: true
+          Height Layer: elevation
+          Height Transformer: GridMapLayer
+          History Length: 1
+          Invert ColorMap: false
+          Max Color: 255; 255; 255
+          Max Intensity: 10
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: Elevation Map
+          Show Grid Lines: true
+          Topic: /elevation_mapping/elevation_map
+          Unreliable: false
+          Use ColorMap: true
+          Value: true
+        - Class: rviz/Marker
+          Enabled: false
+          Marker Topic: /elevation_map_long_range_fused_visualization/surface_normals
+          Name: Surface Normals
+          Namespaces:
+            {}
+          Queue Size: 1
+          Value: false
+      Enabled: false
+      Name: Elevation Map
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Class: any_navigation_rviz_plugins/Path
+          Color: 64; 104; 225
+          Enabled: true
+          Font Size: 0.05000000074505806
+          History Length: 1
+          Name: Global Plan
+          Queue Size: 10
+          Rotational Tol: true
+          Show Caption: false
+          Size: 0.25
+          Topic: /path_planning_and_following/waypoints_planner/global_plan
+          Translation Tol: true
+          Unreliable: false
+          Value: true
+        - Add yaw to z: false
+          Alpha: 1
+          Class: navigation_pose_graph_rviz_plugins/PoseGraph
+          Color: 64; 104; 225
+          Enabled: true
+          Font Size: 0.05000000074505806
+          History Length: 1
+          Name: Waypoints Graph
+          Queue Size: 10
+          Rotational Tol: false
+          Show Caption: false
+          Size: 0.10000000149011612
+          Topic: /path_planning_and_following/waypoints_planner/waypoints
+          Translation Tol: false
+          Unreliable: false
+          Value: true
+        - Add yaw to z: false
+          Alpha: 1
+          Class: navigation_pose_graph_rviz_plugins/PoseGraph
+          Color: 64; 104; 225
+          Enabled: false
+          Font Size: 0.05000000074505806
+          History Length: 1
+          Name: Path Planner Waypoints Graph
+          Queue Size: 10
+          Rotational Tol: false
+          Show Caption: false
+          Size: 0.10000000149011612
+          Topic: /path_planning_and_following/waypoints_planner/planner_waypoints
+          Translation Tol: false
+          Unreliable: false
+          Value: false
+        - Alpha: 0.699999988079071
+          Class: rviz/Map
+          Color Scheme: map
+          Draw Behind: false
+          Enabled: false
+          Name: Path Follower Costmap
+          Topic: /path_planning_and_following/costmap
+          Unreliable: false
+          Use Timestamp: false
+          Value: false
+        - Alpha: 1
+          Arrow Length: 0.30000001192092896
+          Axes Length: 0.30000001192092896
+          Axes Radius: 0.009999999776482582
+          Class: rviz/PoseArray
+          Color: 255; 25; 0
+          Enabled: true
+          Head Length: 0.019999999552965164
+          Head Radius: 0.03500000014901161
+          Name: Path Follower Trajectory
+          Queue Size: 10
+          Shaft Length: 0.05000000074505806
+          Shaft Radius: 0.014999999664723873
+          Shape: Arrow (3D)
+          Topic: /path_planning_and_following/trajectory_poses
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 25; 255; 0
+          Enabled: false
+          Head Diameter: 0.05999999865889549
+          Head Length: 0.03999999910593033
+          Length: 0.30000001192092896
+          Line Style: Lines
+          Line Width: 0.029999999329447746
+          Name: Path Follower Global Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: Arrows
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.019999999552965164
+          Shaft Length: 0.05000000074505806
+          Topic: /path_planning_and_following/global_plan
+          Unreliable: false
+          Value: false
+        - Alpha: 1
+          Axes Length: 1
+          Axes Radius: 0.10000000149011612
+          Class: rviz/Pose
+          Color: 245; 121; 0
+          Enabled: true
+          Head Length: 0.029999999329447746
+          Head Radius: 0.03999999910593033
+          Name: Path Follower Initial Rotation Marker
+          Queue Size: 10
+          Shaft Length: 0.10000000149011612
+          Shaft Radius: 0.019999999552965164
+          Shape: Arrow
+          Topic: /path_planning_and_following/initial_rotation_marker
+          Unreliable: false
+          Value: true
+        - Class: rviz/Marker
+          Enabled: true
+          Marker Topic: /path_planning_and_following/markers
+          Name: Path Follower Markers
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+      Enabled: false
+      Name: Path Planning and Following
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/InteractiveMarkers
+          Enable Transparency: true
+          Enabled: true
+          Name: Environment
+          Show Axes: false
+          Show Descriptions: true
+          Show Visual Aids: false
+          Update Topic: /environment_visualizer/update
+          Value: true
+      Enabled: false
+      Name: Mission
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /inspection_setup/markers
+          Name: Inspection Setup Markers
+          Namespaces:
+            {}
+          Queue Size: 1
+          Value: true
+      Enabled: false
+      Name: Inspection
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /stair_climbing_ros/execution_step_sequence
+          Name: Execution Step Sequence
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /stair_climbing_ros/regular_step_sequence
+          Name: Regular Step Sequence
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /stair_climbing_ros/staircase_hyperplane_normals
+          Name: Staircase Hyperplane Normals
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Class: rviz/MarkerArray
+          Enabled: true
+          Marker Topic: /stair_climbing_ros/staircase_treads
+          Name: Staircase Treads
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+      Enabled: true
+      Name: Stair Climbing
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Axes Length: 1
+          Axes Radius: 0.10000000149011612
+          Class: rviz/Pose
+          Color: 245; 121; 0
+          Enabled: true
+          Head Length: 0.15000000596046448
+          Head Radius: 0.15000000596046448
+          Name: Goal
+          Queue Size: 10
+          Shaft Length: 0.30000001192092896
+          Shaft Radius: 0.07000000029802322
+          Shape: Arrow
+          Topic: /locally_reactive_controller/current_goal
+          Unreliable: false
+          Value: true
+        - Class: rviz/Marker
+          Enabled: true
+          Marker Topic: /locally_reactive_controller/real_carrot
+          Name: Real Carrot
+          Namespaces:
+            carrot: true
+          Queue Size: 100
+          Value: true
+        - Alpha: 1
+          Arrow Width: 0.5
+          Class: rviz/WrenchStamped
+          Enabled: false
+          Force Arrow Scale: 2
+          Force Color: 204; 51; 51
+          Hide Small Values: true
+          History Length: 1
+          Name: WrenchStamped
+          Queue Size: 10
+          Topic: /locally_reactive_controller/velocity_combined
+          Torque Arrow Scale: 2
+          Torque Color: 204; 204; 51
+          Unreliable: false
+          Value: false
+        - Alpha: 1
+          Angular Arrow Scale: 2
+          Angular Color: 204; 204; 51
+          Arrow Width: 0.5
+          Class: rviz/TwistStamped
+          Enabled: false
+          Hide Small Values: true
+          History Length: 1
+          Linear Arrow Scale: 2
+          Linear Color: 204; 51; 51
+          Name: TwistStamped
+          Queue Size: 10
+          Topic: /path_planning_and_following/twist
+          Unreliable: false
+          Value: false
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 0; 255; 250
+          Enabled: false
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.05000000074505806
+          Name: Integrated Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /locally_reactive_controller/reference_path
+          Unreliable: false
+          Value: false
+        - Class: rviz/Group
+          Displays:
+            - Class: rviz/MarkerArray
+              Enabled: false
+              Marker Topic: /locally_reactive_controller/rmp/control_points
+              Name: Control Spheres
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: false
+            - Class: rviz/MarkerArray
+              Enabled: false
+              Marker Topic: /locally_reactive_controller/rmp/accelerations
+              Name: Accelerations
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: false
+            - Class: rviz/Group
+              Displays:
+                - Alpha: 1
+                  Autocompute Intensity Bounds: false
+                  Class: grid_map_rviz_plugin/GridMap
+                  Color: 200; 200; 200
+                  Color Layer: traversability
+                  Color Transformer: ""
+                  ColorMap: turbo
+                  Enabled: false
+                  Height Layer: elevation_inpainted
+                  Height Transformer: GridMapLayer
+                  History Length: 1
+                  Invert ColorMap: false
+                  Max Color: 255; 255; 255
+                  Max Intensity: 1
+                  Min Color: 0; 0; 0
+                  Min Intensity: 0
+                  Name: Traversability
+                  Show Grid Lines: false
+                  Topic: /elevation_mapping/elevation_map_raw_wifi
+                  Unreliable: false
+                  Use ColorMap: false
+                  Value: false
+                - Alpha: 1
+                  Autocompute Intensity Bounds: false
+                  Class: grid_map_rviz_plugin/GridMap
+                  Color: 200; 200; 200
+                  Color Layer: sdf
+                  Color Transformer: ""
+                  ColorMap: turbo
+                  Enabled: false
+                  Height Layer: elevation_inpainted
+                  Height Transformer: GridMapLayer
+                  History Length: 1
+                  Invert ColorMap: true
+                  Max Color: 255; 255; 255
+                  Max Intensity: 0.6000000238418579
+                  Min Color: 0; 0; 0
+                  Min Intensity: -0.20000000298023224
+                  Name: SDF
+                  Show Grid Lines: false
+                  Topic: /elevation_mapping/elevation_map_raw_wifi
+                  Unreliable: false
+                  Use ColorMap: true
+                  Value: false
+                - Class: rviz/Marker
+                  Enabled: false
+                  Marker Topic: /grid_map_visualization/sdf_gradient
+                  Name: SDF Gradient
+                  Namespaces:
+                    {}
+                  Queue Size: 100
+                  Value: false
+                - Alpha: 1
+                  Autocompute Intensity Bounds: false
+                  Class: grid_map_rviz_plugin/GridMap
+                  Color: 200; 200; 200
+                  Color Layer: geodesic
+                  Color Transformer: GridMapLayer
+                  ColorMap: plasma
+                  Enabled: false
+                  Height Layer: elevation_inpainted
+                  Height Transformer: GridMapLayer
+                  History Length: 1
+                  Invert ColorMap: true
+                  Max Color: 255; 255; 255
+                  Max Intensity: 5
+                  Min Color: 0; 0; 0
+                  Min Intensity: 0
+                  Name: GDF
+                  Show Grid Lines: false
+                  Topic: /elevation_mapping/elevation_map_raw_wifi
+                  Unreliable: false
+                  Use ColorMap: true
+                  Value: false
+                - Class: rviz/Marker
+                  Enabled: false
+                  Marker Topic: /grid_map_visualization/geodesic_gradient
+                  Name: GDF gradient
+                  Namespaces:
+                    {}
+                  Queue Size: 100
+                  Value: false
+              Enabled: true
+              Name: Grid Map Filters DRS
+          Enabled: true
+          Name: RMP
+        - Class: rviz/Group
+          Displays:
+            - Alpha: 0.800000011920929
+              Autocompute Intensity Bounds: true
+              Autocompute Value Bounds:
+                Max Value: 10
+                Min Value: -10
+                Value: true
+              Axis: Z
+              Channel Name: intensity
+              Class: rviz/PointCloud2
+              Color: 255; 255; 255
+              Color Transformer: Intensity
+              Decay Time: 0
+              Enabled: true
+              Invert Rainbow: false
+              Max Color: 252; 233; 79
+              Min Color: 136; 138; 133
+              Name: Precomputed Paths
+              Position Transformer: XYZ
+              Queue Size: 10
+              Selectable: true
+              Size (Pixels): 3
+              Size (m): 0.019999999552965164
+              Style: Spheres
+              Topic: /locally_reactive_controller/falco/free_paths
+              Unreliable: false
+              Use Fixed Frame: true
+              Use rainbow: false
+              Value: true
+            - Alpha: 1
+              Autocompute Intensity Bounds: true
+              Autocompute Value Bounds:
+                Max Value: 10
+                Min Value: -10
+                Value: true
+              Axis: Z
+              Channel Name: normal_z
+              Class: rviz/PointCloud2
+              Color: 255; 255; 255
+              Color Transformer: Intensity
+              Decay Time: 0
+              Enabled: false
+              Invert Rainbow: true
+              Max Color: 255; 255; 255
+              Min Color: 0; 0; 0
+              Name: Colision Map
+              Position Transformer: XYZ
+              Queue Size: 10
+              Selectable: true
+              Size (Pixels): 3
+              Size (m): 0.05000000074505806
+              Style: Boxes
+              Topic: /locally_reactive_controller/falco/collision_map
+              Unreliable: false
+              Use Fixed Frame: true
+              Use rainbow: false
+              Value: false
+          Enabled: false
+          Name: FALCO
+      Enabled: true
+      Name: Locally Reactive Controller
+    - Alpha: 0.5
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 255; 255
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.5
+      Line Style: Lines
+      Line Width: 0.05000000074505806
+      Name: Waypoints
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: Axes
+      Queue Size: 10
+      Radius: 0.05000000074505806
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /simulation_experiment/testing_path
+      Unreliable: false
+      Value: true
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.05000000074505806
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp0
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp1
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp2
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp3
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp4
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp5
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp6
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp7
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp8
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp9
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 206; 36; 132
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_rmp10
+          Unreliable: false
+          Value: true
+      Enabled: false
+      Name: RMP Paths
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.05000000074505806
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco0
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco1
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco2
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco3
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco4
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco5
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco6
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco7
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco8
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco9
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 168; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_falco10
+          Unreliable: false
+          Value: true
+      Enabled: true
+      Name: FALCO Paths
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.05000000074505806
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only0
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only1
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only2
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only3
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only4
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only5
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only6
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only7
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only8
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only9
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 255; 245; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_gdf_only10
+          Unreliable: false
+          Value: true
+      Enabled: true
+      Name: GDF ONLY Paths
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.05000000074505806
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field0
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field1
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field2
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field3
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field4
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field5
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field6
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field7
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field8
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field9
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 2; 168; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Billboards
+          Line Width: 0.019999999552965164
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Queue Size: 10
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /paths_potential_field10
+          Unreliable: false
+          Value: true
+      Enabled: true
+      Name: Potential Field Paths
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+      Name: Obstacles Model
+      Robot Description: obstacles_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /simulation_experiment/collisions_counter
+      Name: Collision counter
+      Namespaces:
+        Collision Info: true
+      Queue Size: 100
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 255; 255; 255
+    Default Light: true
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
+      Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
+    - Class: rviz/SetGoal
+      Topic: /goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+    - Class: center_frame_tool/CenterFrameTool
+      Frame: base
+    - Class: gazebo_play_tool/GazeboPlayTool
+    - Class: rviz_gazebo_interaction/RobotRespawner
+  Value: true
+  Views:
+    Current:
+      Angle: -1.5700000524520874
+      Class: rviz/TopDownOrtho
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Scale: 206.51622009277344
+      Target Frame: <Fixed Frame>
+      X: 12.010501861572266
+      Y: -5.7060370445251465
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1376
+  Hide Left Dock: false
+  Hide Right Dock: true
+  QMainWindow State: 000000ff00000000fd00000004000000000000017700000506fc0200000014fb0000000a00560069006500770073010000003d00000280000000a400fffffffb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000012e000000f1000000c900fffffffb0000001a004b0069006e006500630074002000430061006d0065007200610000000191000001010000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000100044006900730070006c00610079007301000002c300000280000000c900fffffffb0000001a004b0069006e006500630074002000430061006d0065007200610000000000ffffffff0000000000000000fb0000000c00430061006d00650072006100000001d20000007c0000000000000000fb00000016005a006f006f006d002000430061006d0065007200610100000131000000160000000000000000fb0000001c0054006800650072006d0061006c002000430061006d006500720061010000014d000000160000000000000000fb0000002e005700690064006500200041006e0067006c0065002000430061006d006500720061002000460072006f006e00740000000000ffffffff0000000000000000fb0000002c005700690064006500200041006e0067006c0065002000430061006d006500720061002000520065006100720000000000ffffffff0000000000000000fb0000002e005700690064006500200041006e0067006c0065002000430061006d006500720061002000460072006f006e00740000000000ffffffff0000001600fffffffb0000002c005700690064006500200041006e0067006c0065002000430061006d006500720061002000520065006100720000000000ffffffff0000001600fffffffb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb0000003a00530065006c00650063007400650064002000430061006d00650072006100200049006d0061006700650020004d006100740063006800650073020000080d0000002e000003640000010d000000010000017200000506fc0200000008fb0000001e0054006f006f006c002000500072006f0070006500720074006900650073000000003c000000b80000005c00fffffffc0000003d000005060000000000fffffffa000000000100000003fb00000012005000610074006800500061006e0065006c0000000000ffffffff0000000000000000fb00000012005000610074006800500061006e0065006c0100000000ffffffff0000000000000000fb0000000a0056006900650077007300000004ba000001720000010000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000fb000000140046006500650064006200610063006b00200031000000003d000000360000000000000000fb000000140046006500650064006200610063006b002000340000000079000000360000000000000000fb000000140046006500650064006200610063006b0020003300000000b5000000360000000000000000fb000000140046006500650064006200610063006b0020003200000000f1000000360000000000000000fb0000000c0052006500730075006c0074000000012d000000360000000000000000000000020000075a00000098fc0100000001fb0000001e0054006f006f006c002000500072006f007000650072007400690065007300000000000000075a0000000000000000000000030000073f0000003efc0100000002fb0000000800540069006d006500000000000000073f000002eb00fffffffb0000000800540069006d006501000000000000045000000000000000000000083b0000050600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: true
+  Wide Angle Camera Front:
+    collapsed: false
+  Wide Angle Camera Rear:
+    collapsed: false
+  Width: 2488
+  X: 1992
+  Y: 27

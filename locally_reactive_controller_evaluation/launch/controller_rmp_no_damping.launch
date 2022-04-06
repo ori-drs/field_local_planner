@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <!-- Set controller -->
+  <arg name="controller"       default="rmp"/>
+  <!-- Controller parameters -->
+  <arg name="controller_config" default="$(find locally_reactive_controller_evaluation)/config/controllers/rmp_ablation/no_damping.yaml"/>
+  
+  <!-- Locally Reactive Controller -->
+  <include file="$(find locally_reactive_controller)/launch/controller.launch">
+    <arg name="controller"           value="$(arg controller)"/>
+    <arg name="controller_config"    value="$(arg controller_config)"/>
+    <arg name="goal_distance_threshold"  value="0.15"/>
+  </include>
+</launch>

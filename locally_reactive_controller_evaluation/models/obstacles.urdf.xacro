@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<robot name="obstacles" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find locally_reactive_controller_evaluation)/models/single_obstacle.urdf.xacro"/>
+  
+  <xacro:property name="parent" value="world" />
+  <link name="${parent}"/>
+
+  <xacro:obstacle name="obstacle1" parent="${parent}">
+	  <origin xyz="-1.4 2.1 0.001" rpy="0.0 0.0 ${pi/180*0}" />
+  </xacro:obstacle>
+
+  <xacro:obstacle name="obstacle2" parent="${parent}">
+	  <origin xyz="-1.8 -1.0 0.001" rpy="0.0 0.0 ${pi/180*0}" />
+  </xacro:obstacle>
+
+  <xacro:obstacle name="obstacle3" parent="${parent}">
+	  <origin xyz="0.8 -1.4 0.001" rpy="0.0 0.0 ${pi/180*0}" />
+  </xacro:obstacle>
+
+  <xacro:obstacle name="obstacle4" parent="${parent}">
+	  <origin xyz="1.2 3.2 0.001" rpy="0.0 0.0 ${pi/180*0}" />
+  </xacro:obstacle>
+
+  
+</robot>

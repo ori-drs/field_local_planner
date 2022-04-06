@@ -1,0 +1,15 @@
+## Goal
+
+geometry_msgs/PoseStamped goal
+
+---
+
+## Result
+
+
+---
+
+## Feedback
+
+# Distance to the goal
+float64 distance_to_goal
