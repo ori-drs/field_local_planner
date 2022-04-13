@@ -15,7 +15,6 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <depend>eigen_conversions</depend>
-  <depend>eigen_utils</depend>
   <depend>roscpp</depend>
   <depend>rospy</depend>
   <depend>joy_manager_msgs</depend>

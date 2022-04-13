@@ -1,6 +1,6 @@
 grid_map_filters:
 
   - name: delete
-    type: gridMapFilters/DeletionFilter
+    type: gridMapFiltersDrs/DeleteAllButFilter
     params:
-      layers: [elevation, normals_debug_input, normal_x, normal_y, normal_z, normal_color, slope, height_traversability, sdf_gradient_x, sdf_gradient_y, sdf_gradient_z, geodesic_free_space, geodesic_obstacle_space, geodesic_gradient_x, geodesic_gradient_y, geodesic_gradient_z] # List of layers.
+      layers: [elevation, elevation_inpainted, traversability_geometric, traversability_learned, geodesic, geodesic_field, sdf] # List of layers.

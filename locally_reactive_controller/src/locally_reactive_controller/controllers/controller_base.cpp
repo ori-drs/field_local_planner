@@ -1,7 +1,5 @@
 #include <locally_reactive_controller/controllers/controller_base.hpp>
-#include <locally_reactive_controller/utils/utils.hpp>
 #include <eigen_conversions/eigen_msg.h>
-#include <eigen_utils/eigen_rotations.hpp>
 #include <ros/console.h>
 
 // ControllerBase::ControllerBase() :
@@ -187,7 +185,7 @@ void ControllerBase::computeDistanceAndOrientationToGoal() {
   error_heading_to_goal_ = atan2(dT_base_goal_.translation().y(), dT_base_goal_.translation().x());
   // if the goal is BEHIND, then turn to face AWAY from the goal (if enabled)
   if ((dT_base_goal_.translation().x()<0) && (params_.goal_behind_mode_ == 1 )){
-    error_heading_to_goal_ = eigen_utils::mod2pi(error_heading_to_goal_ + M_PI);
+    error_heading_to_goal_ = utils::mod2pi(error_heading_to_goal_ + M_PI);
     goal_closer_to_back_ = true;
   }
   ROS_INFO_STREAM_THROTTLE(1, "Heading to goal: " << error_heading_to_goal_);
@@ -206,7 +204,7 @@ void ControllerBase::computeDistanceAndOrientationToGoal() {
   // QUaternion method
   Eigen::Quaterniond pose_quaternion(f_T_fb_t_.rotation());
   Eigen::Quaterniond goal_quaternion(f_Tgoal_fb_t_.rotation());
-  Eigen::Vector3d error_orientation_to_goal_so3 = eigen_utils::subtractQuats(pose_quaternion, goal_quaternion);
+  Eigen::Vector3d error_orientation_to_goal_so3 = utils::subtractQuats(pose_quaternion, goal_quaternion);
 
   error_orientation_to_goal_ = error_orientation_to_goal_so3(2);
   ROS_INFO_STREAM_THROTTLE(1, "Orientation to goal: " << error_orientation_to_starting_pose_);

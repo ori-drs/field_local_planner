@@ -8,7 +8,6 @@
 #include <pcl/filters/voxel_grid.h>
 #include <math.h>
 #include <yaml-cpp/yaml.h>
-#include <eigen_utils/eigen_rotations.hpp>
 #include <ros/package.h>
 
 #include <visualization_msgs/Marker.h>
@@ -197,6 +196,7 @@ void RmpController::customPreProcessController() {
     current_pose_in_map_ = fixed_to_map * f_T_fb_t_;
   }
   catch (tf::TransformException& ex){
+    ROS_ERROR_STREAM("tf listener failed to obtain pose T_" << map_frame << "_" << params_.fixed_frame_);
     ROS_ERROR("%s",ex.what());
     return;
   }

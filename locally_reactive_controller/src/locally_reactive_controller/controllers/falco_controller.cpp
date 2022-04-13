@@ -5,7 +5,6 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/filters/voxel_grid.h>
 #include <math.h>
-#include <eigen_utils/eigen_rotations.hpp>
 #include <ros/package.h>
 
 //-------------------------------------------------------------------------------------------------
@@ -195,10 +194,10 @@ ControllerBase::OutputAction FalcoController::computeCommandForward(Eigen::Vecto
   
   if(params_.goal_behind_mode_ == 1 ) {
     if (intermediate_carrot_(0) <=0 && (dT_base_goal_.translation().x() <0)){
-      error_heading_to_carrot = eigen_utils::mod2pi(error_heading_to_carrot + M_PI);
+      error_heading_to_carrot = utils::mod2pi(error_heading_to_carrot + M_PI);
       velocity_direction = -1.0;
     // } else if((dT_base_goal_.translation().x() <0)) {
-    //   error_heading_to_carrot = eigen_utils::mod2pi(error_heading_to_carrot + M_PI);
+    //   error_heading_to_carrot = utils::mod2pi(error_heading_to_carrot + M_PI);
     //   velocity_direction = -1.0;
     }
   }
@@ -422,7 +421,7 @@ void FalcoController::computePathScores() {
   for (int i = 0; i < 36 * NUM_PATHS; i++) {
     int rot_dir = int(i / NUM_PATHS);
     float rot_ang = utils::deg2rad(10.0 * rot_dir - 180.0);
-    float ang_diff = eigen_utils::mod2pi(heading_to_goal - rot_ang);
+    float ang_diff = utils::mod2pi(heading_to_goal - rot_ang);
 
     // select the paths that have less than a fixed number of collisions detected
     if (clear_path_list_[i] <= controller_params_.point_per_path_thr_) {

@@ -1,5 +1,5 @@
 <launch>
-  <arg name="rviz_config"       default="debug.rviz" />
+  <arg name="rviz_config"       default="default.rviz" />
   <arg name="name"              default="rviz_locally_reactive_controller" />
 
   <!-- Use RViz-->

@@ -1,7 +1,5 @@
 #include <locally_reactive_controller/controllers/trackline_controller.hpp>
 #include <locally_reactive_controller/controllers/controller_base.hpp>
-#include <locally_reactive_controller/utils/utils.hpp>
-#include <eigen_utils/eigen_rotations.hpp>
 #include <math.h>
 
 void TracklineController::customPreProcessController() {
@@ -171,7 +169,7 @@ void TracklineController::computeTracklineVelocityCommand(Eigen::Isometry3d curr
   double slope = atan2((y2 - y1),(x2 - x1));
   //ROS_INFO_THROTTLE(1,"        TRACKLN: %f slope of trackline", slope*57);
 
-  Eigen::Vector3d current_euler = eigen_utils::getEulerAngles(current_pose.rotation());
+  Eigen::Vector3d current_euler = utils::getEulerAngles(current_pose.rotation());
   double current_yaw = current_euler(2);
   //ROS_INFO_THROTTLE(1,"        TRACKLN: %f current_yaw of robot", current_yaw*57);
 

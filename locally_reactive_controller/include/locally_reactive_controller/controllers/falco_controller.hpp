@@ -1,7 +1,5 @@
 #pragma once
 #include <locally_reactive_controller/controllers/controller_base.hpp>
-#include <locally_reactive_controller/utils/utils.hpp>
-
 #include <mutex>
 #include <stdio.h>
 #include <stdlib.h>

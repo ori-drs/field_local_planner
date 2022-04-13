@@ -659,7 +659,7 @@ Visualization Manager:
       Marker Topic: /locally_reactive_controller/rmp/control_points
       Name: MarkerArray
       Namespaces:
-        control_point: true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -980,7 +980,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 6.958412170410156
+      Distance: 9.776067733764648
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

@@ -169,4 +169,42 @@ static double vonMises(double x, double mu, double kappa){
   return exp(kappa * cos(x - mu)) /*/ (2 * M_PI * bessj0(kappa)) */;
 }
 
+// Rotation utils
+inline double mod2pi_positive(double vin)
+{
+    double q = vin / (2*M_PI) + 0.5;
+    int qi = (int) q;
+
+    return vin - qi*2*M_PI;
+}
+
+/** Map v to [-PI, PI] **/
+inline double mod2pi(double vin)
+{
+    if (vin < 0)
+        return -mod2pi_positive(-vin);
+    else
+        return mod2pi_positive(vin);
+}
+
+static Eigen::Vector3d subtractQuats(const Eigen::Quaterniond & quat1, const Eigen::Quaterniond & quat2)
+{
+  Eigen::Quaterniond quat_resid = quat2.inverse() * quat1;
+  Eigen::AngleAxisd angle_axis_resid(quat_resid);
+
+  double angle = angle_axis_resid.angle();
+  angle = mod2pi(angle);
+  return angle_axis_resid.axis() * angle;
+}
+
+static Eigen::Vector3d getEulerAngles(const Eigen::Quaterniond & quat)
+{
+  return quat.toRotationMatrix().eulerAngles(2, 1, 0).reverse();
+}
+
+static Eigen::Vector3d getEulerAngles(const Eigen::Matrix3d & rot)
+{
+  return rot.eulerAngles(2, 1, 0).reverse(); //RPY
+}
+
 }

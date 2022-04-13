@@ -4,7 +4,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 find_package(catkin REQUIRED COMPONENTS
   eigen_conversions
-  eigen_utils
   roscpp
   rospy
   pcl_conversions
@@ -61,7 +60,6 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS eigen_conversions
-                 eigen_utils
                  roscpp
                  grid_map_core
                  grid_map_filters

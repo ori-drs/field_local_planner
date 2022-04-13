@@ -20,6 +20,7 @@
 #include <ros/ros.h>
 #include <std_msgs/Header.h>
 
+#include <locally_reactive_controller/utils/utils.hpp>
 #include <locally_reactive_controller/utils/profiler.hpp>
 #include <locally_reactive_controller/utils/timer.hpp>
 #include <locally_reactive_controller_msgs/Status.h>

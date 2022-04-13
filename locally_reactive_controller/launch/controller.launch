@@ -42,7 +42,9 @@
   <arg name="twist_input_topic"                  default="/state_estimator/twist"/>
   <arg name="joy_twist_input_topic"              default="/cmd_vel"/>
   
-  <arg name="elevation_map_topic"                default="/elevation_mapping/elevation_map"/>
+  <arg name="elevation_map_topic"                default="/elevation_mapping/elevation_map_raw"/>
+  <arg name="elevation_map_filtered_topic"       default="/elevation_mapping/elevation_map_filtered"/>
+  <arg name="elevation_map_wifi_topic"           default="/elevation_mapping/elevation_map_wifi"/>
 
 <!--  <arg name="output_topic"                       default="/joy_manager/twist"/> -->
   <!-- <arg name="output_topic"                       default="/path_planning_and_following/twist"/> -->
@@ -86,16 +88,17 @@
     <!-- Launch elevation map filters -->
   <include unless="$(eval controller == 'trackline')" file="$(find grid_map_filters_drs)/launch/filter_chain.launch">
     <arg name="input_topic"           value="$(arg elevation_map_topic)"/>
-    <arg name="output_topic"          value="$(arg elevation_map_topic)_filtered"/>
+    <arg name="output_topic"          value="$(arg elevation_map_filtered_topic)"/>
     <arg name="filter_chain_config"   value="$(arg filter_chain_config)"/>
     <arg name="visualizations_config" value="$(find locally_reactive_controller)/config/filter_chain/visualizations.yaml"/>
     <arg name="debug"                 value="$(arg debug_filters)"/>
+    <arg name="visualizations"        value="true"/>
   </include>
 
   <include unless="$(eval controller == 'trackline')" file="$(find grid_map_filters_drs)/launch/filter_chain.launch">
     <arg name="suffix"                value="_wifi"/>
-    <arg name="input_topic"           value="$(arg elevation_map_topic)_filtered"/>
-    <arg name="output_topic"          value="$(arg elevation_map_topic)_wifi"/>
+    <arg name="input_topic"           value="$(arg elevation_map_filtered_topic)"/>
+    <arg name="output_topic"          value="$(arg elevation_map_wifi_topic)"/>
     <arg name="filter_chain_config"   value="$(find locally_reactive_controller)/config/filter_chain/filter_chain_wifi.yaml"/>
     <arg name="visualizations"        value="false"/>
   </include>
@@ -117,7 +120,7 @@
     <param name="pose_input_topic"  value="$(arg pose_input_topic)" />
     <param name="twist_input_topic" value="$(arg twist_input_topic)" />
     <param name="joy_twist_input_topic" value="$(arg joy_twist_input_topic)" />
-    <param name="elevation_map_topic" value="$(arg elevation_map_topic)_filtered"/>
+    <param name="elevation_map_topic" value="$(arg elevation_map_filtered_topic)"/>
     <param name="output_topic"     value="$(arg output_topic)"/>
     <param name="output_type"      value="$(arg output_type)"/>
     <param name="maximum_control_command_rate_hz" value="$(arg maximum_control_command_rate_hz)"/>

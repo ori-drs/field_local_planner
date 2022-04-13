@@ -15,6 +15,26 @@ grid_map_filters:
       denoising_radius: 0.5 # m
       denoising_type: non_local # 'total_variation', 'non_local', 'gaussian', and 'median' supported
       total_variation_lambda: 1.0
+  
+  - name: learned_risk
+    type: gridMapFiltersDrs/LearnedMotionCostsFilter
+    params:
+      input_layer: elevation_inpainted
+      output_layer: risk_learned
+      cost_layer: risk
+      service_name: /traversability_server/compute_traversability
+  
+  - name: traversability_learned
+    type: gridMapFilters/MathExpressionFilter
+    params:
+      output_layer: traversability_learned
+      expression:  1.0 - ((risk_learned - min(risk_learned)) / (max(risk_learned) - min(risk_learned)))
+  
+  - name: traversability
+    type: gridMapFilters/DuplicationFilter
+    params:
+      input_layer: traversability_learned
+      output_layer: traversability
 
   # Compute surface normals (fast)
   - name: surface_normals
@@ -27,13 +47,6 @@ grid_map_filters:
       pre_smoothing_radius: 0.15 # spatial gaussian filter (in meters)
       post_smoothing_radius: 0.1 # spatial median filter (in meters)
 
-  # Add a color layer for visualization based on the surface normal.
-  - name: normal_color_map
-    type: gridMapFilters/NormalColorMapFilter
-    params:
-      input_layers_prefix: normal_
-      output_layer: normal_color
-
   # Compute slope from surface normal.
   - name: slope
     type: gridMapFilters/MathExpressionFilter
@@ -41,7 +54,7 @@ grid_map_filters:
       output_layer: slope
       expression: acos(normal_z)
   
-  # Compute slope from surface normal.
+  # Compute base threshold
   - name: height_filter
     type: gridMapFiltersDrs/BaseHeightThresholdFilter
     params:
@@ -53,10 +66,10 @@ grid_map_filters:
       set_to_lower: 1.0
 
   # Compute traversability as normalized weighted sum of slope and roughness.
-  - name: traversability
+  - name: traversability_geometric
     type: gridMapFilters/MathExpressionFilter
     params:
-      output_layer: traversability
+      output_layer: traversability_geometric
       # expression: (1.0 - (slope / 0.6))
       expression: 0.5 * (1.0 - (slope / 0.6)) + 0.5 * height_traversability
   
@@ -64,29 +77,32 @@ grid_map_filters:
   - name: sdf
     type: gridMapFiltersDrs/SignedDistanceField2dFilter
     params:
-      input_layer: traversability
+      input_layer: traversability_learned
       output_layer: sdf
       normalize_gradients: true
-      threshold: 0.7
+      threshold: 0.1
 
-  - name: geodesic
-    type: gridMapFiltersDrs/GeodesicDistanceField2dFilter
+  # - name: geodesic
+  #   type: gridMapFiltersDrs/GeodesicDistanceField2dFilter
+  #   params:
+  #     input_layer: traversability_learned
+  #     output_layer: geodesic
+  #     normalize_gradients: true
+  #     attractor_topic: /locally_reactive_controller/current_goal
+  #     threshold: 0.1 # to be applied to the input layer
+  #     use_field_smoothing: false
+  #     field_smoothing_radius: 0.05 # m
+  
+  - name: risk_booster
+    type: gridMapFilters/MathExpressionFilter
     params:
-      input_layer: traversability
+      output_layer: risk_boosted
+      expression: risk_learned
+  
+  - name: geodesic_field
+    type: gridMapFiltersDrs/GeodesicFieldFilter
+    params:
+      input_layer: risk_boosted
       output_layer: geodesic
       normalize_gradients: true
       attractor_topic: /locally_reactive_controller/current_goal
-      threshold: 0.7 # to be applied to the input layer
-      use_field_smoothing: true
-      field_smoothing_radius: 0.05 # m
-  
-  # - name: geodesic_field
-  #   type: gridMapFiltersDrs/GeodesicFieldFilter
-  #   params:
-  #     input_layer: elevation_inpainted
-  #     output_layer: geodesic_field
-  #     normalize_gradients: true
-  #     attractor_topic: /locally_reactive_controller/current_goal
-  #     threshold: 0.7 # to be applied to the input layer
-  #     use_field_smoothing: false
-  #     field_smoothing_radius: 0.05 # m
