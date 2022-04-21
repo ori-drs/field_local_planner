@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   gazebo_msgs
   any_gazebo_msgs
   std_srvs
-  locally_reactive_controller_anymal
+  position_controller_anymal
 )
 
 ###################################
@@ -34,7 +34,7 @@ catkin_package(
   gazebo_msgs
   any_gazebo_msgs
   std_srvs
-  locally_reactive_controller_anymal
+  position_controller_anymal
 )
 
 ############

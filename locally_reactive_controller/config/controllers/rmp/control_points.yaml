@@ -31,7 +31,7 @@
 control_points:
   mc :
     point_factor: [0.0, 0.0]
-    affected_by_goal: false
+    affected_by_goal: true
     affected_by_obstacle: true
     color: [0.00, 0.00, 0.00]
     radius: 0.35

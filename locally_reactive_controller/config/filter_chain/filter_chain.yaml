@@ -73,14 +73,30 @@ grid_map_filters:
       # expression: (1.0 - (slope / 0.6))
       expression: 0.5 * (1.0 - (slope / 0.6)) + 0.5 * height_traversability
   
-  # Compute 2D Signed Distance Field
-  - name: sdf
-    type: gridMapFiltersDrs/SignedDistanceField2dFilter
+  # # Compute 2D Signed Distance Field
+  # - name: sdf
+  #   type: gridMapFiltersDrs/SignedDistanceField2dFilter
+  #   params:
+  #     input_layer: traversability_learned
+  #     output_layer: sdf
+  #     normalize_gradients: true
+  #     threshold: 0.1
+  
+  - name: fake_sdf
+    type: gridMapFilters/DuplicationFilter
     params:
       input_layer: traversability_learned
       output_layer: sdf
-      normalize_gradients: true
-      threshold: 0.1
+
+  - name: fake_sdf_gradient
+    type: gridMapFiltersDrs/FastNormalsVectorFilter
+    params:
+      input_layer: traversability_learned
+      output_layers_prefix: sdf_gradient_
+      use_pre_smoothing: true
+      use_post_smoothing: true
+      pre_smoothing_radius: 0.15 # spatial gaussian filter (in meters)
+      post_smoothing_radius: 0.1 # spatial median filter (in meters)
 
   # - name: geodesic
   #   type: gridMapFiltersDrs/GeodesicDistanceField2dFilter
@@ -97,7 +113,7 @@ grid_map_filters:
     type: gridMapFilters/MathExpressionFilter
     params:
       output_layer: risk_boosted
-      expression: risk_learned
+      expression: risk_learned*2
   
   - name: geodesic_field
     type: gridMapFiltersDrs/GeodesicFieldFilter

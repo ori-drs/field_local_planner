@@ -30,7 +30,7 @@ rmp/euclidean_goal_steepness: 20.0
 
 # Heading RMP
 # This weights the contribution of the acceleration
-rmp/heading_weight: 1.0
+rmp/heading_weight: 0.0
 # Tries to keep the robot heading in the same direction 
 # of the twist command
 # This gain scales the force changes the heading
@@ -42,7 +42,7 @@ rmp/heading_steepness: 20.0
 
 # Damping RMP
 # This weights the contribution of the acceleration
-rmp/damping_weight: 1.0
+rmp/damping_weight: 0.0
 # Opposes the force by applying a damping proportional to velocity
 rmp/damping: 1.0
 
@@ -51,7 +51,7 @@ rmp/damping: 1.0
 # collision point 
 
 # This weights the contribution of the acceleration
-rmp/obstacle_weight: 1.0
+rmp/obstacle_weight: 0.0
 # This gain scales the force exerted by the obstacles
 rmp/obstacle_gain: 1.0
 # Clearance distance from the obstacles

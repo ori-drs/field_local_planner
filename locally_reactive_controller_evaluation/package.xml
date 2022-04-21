@@ -20,5 +20,5 @@
   <depend>gazebo_msgs</depend>
   <depend>any_gazebo_msgs</depend>
   <depend>std_srvs</depend>
-  <depend>locally_reactive_controller_anymal</depend>
+  <depend>position_controller_anymal</depend>
 </package>
