@@ -11,7 +11,7 @@ rmp/geodesic_goal_weight: 1.0
 # This gain scales the force that points toward the goal
 rmp/geodesic_goal_gain: 20.0
 # This factor determines when the rmp is disabled
-rmp/geodesic_goal_offset: 1.0
+rmp/geodesic_goal_offset: 0.5
 # Steepness to disable heading to goal
 rmp/geodesic_goal_steepness: 20.0
 # # Enable when close to the goal
@@ -22,7 +22,7 @@ rmp/euclidean_goal_weight: 1.0
 # # This gain scales the force that corrects for the goal pose
 rmp/euclidean_goal_gain: 20.0
 # # This factor scales the velocity to damp the force
-rmp/euclidean_goal_offset: 1.0
+rmp/euclidean_goal_offset: 0.5
 # # Steepness to enable heading to goal
 rmp/euclidean_goal_steepness: 20.0
 # # Enable when close to the goal

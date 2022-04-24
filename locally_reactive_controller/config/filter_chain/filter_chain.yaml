@@ -109,12 +109,18 @@ grid_map_filters:
   #     use_field_smoothing: false
   #     field_smoothing_radius: 0.05 # m
   
+  - name: unknown_space
+    type: gridMapFiltersDrs/NanMaskFilter
+    params:
+      input_layer: elevation
+      output_layer: unknown
+  
   - name: risk_booster
     type: gridMapFilters/MathExpressionFilter
     params:
       output_layer: risk_boosted
-      expression: risk_learned*2
-  
+      expression: 0.5*risk_learned + unknown
+
   - name: geodesic_field
     type: gridMapFiltersDrs/GeodesicFieldFilter
     params:

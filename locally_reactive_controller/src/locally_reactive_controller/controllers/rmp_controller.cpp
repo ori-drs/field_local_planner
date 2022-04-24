@@ -475,61 +475,95 @@ void RmpController::computeOptimalAcceleration()
             }
         }  // end obstacles
 
-        // Geodesic Goal
-        {
-            // Get distance to goal and gradient in fixed frame
-            double goal_distance, goal_grad_x, goal_grad_y;
-            gtsam::Vector2 base_position = gtsam_current_pose_in_map_.translation();
-            try
-            {
-                goal_distance = grid_map_.atPosition("geodesic", cp_in_map_frame) - radius;
-                goal_grad_x = grid_map_.atPosition("geodesic_gradient_x", cp_in_map_frame);
-                goal_grad_y = grid_map_.atPosition("geodesic_gradient_y", cp_in_map_frame);
-            }
-            catch (const std::out_of_range& oor)
-            {
-                ROS_ERROR_STREAM("Error while trying to access [geodesic] layer at "
-                                 << cp.point().transpose() << "\n Error: \n"
-                                 << oor.what());
-            }
-            // Create Goal RMP
-            Vector2 gradient_in_base_frame =
-                gtsam_current_pose_in_map_.rotation().inverse() * Vector2(goal_grad_x, goal_grad_y);
+        // // Geodesic Goal
+        // {
+        //     // Get distance to goal and gradient in fixed frame
+        //     double goal_distance, goal_grad_x, goal_grad_y;
+        //     gtsam::Vector2 base_position = gtsam_current_pose_in_map_.translation();
+        //     try
+        //     {
+        //         goal_distance = grid_map_.atPosition("geodesic", cp_in_map_frame) - radius;
+        //         goal_grad_x = grid_map_.atPosition("geodesic_gradient_x", cp_in_map_frame);
+        //         goal_grad_y = grid_map_.atPosition("geodesic_gradient_y", cp_in_map_frame);
+        //     }
+        //     catch (const std::out_of_range& oor)
+        //     {
+        //         ROS_ERROR_STREAM("Error while trying to access [geodesic] layer at "
+        //                          << cp.point().transpose() << "\n Error: \n"
+        //                          << oor.what());
+        //     }
+        //     // Create Goal RMP
+        //     Vector2 gradient_in_base_frame =
+        //         gtsam_current_pose_in_map_.rotation().inverse() * Vector2(goal_grad_x, goal_grad_y);
 
-            GeodesicGoal2Rmp goal_rmp(cp.point(), cp.apply(velocity_2d_), goal_distance,
-                                     gradient_in_base_frame, controller_params_.geodesic_goal_gain_,
-                                     controller_params_.geodesic_goal_offset_,
-                                     controller_params_.geodesic_goal_steepness_,
-                                     controller_params_.geodesic_goal_weight_);
-            AccelerationVisualization acc;
-            acc.id_ = "geodesic_goal_"+ control_points_.at(i).id_;
-            acc.acc_ = flip_front_direction * goal_rmp.acceleration().head<2>();
-            acc.metric_ = goal_rmp.metric().block(0, 0, 2, 2);
-            acc.point_ = flip_front_direction * control_points_.at(i).point_;
-            acc.color_ = Eigen::Vector3f(1.0, 1.0, 0.0);
-            acc.weight_ = controller_params_.geodesic_goal_weight_;
-            vis_accelerations_.push_back(acc);
+        //     GeodesicGoal2Rmp goal_rmp(cp.point(), cp.apply(velocity_2d_), goal_distance,
+        //                              gradient_in_base_frame, controller_params_.geodesic_goal_gain_,
+        //                              controller_params_.geodesic_goal_offset_,
+        //                              controller_params_.geodesic_goal_steepness_,
+        //                              controller_params_.geodesic_goal_weight_);
+        //     AccelerationVisualization acc;
+        //     acc.id_ = "geodesic_goal_"+ control_points_.at(i).id_;
+        //     acc.acc_ = flip_front_direction * goal_rmp.acceleration().head<2>();
+        //     acc.metric_ = goal_rmp.metric().block(0, 0, 2, 2);
+        //     acc.point_ = flip_front_direction * control_points_.at(i).point_;
+        //     acc.color_ = Eigen::Vector3f(1.0, 1.0, 0.0);
+        //     acc.weight_ = controller_params_.geodesic_goal_weight_;
+        //     vis_accelerations_.push_back(acc);
 
-            // Add RMP
-            if (control_points_.at(i).affected_by_goal_)
-            {
-                if (params_.differential_drive_)
-                {
-                    problem.addRmp(
-                        applyControlPoint2(cp_, applyDifferentialModel(motion_model_, acc_diff)),
-                        goal_rmp);
-                }
-                else
-                {
-                    problem.addRmp(applyControlPoint2(cp_, acc_se2), goal_rmp);
-                }
-            }
-        }
+        //     // Add RMP
+        //     if (control_points_.at(i).affected_by_goal_)
+        //     {
+        //         if (params_.differential_drive_)
+        //         {
+        //             problem.addRmp(
+        //                 applyControlPoint2(cp_, applyDifferentialModel(motion_model_, acc_diff)),
+        //                 goal_rmp);
+        //         }
+        //         else
+        //         {
+        //             problem.addRmp(applyControlPoint2(cp_, acc_se2), goal_rmp);
+        //         }
+        //     }
+        // }
     }
 
     // ------------------------------------------------------------------------------------
     // Add other RMPs to general problem
     // ------------------------------------------------------------------------------------
+    // Goal
+    // Get distance to goal and gradient in fixed frame
+    double goal_distance, goal_grad_x, goal_grad_y;
+    gtsam::Vector2 base_position = gtsam_current_pose_in_map_.translation();
+    try {
+    goal_distance = grid_map_.atPosition("geodesic", base_position);
+    goal_grad_x   = grid_map_.atPosition("geodesic_gradient_x", base_position);
+    goal_grad_y   = grid_map_.atPosition("geodesic_gradient_y", base_position);
+
+    } catch (const std::out_of_range& oor) {
+    ROS_ERROR_STREAM("Error while trying to access [geodesic] layer at " << 
+                        base_position.transpose() << "\n Error: \n" << oor.what());
+    }
+    // Create Goal RMP
+    Vector2 gradient_in_base_frame = gtsam_current_pose_in_map_.rotation().inverse() * Vector2(goal_grad_x, goal_grad_y);
+
+    GeodesicGoalRmp goal_rmp(gtsam_current_pose_in_map_,
+                            velocity_2d_,
+                            goal_distance,
+                            gradient_in_base_frame,
+                            controller_params_.geodesic_goal_gain_,
+                            controller_params_.geodesic_goal_offset_,
+                            controller_params_.geodesic_goal_steepness_,
+                            controller_params_.geodesic_goal_weight_);
+    AccelerationVisualization acc;
+    acc.id_  = "geodesic_goal";
+    acc.acc_ = flip_front_direction * goal_rmp.acceleration().head<2>();
+    acc.angular_acc_ = flip_front_angle * goal_rmp.acceleration()(2);
+    acc.metric_ = goal_rmp.metric().block(0,0,2,2);
+    acc.point_ = Eigen::Vector2d(0.0, 0.0);
+    acc.color_ = Eigen::Vector3f(1.0, 1.0, 0.0);
+    acc.weight_ = controller_params_.geodesic_goal_weight_;
+    vis_accelerations_.push_back(acc);
+
     // Damping RMP
     DampingRmp damping_rmp(gtsam_current_pose_in_fixed_, velocity_2d_, controller_params_.damping_,
                            controller_params_.damping_weight_);
@@ -559,7 +593,7 @@ void RmpController::computeOptimalAcceleration()
     vis_accelerations_.push_back(acc_goal);
 
     // // Heading RMP
-    double goal_distance = grid_map_.atPosition("geodesic", gtsam_current_pose_in_fixed_.translation());
+    // double goal_distance = grid_map_.atPosition("geodesic", gtsam_current_pose_in_fixed_.translation());
     HeadingRmp heading_rmp(
         gtsam_current_pose_in_fixed_, velocity_2d_, Vector2(1.0, 0.0), goal_distance,
         controller_params_.heading_gain_, controller_params_.heading_offset_,
@@ -578,7 +612,7 @@ void RmpController::computeOptimalAcceleration()
     if (params_.differential_drive_)
     {
         // Goal RMP
-        // problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_rmp);
+        problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_rmp);
 
         // Regularization RMP
         Vector2 optimal_acc_diff = Vector2::Zero();
@@ -599,7 +633,7 @@ void RmpController::computeOptimalAcceleration()
     else
     {
         // Goal RMP
-        // problem.addRmp(acc_se2, goal_rmp);
+        problem.addRmp(acc_se2, goal_rmp);
 
         // Regularization RMP
         problem.addRmp(acc_se2,

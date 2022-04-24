@@ -76,9 +76,9 @@ grid_map_filters:
       output_layer: geodesic
       normalize_gradients: true
       attractor_topic: /locally_reactive_controller/current_goal
-      threshold: 0.7 # to be applied to the input layer
-      use_field_smoothing: true
-      field_smoothing_radius: 0.05 # m
+      threshold: 0.1 # to be applied to the input layer
+      use_field_smoothing: false
+      field_smoothing_radius: 0.01 # m
   
   # - name: geodesic_field
   #   type: gridMapFiltersDrs/GeodesicFieldFilter
