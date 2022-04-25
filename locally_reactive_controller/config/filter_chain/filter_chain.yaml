@@ -119,7 +119,7 @@ grid_map_filters:
     type: gridMapFilters/MathExpressionFilter
     params:
       output_layer: risk_boosted
-      expression: 0.5*risk_learned + unknown
+      expression: 2*risk_learned + unknown
 
   - name: geodesic_field
     type: gridMapFiltersDrs/GeodesicFieldFilter
