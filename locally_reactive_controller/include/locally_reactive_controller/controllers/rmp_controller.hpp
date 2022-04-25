@@ -27,9 +27,19 @@ public:
   double geodesic_goal_gain_ = 7.0;
   double geodesic_goal_offset_ = 0.1;
   double geodesic_goal_steepness_ = 1.0;
-  double euclidean_goal_gain_ = 2.0;
-  double euclidean_goal_offset_ = 0.1;
-  double euclidean_goal_steepness_ = 1.0;
+
+  double geodesic_heading_gain_ = 7.0;
+  double geodesic_heading_offset_ = 0.1;
+  double geodesic_heading_steepness_ = 1.0;
+
+  double goal_position_gain_ = 2.0;
+  double goal_position_offset_ = 0.1;
+  double goal_position_steepness_ = 1.0;
+
+  double goal_heading_gain_ = 2.0;
+  double goal_heading_offset_ = 0.1;
+  double goal_heading_steepness_ = 1.0;
+
   double damping_ = 1.0;
   double obstacle_gain_ = 1.0;
   double obstacle_offset_ = 0.1;
@@ -41,7 +51,9 @@ public:
   double integration_time_ = 1.0;
   // weights
   double geodesic_goal_weight_ = 1.0;
-  double euclidean_goal_weight_ = 1.0;
+  double geodesic_heading_weight_ = 1.0;
+  double goal_position_weight_ = 1.0;
+  double goal_heading_weight_ = 1.0;
   double obstacle_weight_ = 1.0;
   double damping_weight_ = 1.0;
   double heading_weight_ = 1.0;

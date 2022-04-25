@@ -7,11 +7,11 @@ rmp/sphere_radius_factor: 1.2
 
 # Geodesic Goal RMP parameters
 # This weights the contribution of the acceleration
-rmp/geodesic_goal_weight: 1.0
+rmp/geodesic_goal_weight: 0.1
 # This gain scales the force that points toward the goal
-rmp/geodesic_goal_gain: 20.0
+rmp/geodesic_goal_gain: 50.0
 # This factor determines when the rmp is disabled
-rmp/geodesic_goal_offset: 0.5
+rmp/geodesic_goal_offset: 0.0
 # Steepness to disable heading to goal
 rmp/geodesic_goal_steepness: 20.0
 # # Enable when close to the goal
@@ -21,9 +21,9 @@ rmp/geodesic_goal_steepness: 20.0
 # This weights the contribution of the acceleration
 rmp/geodesic_heading_weight: 1.0
 # This gain scales the force that points toward the goal
-rmp/geodesic_heading_gain: 20.0
+rmp/geodesic_heading_gain: 50.0
 # This factor determines when the rmp is disabled
-rmp/geodesic_heading_offset: 0 # This weights the contribution of the acceleration
+rmp/geodesic_heading_offset: 0.5 # This weights the contribution of the acceleration
 # Steepness to disable heading to goal
 rmp/geodesic_heading_steepness: 20.0
 # # Enable when close to the goal
@@ -69,18 +69,18 @@ rmp/heading_steepness: 20.0
 # This weights the contribution of the acceleration
 rmp/damping_weight: 1.0
 # Opposes the force by applying a damping proportional to velocity
-rmp/damping: 0.1
+rmp/damping: 0.01
 
 # Obstacle RMP parameters
 # The obstacle RMPs are created for each potential 
 # collision point 
 
 # This weights the contribution of the acceleration
-rmp/obstacle_weight: 0.0
+rmp/obstacle_weight: 1.0
 # This gain scales the force exerted by the obstacles
-rmp/obstacle_gain: 1.0
+rmp/obstacle_gain: 0.5
 # Clearance distance from the obstacles
-rmp/obstacle_offset: 0.3 # meters
+rmp/obstacle_offset: 0.1 # meters
 # Clearance distance from the obstacles
 rmp/obstacle_steepness: 10.0 # meters
 

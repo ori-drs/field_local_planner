@@ -12,7 +12,8 @@
   <!-- Set controller -->
   <arg name="controller"       default="rmp"/>
   <!-- Controller parameters -->
-  <arg name="controller_config" default="$(find locally_reactive_controller)/config/controllers/$(arg controller)/parameters.yaml"/>
+  <arg name="controller_config_filename" default="parameters.yaml"/>
+  <arg name="controller_config" default="$(find locally_reactive_controller)/config/controllers/$(arg controller)/$(arg controller_config_filename)"/>
   
   <!-- Load controller parameters -->
   <rosparam command="load" ns="locally_reactive_controller" file="$(arg controller_config)"/>

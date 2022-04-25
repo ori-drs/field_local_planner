@@ -2,6 +2,7 @@
 <launch>
   <!-- Launch controller -->
   <arg name="controller"                         default="rmp"/>
+  <arg name="controller_config_filename"         default="parameters_jackal.yaml"/>
   <arg name="debug_filters"  default="false"/>
   <arg name="debug"          default="false"/>
   
@@ -53,14 +54,15 @@
   <arg name="ignore_intermediate_goal_heading"   default="true"/>
   
   <include file="$(find locally_reactive_controller)/launch/controller.launch">
-    <arg name="controller"     value="$(arg controller)"/>
-    <arg name="debug_filters"  value="$(arg debug_filters)"/>
-    <arg name="debug"          value="$(arg debug)"/>
-    <arg name="filter_chain_config" value="$(find locally_reactive_controller)/config/filter_chain/filter_chain_jackal.yaml"/>
-    <arg name="robot_length"     value ="$(arg robot_length)" />
-    <arg name="robot_width"      value ="$(arg robot_width)" />
-    <arg name="robot_height"     value ="$(arg robot_height)" />
-    <arg name="robot_clearance"  value ="$(arg robot_clearance)" />
+    <arg name="controller"                  value="$(arg controller)"/>
+    <arg name="controller_config_filename"  value="$(arg controller_config_filename)"/>
+    <arg name="debug_filters"               value="$(arg debug_filters)"/>
+    <arg name="debug"                       value="$(arg debug)"/>
+    <arg name="filter_chain_config"         value="$(find locally_reactive_controller)/config/filter_chain/filter_chain_jackal.yaml"/>
+    <arg name="robot_length"                value ="$(arg robot_length)" />
+    <arg name="robot_width"                 value ="$(arg robot_width)" />
+    <arg name="robot_height"                value ="$(arg robot_height)" />
+    <arg name="robot_clearance"             value ="$(arg robot_clearance)" />
 
     <arg name="elevation_map_topic" value="$(arg elevation_map_topic)"/>
     <arg name="motion_mode" value="$(arg motion_mode)"/>

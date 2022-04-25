@@ -49,12 +49,28 @@ void RmpController::updateControllerParameters(ros::NodeHandle& node_handle)
         utils::getParameterDefault<double>(node_handle, "geodesic_goal_offset", 0.5);
     controller_params_.geodesic_goal_steepness_ =
         utils::getParameterDefault<double>(node_handle, "geodesic_goal_steepness", 1.0);
-    controller_params_.euclidean_goal_gain_ =
-        utils::getParameterDefault<double>(node_handle, "euclidean_goal_gain", 7.0);
-    controller_params_.euclidean_goal_offset_ =
-        utils::getParameterDefault<double>(node_handle, "euclidean_goal_offset", 0.5);
-    controller_params_.euclidean_goal_steepness_ =
-        utils::getParameterDefault<double>(node_handle, "euclidean_goal_steepness", 1.0);
+    
+    controller_params_.geodesic_heading_gain_ =
+        utils::getParameterDefault<double>(node_handle, "geodesic_heading_gain", 7.0);
+    controller_params_.geodesic_heading_offset_ =
+        utils::getParameterDefault<double>(node_handle, "geodesic_heading_offset", 0.5);
+    controller_params_.geodesic_heading_steepness_ =
+        utils::getParameterDefault<double>(node_handle, "geodesic_heading_steepness", 1.0);
+
+    controller_params_.goal_position_gain_ =
+        utils::getParameterDefault<double>(node_handle, "goal_position_gain", 7.0);
+    controller_params_.goal_position_offset_ =
+        utils::getParameterDefault<double>(node_handle, "goal_position_offset", 0.5);
+    controller_params_.goal_position_steepness_ =
+        utils::getParameterDefault<double>(node_handle, "goal_position_steepness", 1.0);
+
+    controller_params_.goal_heading_gain_ =
+        utils::getParameterDefault<double>(node_handle, "goal_heading_gain", 7.0);
+    controller_params_.goal_heading_offset_ =
+        utils::getParameterDefault<double>(node_handle, "goal_heading_offset", 0.5);
+    controller_params_.goal_heading_steepness_ =
+        utils::getParameterDefault<double>(node_handle, "goal_heading_steepness", 1.0);
+    
     controller_params_.damping_ = utils::getParameterDefault<double>(node_handle, "damping", 1.0);
     controller_params_.obstacle_gain_ =
         utils::getParameterDefault<double>(node_handle, "obstacle_gain", 1.0);
@@ -62,6 +78,7 @@ void RmpController::updateControllerParameters(ros::NodeHandle& node_handle)
         utils::getParameterDefault<double>(node_handle, "obstacle_offset", 0.1);
     controller_params_.obstacle_steepness_ =
         utils::getParameterDefault<double>(node_handle, "obstacle_steepness", 1.0);
+
     controller_params_.heading_gain_ =
         utils::getParameterDefault<double>(node_handle, "heading_gain", 1.0);
     controller_params_.heading_offset_ =
@@ -75,8 +92,14 @@ void RmpController::updateControllerParameters(ros::NodeHandle& node_handle)
 
     controller_params_.geodesic_goal_weight_ =
         utils::getParameterDefault<double>(node_handle, "geodesic_goal_weight", 1.0);
-    controller_params_.euclidean_goal_weight_ =
-        utils::getParameterDefault<double>(node_handle, "euclidean_goal_weight", 1.0);
+    controller_params_.geodesic_heading_weight_ =
+        utils::getParameterDefault<double>(node_handle, "geodesic_heading_weight", 1.0);
+
+    controller_params_.goal_position_weight_ =
+        utils::getParameterDefault<double>(node_handle, "goal_position_weight", 1.0);
+    controller_params_.goal_heading_weight_ =
+        utils::getParameterDefault<double>(node_handle, "goal_heading_weight", 1.0);
+        
     controller_params_.damping_weight_ =
         utils::getParameterDefault<double>(node_handle, "damping_weight", 1.0);
     controller_params_.obstacle_weight_ =
@@ -107,19 +130,36 @@ void RmpController::dynamicReconfigureCallback(
     // RMP parameters
     utils::assignAndPrintDiff("sphere_radius_factor", controller_params_.sphere_radius_factor_,
                               config.sphere_radius_factor);
-    utils::assignAndPrintDiff("goal_gain", controller_params_.geodesic_goal_gain_,
+    utils::assignAndPrintDiff("geodesic_goal_gain", controller_params_.geodesic_goal_gain_,
                               config.geodesic_goal_gain);
-    utils::assignAndPrintDiff("goal_offset", controller_params_.geodesic_goal_offset_,
+    utils::assignAndPrintDiff("geodesic_goal_offset", controller_params_.geodesic_goal_offset_,
                               config.geodesic_goal_offset);
-    utils::assignAndPrintDiff("goal_steepness", controller_params_.geodesic_goal_steepness_,
+    utils::assignAndPrintDiff("geodesic_goal_steepness", controller_params_.geodesic_goal_steepness_,
                               config.geodesic_goal_steepness);
-    utils::assignAndPrintDiff("euclidean_goal_gain", controller_params_.euclidean_goal_gain_,
-                              config.euclidean_goal_gain);
-    utils::assignAndPrintDiff("euclidean_goal_offset", controller_params_.euclidean_goal_offset_,
-                              config.euclidean_goal_offset);
-    utils::assignAndPrintDiff("euclidean_goal_steepness",
-                              controller_params_.euclidean_goal_steepness_,
-                              config.euclidean_goal_steepness);
+    
+    utils::assignAndPrintDiff("geodesic_heading_gain", controller_params_.geodesic_heading_gain_,
+                              config.geodesic_heading_gain);
+    utils::assignAndPrintDiff("geodesic_heading_offset", controller_params_.geodesic_heading_offset_,
+                              config.geodesic_heading_offset);
+    utils::assignAndPrintDiff("geodesic_heading_steepness", controller_params_.geodesic_heading_steepness_,
+                              config.geodesic_heading_steepness);
+
+    utils::assignAndPrintDiff("goal_position_gain", controller_params_.goal_position_gain_,
+                              config.goal_position_gain);
+    utils::assignAndPrintDiff("goal_position_offset", controller_params_.goal_position_offset_,
+                              config.goal_position_offset);
+    utils::assignAndPrintDiff("goal_position_steepness",
+                              controller_params_.goal_position_steepness_,
+                              config.goal_position_steepness);
+
+    utils::assignAndPrintDiff("goal_heading_gain", controller_params_.goal_heading_gain_,
+                              config.goal_heading_gain);
+    utils::assignAndPrintDiff("goal_heading_offset", controller_params_.goal_heading_offset_,
+                              config.goal_heading_offset);
+    utils::assignAndPrintDiff("goal_heading_steepness",
+                              controller_params_.goal_heading_steepness_,
+                              config.goal_heading_steepness);
+
     utils::assignAndPrintDiff("damping", controller_params_.damping_, config.damping);
     utils::assignAndPrintDiff("obstacle_gain", controller_params_.obstacle_gain_,
                               config.obstacle_gain);
@@ -127,12 +167,14 @@ void RmpController::dynamicReconfigureCallback(
                               config.obstacle_offset);
     utils::assignAndPrintDiff("obstacle_steepness", controller_params_.obstacle_steepness_,
                               config.obstacle_steepness);
+
     utils::assignAndPrintDiff("heading_gain", controller_params_.heading_gain_,
                               config.heading_gain);
     utils::assignAndPrintDiff("heading_offset", controller_params_.heading_offset_,
                               config.heading_offset);
     utils::assignAndPrintDiff("heading_steepness", controller_params_.heading_steepness_,
                               config.heading_steepness);
+
     utils::assignAndPrintDiff("acceleration_regularization", controller_params_.regularization_,
                               config.acceleration_regularization);
     utils::assignAndPrintDiff("integration_time", controller_params_.integration_time_,
@@ -140,8 +182,13 @@ void RmpController::dynamicReconfigureCallback(
 
     utils::assignAndPrintDiff("geodesic_goal_weight", controller_params_.geodesic_goal_weight_,
                               config.geodesic_goal_weight);
-    utils::assignAndPrintDiff("euclidean_goal_weight", controller_params_.euclidean_goal_weight_,
-                              config.euclidean_goal_weight);
+     utils::assignAndPrintDiff("geodesic_heading_weight", controller_params_.geodesic_heading_weight_,
+                              config.geodesic_heading_weight);
+    utils::assignAndPrintDiff("goal_position_weight", controller_params_.goal_position_weight_,
+                              config.goal_position_weight);
+    utils::assignAndPrintDiff("goal_heading_weight", controller_params_.goal_heading_weight_,
+                              config.goal_heading_weight);
+    
     utils::assignAndPrintDiff("damping_weight", controller_params_.damping_weight_,
                               config.damping_weight);
     utils::assignAndPrintDiff("obstacle_weight", controller_params_.obstacle_weight_,
@@ -437,7 +484,7 @@ void RmpController::computeOptimalAcceleration()
                                              Vector2(obstacle_grad_x, obstacle_grad_y);
 
             // Create Obstacle RMP
-            SdfObstacle2Rmp obstacle_rmp(
+            SdfObstaclePointRmp obstacle_rmp(
                 cp.point(), cp.apply(velocity_2d_), obstacle_distance, gradient_in_base_frame,
                 controller_params_.obstacle_gain_, controller_params_.obstacle_offset_,
                 controller_params_.obstacle_steepness_, controller_params_.obstacle_weight_);
@@ -474,57 +521,6 @@ void RmpController::computeOptimalAcceleration()
                 }
             }
         }  // end obstacles
-
-        // // Geodesic Goal
-        // {
-        //     // Get distance to goal and gradient in fixed frame
-        //     double goal_distance, goal_grad_x, goal_grad_y;
-        //     gtsam::Vector2 base_position = gtsam_current_pose_in_map_.translation();
-        //     try
-        //     {
-        //         goal_distance = grid_map_.atPosition("geodesic", cp_in_map_frame) - radius;
-        //         goal_grad_x = grid_map_.atPosition("geodesic_gradient_x", cp_in_map_frame);
-        //         goal_grad_y = grid_map_.atPosition("geodesic_gradient_y", cp_in_map_frame);
-        //     }
-        //     catch (const std::out_of_range& oor)
-        //     {
-        //         ROS_ERROR_STREAM("Error while trying to access [geodesic] layer at "
-        //                          << cp.point().transpose() << "\n Error: \n"
-        //                          << oor.what());
-        //     }
-        //     // Create Goal RMP
-        //     Vector2 gradient_in_base_frame =
-        //         gtsam_current_pose_in_map_.rotation().inverse() * Vector2(goal_grad_x, goal_grad_y);
-
-        //     GeodesicGoal2Rmp goal_rmp(cp.point(), cp.apply(velocity_2d_), goal_distance,
-        //                              gradient_in_base_frame, controller_params_.geodesic_goal_gain_,
-        //                              controller_params_.geodesic_goal_offset_,
-        //                              controller_params_.geodesic_goal_steepness_,
-        //                              controller_params_.geodesic_goal_weight_);
-        //     AccelerationVisualization acc;
-        //     acc.id_ = "geodesic_goal_"+ control_points_.at(i).id_;
-        //     acc.acc_ = flip_front_direction * goal_rmp.acceleration().head<2>();
-        //     acc.metric_ = goal_rmp.metric().block(0, 0, 2, 2);
-        //     acc.point_ = flip_front_direction * control_points_.at(i).point_;
-        //     acc.color_ = Eigen::Vector3f(1.0, 1.0, 0.0);
-        //     acc.weight_ = controller_params_.geodesic_goal_weight_;
-        //     vis_accelerations_.push_back(acc);
-
-        //     // Add RMP
-        //     if (control_points_.at(i).affected_by_goal_)
-        //     {
-        //         if (params_.differential_drive_)
-        //         {
-        //             problem.addRmp(
-        //                 applyControlPoint2(cp_, applyDifferentialModel(motion_model_, acc_diff)),
-        //                 goal_rmp);
-        //         }
-        //         else
-        //         {
-        //             problem.addRmp(applyControlPoint2(cp_, acc_se2), goal_rmp);
-        //         }
-        //     }
-        // }
     }
 
     // ------------------------------------------------------------------------------------
@@ -546,7 +542,7 @@ void RmpController::computeOptimalAcceleration()
     // Create Goal RMP
     Vector2 gradient_in_base_frame = gtsam_current_pose_in_map_.rotation().inverse() * Vector2(goal_grad_x, goal_grad_y);
 
-    GeodesicGoalRmp goal_rmp(gtsam_current_pose_in_map_,
+    GeodesicGoal2DRmp geodesic_goal_rmp(gtsam_current_pose_in_map_,
                             velocity_2d_,
                             goal_distance,
                             gradient_in_base_frame,
@@ -556,13 +552,62 @@ void RmpController::computeOptimalAcceleration()
                             controller_params_.geodesic_goal_weight_);
     AccelerationVisualization acc;
     acc.id_  = "geodesic_goal";
-    acc.acc_ = flip_front_direction * goal_rmp.acceleration().head<2>();
-    acc.angular_acc_ = flip_front_angle * goal_rmp.acceleration()(2);
-    acc.metric_ = goal_rmp.metric().block(0,0,2,2);
+    acc.acc_ = flip_front_direction * geodesic_goal_rmp.acceleration().head<2>();
+    acc.angular_acc_ = flip_front_angle * geodesic_goal_rmp.acceleration()(2);
+    acc.metric_ = geodesic_goal_rmp.metric().block(0,0,2,2);
     acc.point_ = Eigen::Vector2d(0.0, 0.0);
     acc.color_ = Eigen::Vector3f(1.0, 1.0, 0.0);
     acc.weight_ = controller_params_.geodesic_goal_weight_;
     vis_accelerations_.push_back(acc);
+
+    // Create Geodesic Alignment RMP
+    GeodesicFlowHeadingRmp geodesic_heading_rmp(gtsam_current_pose_in_map_,
+                            velocity_2d_,
+                            goal_distance,
+                            gradient_in_base_frame,
+                            controller_params_.geodesic_heading_gain_,
+                            controller_params_.geodesic_heading_offset_,
+                            controller_params_.geodesic_heading_steepness_,
+                            controller_params_.geodesic_heading_weight_);
+    AccelerationVisualization acc_alignment;
+    acc_alignment.id_  = "geodesic_heading";
+    acc_alignment.acc_ = flip_front_direction * geodesic_heading_rmp.acceleration().head<2>();
+    acc_alignment.angular_acc_ = flip_front_angle * geodesic_heading_rmp.acceleration()(2);
+    acc_alignment.metric_ = geodesic_heading_rmp.metric().block(0,0,2,2);
+    acc_alignment.point_ = Eigen::Vector2d(0.0, 0.0);
+    acc_alignment.color_ = Eigen::Vector3f(1.0, 1.0, 0.0);
+    acc_alignment.weight_ = controller_params_.geodesic_heading_weight_;
+    vis_accelerations_.push_back(acc_alignment);
+
+    // Goal Position RMP (Base)
+    Goal2DRmp goal_position_rmp(
+        gtsam_current_pose_in_fixed_, velocity_2d_, gtsam_current_goal_in_fixed_,
+        controller_params_.goal_position_gain_, controller_params_.goal_position_offset_,
+        controller_params_.goal_position_steepness_, controller_params_.goal_position_weight_);
+    AccelerationVisualization acc_goal_position;
+    acc_goal_position.id_ = "goal_position";
+    acc_goal_position.acc_ = flip_front_direction * goal_position_rmp.acceleration().head<2>();
+    acc_goal_position.angular_acc_ = flip_front_angle * goal_position_rmp.acceleration()(2);
+    acc_goal_position.metric_ = goal_position_rmp.metric().block(0, 0, 2, 2);
+    acc_goal_position.point_ = Eigen::Vector2d(0.0, 0.0);
+    acc_goal_position.color_ = Eigen::Vector3f(1.0, 0.5, 0.0);
+    acc_goal_position.weight_ = controller_params_.goal_position_weight_;
+    vis_accelerations_.push_back(acc_goal_position);
+
+    // Goal Heading RMP (Base)
+    GoalHeadingRmp goal_heading_rmp(
+        gtsam_current_pose_in_fixed_, velocity_2d_, gtsam_current_goal_in_fixed_,
+        controller_params_.goal_heading_gain_, controller_params_.goal_heading_offset_,
+        controller_params_.goal_heading_steepness_, controller_params_.goal_heading_weight_);
+    AccelerationVisualization acc_goal_heading;
+    acc_goal_heading.id_ = "goal_heading";
+    acc_goal_heading.acc_ = flip_front_direction * goal_heading_rmp.acceleration().head<2>();
+    acc_goal_heading.angular_acc_ = flip_front_angle * goal_heading_rmp.acceleration()(2);
+    acc_goal_heading.metric_ = goal_heading_rmp.metric().block(0, 0, 2, 2);
+    acc_goal_heading.point_ = Eigen::Vector2d(0.0, 0.0);
+    acc_goal_heading.color_ = Eigen::Vector3f(1.0, 0.5, 0.0);
+    acc_goal_heading.weight_ = controller_params_.goal_heading_weight_;
+    vis_accelerations_.push_back(acc_goal_heading);
 
     // Damping RMP
     DampingRmp damping_rmp(gtsam_current_pose_in_fixed_, velocity_2d_, controller_params_.damping_,
@@ -576,21 +621,6 @@ void RmpController::computeOptimalAcceleration()
     acc_damping.color_ = Eigen::Vector3f(0.0, 0.0, 1.0);
     acc_damping.weight_ = controller_params_.damping_weight_;
     vis_accelerations_.push_back(acc_damping);
-
-    // Goal Heading RMP (Base)
-    EuclideanGoalRmp goal_with_heading_rmp(
-        gtsam_current_pose_in_fixed_, velocity_2d_, gtsam_current_goal_in_fixed_,
-        controller_params_.euclidean_goal_gain_, controller_params_.euclidean_goal_offset_,
-        controller_params_.euclidean_goal_steepness_, controller_params_.euclidean_goal_weight_);
-    AccelerationVisualization acc_goal;
-    acc_goal.id_ = "euclidean_goal";
-    acc_goal.acc_ = flip_front_direction * goal_with_heading_rmp.acceleration().head<2>();
-    acc_goal.angular_acc_ = flip_front_angle * goal_with_heading_rmp.acceleration()(2);
-    acc_goal.metric_ = goal_with_heading_rmp.metric().block(0, 0, 2, 2);
-    acc_goal.point_ = Eigen::Vector2d(0.0, 0.0);
-    acc_goal.color_ = Eigen::Vector3f(1.0, 0.5, 0.0);
-    acc_goal.weight_ = controller_params_.euclidean_goal_weight_;
-    vis_accelerations_.push_back(acc_goal);
 
     // // Heading RMP
     // double goal_distance = grid_map_.atPosition("geodesic", gtsam_current_pose_in_fixed_.translation());
@@ -611,8 +641,17 @@ void RmpController::computeOptimalAcceleration()
     // Add RMPs
     if (params_.differential_drive_)
     {
-        // Goal RMP
-        problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_rmp);
+        // Geodesic goal RMP
+        problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), geodesic_goal_rmp);
+
+        // Geodesic heading RMP
+        problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), geodesic_heading_rmp);
+
+        // Goal Position RMP
+        problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_position_rmp);
+
+        // Goal Heading RMP
+        problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_heading_rmp);
 
         // Regularization RMP
         Vector2 optimal_acc_diff = Vector2::Zero();
@@ -624,16 +663,24 @@ void RmpController::computeOptimalAcceleration()
         // Damping RMP
         problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), damping_rmp);
 
-        // Goal Heading RMP
-        problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_with_heading_rmp);
+        
 
         // Heading RMP
         problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), heading_rmp);
     }
     else
     {
-        // Goal RMP
-        problem.addRmp(acc_se2, goal_rmp);
+        // Geodesic goal RMP
+        problem.addRmp(acc_se2, geodesic_goal_rmp);
+
+        // Geodesic heading RMP
+        problem.addRmp(acc_se2, geodesic_heading_rmp);
+
+        // Goal Position RMP
+        problem.addRmp(acc_se2, goal_position_rmp);
+
+        // Goal Heading RMP
+        problem.addRmp(acc_se2, goal_heading_rmp);
 
         // Regularization RMP
         problem.addRmp(acc_se2,
@@ -641,9 +688,6 @@ void RmpController::computeOptimalAcceleration()
 
         // Damping RMP
         problem.addRmp(acc_se2, damping_rmp);
-
-        // Goal Heading RMP
-        problem.addRmp(acc_se2, goal_with_heading_rmp);
 
         // Heading RMP
         problem.addRmp(acc_se2, heading_rmp);
