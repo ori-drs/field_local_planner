@@ -28,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Collision cloud
   - Class: rviz/Views
     Expanded:
       - /Current View1
@@ -39,9 +39,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /GDF1
+        - /ANYmal1/RobotModel1
       Splitter Ratio: 0.6470588445663452
-    Tree Height: 865
+    Tree Height: 512
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -89,62 +89,30 @@ Visualization Manager:
           Marker Topic: /rviz_world_loader/markers_visual
           Name: Visual
           Namespaces:
-            ground_plane__link__visual__visual: true
-            model__block_10__visual__visual: true
-            model__block_11__visual__visual: true
-            model__block_12__visual__visual: true
-            model__block_13__visual__visual: true
-            model__block_14__visual__visual: true
-            model__block_15__visual__visual: true
-            model__block_16__visual__visual: true
-            model__block_17__visual__visual: true
-            model__block_18__visual__visual: true
-            model__block_19__visual__visual: true
-            model__block_1__visual__visual: true
-            model__block_20__visual__visual: true
-            model__block_21__visual__visual: true
-            model__block_22__visual__visual: true
-            model__block_23__visual__visual: true
-            model__block_24__visual__visual: true
-            model__block_25__visual__visual: true
-            model__block_26__visual__visual: true
-            model__block_27__visual__visual: true
-            model__block_28__visual__visual: true
-            model__block_29__visual__visual: true
-            model__block_2__visual__visual: true
-            model__block_30__visual__visual: true
-            model__block_31__visual__visual: true
-            model__block_32__visual__visual: true
-            model__block_33__visual__visual: true
-            model__block_34__visual__visual: true
-            model__block_35__visual__visual: true
-            model__block_36__visual__visual: true
-            model__block_37__visual__visual: true
-            model__block_38__visual__visual: true
-            model__block_39__visual__visual: true
-            model__block_3__visual__visual: true
-            model__block_40__visual__visual: true
-            model__block_41__visual__visual: true
-            model__block_42__visual__visual: true
-            model__block_43__visual__visual: true
-            model__block_44__visual__visual: true
-            model__block_45__visual__visual: true
-            model__block_46__visual__visual: true
-            model__block_47__visual__visual: true
-            model__block_48__visual__visual: true
-            model__block_49__visual__visual: true
-            model__block_4__visual__visual: true
-            model__block_50__visual__visual: true
-            model__block_51__visual__visual: true
-            model__block_52__visual__visual: true
-            model__block_53__visual__visual: true
-            model__block_54__visual__visual: true
-            model__block_55__visual__visual: true
-            model__block_5__visual__visual: true
-            model__block_6__visual__visual: true
-            model__block_7__visual__visual: true
-            model__block_8__visual__visual: true
-            model__block_9__visual__visual: true
+            apriltag_0_size_18cm__apriltag_0_size_18cm_link__visual__apriltag_0_size_18cm_visual: true
+            docking_station__apriltag36_11_00000_link__visual__apriltag36_11_00000_visual: true
+            docking_station__apriltag36_11_00001_link__visual__apriltag36_11_00001_visual: true
+            docking_station__apriltag36_11_00002_link__visual__apriltag36_11_00002_visual: true
+            docking_station__apriltag36_11_00003_link__visual__apriltag36_11_00003_visual: true
+            docking_station__docking_port_link__visual__docking_port_visual: true
+            fire_extinguisher_1_ground_floor__fire_extinguisher_1_link__visual__fire_extinguisher_1_visual: true
+            fire_extinguisher_2_ground_floor__fire_extinguisher_2_link__visual__fire_extinguisher_2_visual: true
+            gauge_ground_floor_1__pressure_gauge_501_link__visual__pressure_gauge_501_visual: true
+            gauge_maze_exit__pressure_gauge_501_link__visual__pressure_gauge_501_visual: true
+            gauge_second_floor_2__pressure_gauge_501_link__visual__pressure_gauge_501_visual: true
+            heat_first_floor_1__heat_plate_0.9x0.9_e0.5_link__visual__heat_plate_0.9x0.9_e0.5_visual: true
+            heat_first_floor_4__heat_plate_0.9x0.9_e0.1_link__visual__heat_plate_0.9x0.9_e0.1_visual: true
+            heat_maze_entrance__heat_plate_0.15x0.15_e1.0_link__visual__heat_plate_0.15x0.15_e1.0_visual: true
+            linear_gauge_1_ground_floor__linear_gauge_1_link__visual__linear_gauge_1_visual: true
+            playground__playground__visual__visual: true
+            playground__slippery_area__visual__visual: true
+            playground__very_slippery_area__visual__visual: true
+            round_gauge_1_ground_floor__round_gauge_1_link__visual__round_gauge_1_visual: true
+            round_gauge_2_ground_floor__round_gauge_2_link__visual__round_gauge_2_visual: true
+            round_gauge_501_ground_floor__pressure_gauge_501_link__visual__pressure_gauge_501_visual: true
+            safety_helmet_1_ground_floor__safety_helmet_1_link__visual__safety_helmet_1_visual: true
+            square_gauge_1_ground_floor__square_gauge_1_link__visual__square_gauge_1_visual: true
+            square_gauge_2_ground_floor__square_gauge_2_link__visual__square_gauge_2_visual: true
           Queue Size: 0
           Value: true
         - Class: rviz/MarkerArray
@@ -159,7 +127,7 @@ Visualization Manager:
       Name: World
     - Class: rviz/Group
       Displays:
-        - Alpha: 0.30000001192092896
+        - Alpha: 1
           Class: rviz/RobotModel
           Collision Enabled: false
           Enabled: true
@@ -357,6 +325,11 @@ Visualization Manager:
               Show Axes: false
               Show Trail: false
               Value: true
+            alphasense_mesh:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
             base:
               Alpha: 1
               Show Axes: false
@@ -380,6 +353,34 @@ Visualization Manager:
               Show Axes: false
               Show Trail: false
               Value: true
+            cam0_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            cam1_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            cam2_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            cam3_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            cam4_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            cam5_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            cam6_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
             depth_camera_front_camera:
               Alpha: 1
               Show Axes: false
@@ -497,6 +498,10 @@ Visualization Manager:
               Alpha: 1
               Show Axes: false
               Show Trail: false
+            imu_sensor_frame:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
             interface_hatch:
               Alpha: 1
               Show Axes: false
@@ -507,7 +512,7 @@ Visualization Manager:
               Show Axes: false
               Show Trail: false
               Value: true
-            lidar_cage:
+            perception_head_cage:
               Alpha: 1
               Show Axes: false
               Show Trail: false
@@ -948,6 +953,62 @@ Visualization Manager:
       Unreliable: false
       Use ColorMap: true
       Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: Collision cloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.10000000149011612
+      Style: Boxes
+      Topic: /locally_reactive_controller/falco/collision_map
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: false
+      Value: true
+    - Alpha: 0.5
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: Collision paths
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.019999999552965164
+      Style: Flat Squares
+      Topic: /locally_reactive_controller/falco/free_paths
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 176; 176; 176
@@ -980,7 +1041,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.776067733764648
+      Distance: 11.571854591369629
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -988,25 +1049,25 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.3566296100616455
-        Y: 0.2794410288333893
-        Z: 0.5374501943588257
+        X: -1.0013574361801147
+        Y: 0.2666034400463104
+        Z: 0.24311506748199463
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.814797043800354
+      Pitch: 1.1397967338562012
       Target Frame: base
-      Yaw: 2.4498953819274902
+      Yaw: 3.039895534515381
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1016
+  Height: 1136
   Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd0000000400000000000001890000039efc0200000014fb0000000a00560069006500770073000000003d0000019d000000a400fffffffb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000012e000000f1000000c900fffffffb0000001a004b0069006e006500630074002000430061006d0065007200610000000191000001010000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000100044006900730070006c006100790073010000003d0000039e000000c900fffffffb0000001a004b0069006e006500630074002000430061006d0065007200610000000000ffffffff0000000000000000fb0000000c00430061006d00650072006100000001d20000007c0000000000000000fb00000016005a006f006f006d002000430061006d0065007200610100000131000000160000000000000000fb0000001c0054006800650072006d0061006c002000430061006d006500720061010000014d000000160000000000000000fb0000002e005700690064006500200041006e0067006c0065002000430061006d006500720061002000460072006f006e00740000000000ffffffff0000000000000000fb0000002c005700690064006500200041006e0067006c0065002000430061006d006500720061002000520065006100720000000000ffffffff0000000000000000fb0000002e005700690064006500200041006e0067006c0065002000430061006d006500720061002000460072006f006e00740000000000ffffffff0000000000000000fb0000002c005700690064006500200041006e0067006c0065002000430061006d006500720061002000520065006100720000000000ffffffff0000000000000000fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb0000003a00530065006c00650063007400650064002000430061006d00650072006100200049006d0061006700650020004d006100740063006800650073020000080d0000002e000003640000010d0000000100000172000001b1fc0200000008fb0000001e0054006f006f006c002000500072006f0070006500720074006900650073000000003c000000b80000005c00fffffffc0000003d000001b10000000000fffffffa000000000100000003fb00000012005000610074006800500061006e0065006c0000000000ffffffff0000000000000000fb00000012005000610074006800500061006e0065006c0100000000ffffffff0000000000000000fb0000000a0056006900650077007300000004ba000001720000010000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000fb000000140046006500650064006200610063006b00200031000000003d000000360000000000000000fb000000140046006500650064006200610063006b002000340000000079000000360000000000000000fb000000140046006500650064006200610063006b0020003300000000b5000000360000000000000000fb000000140046006500650064006200610063006b0020003200000000f1000000360000000000000000fb0000000c0052006500730075006c0074000000012d000000360000000000000000000000020000075a00000098fc0100000001fb0000001e0054006f006f006c002000500072006f007000650072007400690065007300000000000000075a0000000000000000000000030000073f0000003efc0100000002fb0000000800540069006d006500000000000000073f000004f300fffffffb0000000800540069006d00650100000000000004500000000000000000000005a90000039e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000018900000416fc0200000014fb0000000a00560069006500770073010000003d000001d3000000a400fffffffb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000012e000000f1000000c900fffffffb0000001a004b0069006e006500630074002000430061006d0065007200610000000191000001010000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000100044006900730070006c00610079007301000002160000023d000000c900fffffffb0000001a004b0069006e006500630074002000430061006d0065007200610000000000ffffffff0000000000000000fb0000000c00430061006d00650072006100000001d20000007c0000000000000000fb00000016005a006f006f006d002000430061006d0065007200610100000131000000160000000000000000fb0000001c0054006800650072006d0061006c002000430061006d006500720061010000014d000000160000000000000000fb0000002e005700690064006500200041006e0067006c0065002000430061006d006500720061002000460072006f006e00740000000000ffffffff0000000000000000fb0000002c005700690064006500200041006e0067006c0065002000430061006d006500720061002000520065006100720000000000ffffffff0000000000000000fb0000002e005700690064006500200041006e0067006c0065002000430061006d006500720061002000460072006f006e00740000000000ffffffff0000000000000000fb0000002c005700690064006500200041006e0067006c0065002000430061006d006500720061002000520065006100720000000000ffffffff0000000000000000fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb0000003a00530065006c00650063007400650064002000430061006d00650072006100200049006d0061006700650020004d006100740063006800650073020000080d0000002e000003640000010d0000000100000172000001b1fc0200000008fb0000001e0054006f006f006c002000500072006f0070006500720074006900650073000000003c000000b80000005c00fffffffc0000003d000001b10000000000fffffffa000000000100000003fb00000012005000610074006800500061006e0065006c0000000000ffffffff0000000000000000fb00000012005000610074006800500061006e0065006c0100000000ffffffff0000000000000000fb0000000a0056006900650077007300000004ba000001720000010000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000fb000000140046006500650064006200610063006b00200031000000003d000000360000000000000000fb000000140046006500650064006200610063006b002000340000000079000000360000000000000000fb000000140046006500650064006200610063006b0020003300000000b5000000360000000000000000fb000000140046006500650064006200610063006b0020003200000000f1000000360000000000000000fb0000000c0052006500730075006c0074000000012d000000360000000000000000000000020000075a00000098fc0100000001fb0000001e0054006f006f006c002000500072006f007000650072007400690065007300000000000000075a0000000000000000000000030000073f0000003efc0100000002fb0000000800540069006d006500000000000000073f000004f300fffffffb0000000800540069006d00650100000000000004500000000000000000000005a90000041600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
