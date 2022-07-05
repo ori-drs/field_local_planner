@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <!-- Set controller -->
+  <arg name="debug_filters"  default="false"/>
+  <arg name="debug"          default="false"/>
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg     if="$(arg debug)" name="launch_prefix" value="gdb -ex run --args" />
+  <arg name="real_carrot"    default="true"/>
+
+  <!-- Filter chain config-->
+  <arg name="filter_chain_config" default="$(find locally_reactive_controller)/config/filter_chain/filter_chain_original.yaml"/>
+  <!-- Set controller -->
+  <arg name="controller"       default="rmp"/>
+  <!-- Controller parameters -->
+  <arg name="controller_config_filename" default="parameters_original.yaml"/>
+  <arg name="controller_config" default="$(find locally_reactive_controller)/config/controllers/$(arg controller)/$(arg controller_config_filename)"/>
+  
+  <!-- Load controller parameters -->
+  <rosparam command="load" ns="locally_reactive_controller" file="$(arg controller_config)"/>
+
+  <!-- Robot specs  -->
+  <arg name="robot_length"     default="1.0" />
+  <arg name="robot_width"      default="0.5" />
+  <arg name="robot_height"     default="0.5" />
+  <arg name="robot_clearance"  default="0.0" />
+
+  <!-- Perceptive parameters -->
+  <!-- Voxel filter used to reduce the complexity of the collision checking process. -->
+  <arg name="voxel_filter_size"     default="0.15" />
+  <!-- The elevation map gets cropped to analyze a smaller 
+       squared area of size (2*sensor_range)^2-->
+  <arg name="sensor_range"          default="3.5" />
+  <!-- The traversability criterion is the slope acos(normal_z)
+       computed from the base frame
+       0 (not traversable) - 1 (traversable)
+       A higher threshold is more restrictive -->
+  <arg name="traversable_thr"     default="0.7" />
+
+  <!-- motion_mode: 0: turnwalkturn or 1: shuffle -->
+  <arg name="motion_mode"                        default="0"/>
+  <arg name="goal_distance_threshold"            default="0.3"/>
+  <arg name="pose_input_topic"                   default="/state_estimator/pose_in_odom"/>
+  <arg name="twist_input_topic"                  default="/state_estimator/twist"/>
+  <arg name="joy_twist_input_topic"              default="/cmd_vel"/>
+  
+  <arg name="elevation_map_topic"                default="/elevation_mapping/elevation_map_raw"/>
+  <arg name="elevation_map_filtered_topic"       default="/elevation_mapping/elevation_map_filtered"/>
+  <arg name="elevation_map_wifi_topic"           default="/elevation_mapping/elevation_map_wifi"/>
+
+<!--  <arg name="output_topic"                       default="/joy_manager/twist"/> -->
+  <!-- <arg name="output_topic"                       default="/path_planning_and_following/twist"/> -->
+  <arg name="output_topic"                       default="/motion_reference/command_twist"/>
+
+  <!-- The output type to publish twist messages as. Options are twist_stamped or twist -->
+  <arg name="output_type"                        default="twist_stamped"/>
+  <arg name="fixed_frame"                        default="odom"/>
+  <arg name="base_frame"                         default="base"/>
+  <arg name="goal_behind_mode"                   default="1"/>
+  <!-- Only goals received in the given frames will be accepted  -->
+  <arg name="valid_goal_frames"                  default="[map, odom]"/>
+
+  <arg name="max_forward_linear_velocity"        default="0.5" />
+  <arg name="max_lateral_linear_velocity"        default="0.2" />
+  <arg name="max_angular_velocity"               default="0.2" />
+  <arg name="max_turning_linear_velocity"        default="0.07" />
+  <!-- If the control command is nonzero and less in absolute value than the
+  minimum value, it will be set to the minimum value. -->
+  <arg name="min_angular_velocity"               default="0"/>
+  <arg name="min_linear_velocity"                default="0"/>
+  <!-- If this value is non-zero, control commands will not exceed this rate.
+  The rate of the control commands is defined by the rate at which messages
+  are received on the pose input topic. -->
+  <arg name="maximum_control_command_rate_hz"    default="10"/>
+  <!-- If set, the controller will not publish twist values on the y axis.
+  This is a naive method and simply sets y values computed by the controller
+  to zero. -->
+  <arg name="differential_drive"                 default="false"/>
+  <!-- Set to true to make the robot consider the back of the robot as the front-->
+  <arg name="back_is_front"                      default="false"/>
+  <!-- If set to true, when the controller wants to turn only yaw velocities
+  will be applied. The default is to apply both linear and angular velocities
+  when turning. This is likely to improve performance on wheeled robots -->
+  <arg name="yaw_exclusive_turns"                default="false"/>
+  <!-- Ignore the heading of intermediate goals in a list passed to the position
+  controller. When the robot reaches any goal in the list except the last it
+  will not rotate. Does not affect single goals. -->
+  <arg name="ignore_intermediate_goal_heading"   default="true"/>
+
+    <!-- Launch elevation map filters -->
+  <include unless="$(eval controller == 'trackline')" file="$(find grid_map_filters_drs)/launch/filter_chain.launch">
+    <arg name="input_topic"           value="$(arg elevation_map_topic)"/>
+    <arg name="output_topic"          value="$(arg elevation_map_filtered_topic)"/>
+    <arg name="filter_chain_config"   value="$(arg filter_chain_config)"/>
+    <arg name="visualizations_config" value="$(find locally_reactive_controller)/config/filter_chain/visualizations.yaml"/>
+    <arg name="debug"                 value="$(arg debug_filters)"/>
+    <arg name="visualizations"        value="true"/>
+  </include>
+
+  <include unless="$(eval controller == 'trackline')" file="$(find grid_map_filters_drs)/launch/filter_chain.launch">
+    <arg name="suffix"                value="_wifi"/>
+    <arg name="input_topic"           value="$(arg elevation_map_filtered_topic)"/>
+    <arg name="output_topic"          value="$(arg elevation_map_wifi_topic)"/>
+    <arg name="filter_chain_config"   value="$(find locally_reactive_controller)/config/filter_chain/filter_chain_wifi.yaml"/>
+    <arg name="visualizations"        value="false"/>
+  </include>
+
+
+  <!-- anymal position controller -->
+  <!-- send footstep request to, compute the velocity to follow. execute it -->
+  <node pkg="locally_reactive_controller" type="locally_reactive_controller_node" name="locally_reactive_controller" output="screen" launch-prefix="$(arg launch_prefix)">
+    <param name="controller"       value ="$(arg controller)" />
+    <param name="robot_length"     value ="$(arg robot_length)" />
+    <param name="robot_width"      value ="$(arg robot_width)" />
+    <param name="robot_height"     value ="$(arg robot_height)" />
+    <param name="robot_clearance"  value ="$(arg robot_clearance)" />
+
+    <param name="voxel_filter_size"  value ="$(arg voxel_filter_size)" />
+    <param name="sensor_range"       value ="$(arg sensor_range)" />
+    <param name="traversable_thr"    value ="$(arg traversable_thr)" />
+
+    <param name="pose_input_topic"  value="$(arg pose_input_topic)" />
+    <param name="twist_input_topic" value="$(arg twist_input_topic)" />
+    <param name="joy_twist_input_topic" value="$(arg joy_twist_input_topic)" />
+    <param name="elevation_map_topic" value="$(arg elevation_map_filtered_topic)"/>
+    <param name="output_topic"     value="$(arg output_topic)"/>
+    <param name="output_type"      value="$(arg output_type)"/>
+    <param name="maximum_control_command_rate_hz" value="$(arg maximum_control_command_rate_hz)"/>
+    <param name="differential_drive"   value="$(arg differential_drive)"/>
+    <param name="back_is_front" value="$(arg back_is_front)"/>
+    <param name="yaw_exclusive_turns" value="$(arg yaw_exclusive_turns)"/>
+    <param name="ignore_intermediate_goal_heading" value="$(arg ignore_intermediate_goal_heading)" />
+
+    <param name="max_forward_linear_velocity" value="$(arg max_forward_linear_velocity)" />
+    <param name="max_lateral_linear_velocity" value="$(arg max_lateral_linear_velocity)" />
+    <param name="max_angular_velocity" value="$(arg max_angular_velocity)" />
+    <param name="max_turning_linear_velocity" value="$(arg max_turning_linear_velocity)" />
+
+    <param name="min_angular_velocity" value="$(arg min_angular_velocity)"/>
+    <param name="min_linear_velocity" value="$(arg min_linear_velocity)"/>
+   
+    <param name="fixed_frame" value="$(arg fixed_frame)"/>
+    <param name="base_frame"  value="$(arg base_frame)"/>
+
+    <rosparam param="valid_goal_frames" subst_value="True">$(arg valid_goal_frames)</rosparam>
+
+    <!-- How close to approach goal before moving to the next one -->
+    <param name="goal_distance_threshold" value="$(arg goal_distance_threshold)" />
+    <param name="goal_heading_threshold" value ="0.1" />
+    <param name="turn_to_face_heading_threshold" value ="0.2" />
+
+    <!-- How to deal with goals behind the robot: 
+    0 ignore: just ignore the request, drop the goal
+    1 backwards: walk (blindly) backwards to the goal. practical in the lab.
+    2 turnaround: turn around full and walk to it forwards. safer for missions.
+    -->
+    <param name="goal_behind_mode" value ="$(arg goal_behind_mode)" />
+
+    <!-- gain for drawing robot back to trackline. -->
+    <!-- set to zero to disable -->
+    <param name="linear_gain_p" value="0.5" />
+    <param name="angular_gain_p" value="1.0" />
+
+    <param name="motion_mode" value="$(arg motion_mode)" />
+  </node>
+
+  <!-- Real carrot -->
+  <node if="$(arg real_carrot)" pkg="locally_reactive_controller" type="carrot_publisher.py" name="locally_reactive_controller_carrot" output="screen"/>
+
+</launch>
