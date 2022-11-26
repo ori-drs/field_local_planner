@@ -1,0 +1,26 @@
+<class_libraries>
+  <library path="lib/liblocal_planners_drs_ros">
+    <type="local_planners_drs:Rmp" base_class_type="local_planners_drs::Base" >
+      <description>
+        Riemannian Motion Policies-based SE(2) local planner
+      </description>
+    </class>
+  </library>
+
+  <library path="lib/liblocal_planners_drs_ros">
+    <type="local_planners_drs:Falco" base_class_type="local_planners_drs::Base" >
+      <description>
+        FALCO-inspired local planner
+      </description>
+    </class>
+  </library>
+
+  <library path="lib/liblocal_planners_drs_ros">
+    <type="local_planners_drs:Trackline" base_class_type="local_planners_drs::Base" >
+      <description>
+        Path follower, non-perceptive
+      </description>
+    </class>
+  </library>
+
+</class_libraries>
