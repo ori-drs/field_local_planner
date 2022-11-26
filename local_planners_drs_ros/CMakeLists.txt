@@ -18,6 +18,8 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_core
   grid_map_msgs
   local_planners_drs
+  pluginlib
+  roscpp
 )
 
 # Libraries dependencies
@@ -55,6 +57,8 @@ catkin_package(
   CATKIN_DEPENDS  grid_map_core
                   grid_map_msgs
                   local_planners_drs
+                  pluginlib
+                  roscpp
   DEPENDS OpenCV
           PCL
           YAML_CPP
@@ -72,7 +76,8 @@ include_directories(
 
 # Declare planners library
 add_library(${PROJECT_NAME} 
-                src/local_planners_drs_ros/planner_falco_plugin.cpp
+            src/local_planners_drs_ros/base_plugin.cpp
+            src/local_planners_drs_ros/local_planners/falco_plugin.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -82,6 +87,15 @@ target_link_libraries(${PROJECT_NAME}
   gtsam
   gtsam_unstable
   ${YAML_CPP_LIBRARIES}
+)
+
+# Declare node
+add_executable(local_planners_drs_node 
+               src/local_planners_drs_ros/local_planner_node.cpp)
+
+target_link_libraries(local_planners_drs_node 
+                        ${catkin_LIBRARIES}
+                        ${PROJECT_NAME}
 )
 
 #############
