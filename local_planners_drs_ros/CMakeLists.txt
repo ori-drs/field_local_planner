@@ -15,53 +15,19 @@ endif()
 
 
 find_package(catkin REQUIRED COMPONENTS
-  grid_map_core
-  grid_map_msgs
-  local_planners_drs
+  local_planners_drs_plugins
   pluginlib
   roscpp
 )
 
 # Libraries dependencies
-# YAML-cpp
-find_package(yaml-cpp REQUIRED)
-
-# OpenCV
-find_package(OpenCV REQUIRED)
-
-# GTSAM
-find_package(GTSAMCMakeTools REQUIRED)
-set(GTSAM_BUILD_WITH_MARCH_NATIVE OFF CACHE BOOL "Enable/Disable building with all instructions supported by native architecture (binary may not be portable!)" FORCE)
-include(GtsamBuildTypes)
-find_package(GTSAM REQUIRED)
-find_package(GTSAM_UNSTABLE REQUIRED)
-
-# PCL
-set(PCL_FIND_QUIETLY ON)
-find_package(PCL REQUIRED
-  COMPONENTS
-  common
-  filters
-  io
-  kdtree
-  sample_consensus
-  segmentation
-  surface
-  visualization
-)
-
 # configure catkin package
 catkin_package(
-  INCLUDE_DIRS include
+  # INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS  grid_map_core
-                  grid_map_msgs
-                  local_planners_drs
+  CATKIN_DEPENDS  local_planners_drs_plugins
                   pluginlib
                   roscpp
-  DEPENDS OpenCV
-          PCL
-          YAML_CPP
 )
 
 ###########
@@ -69,33 +35,16 @@ catkin_package(
 ###########
 include_directories(
   include
-  ${gtsam_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
-  ${PCL_INCLUDE_DIRS}
-)
-
-# Declare planners library
-add_library(${PROJECT_NAME} 
-            src/local_planners_drs_ros/base_plugin.cpp
-            src/local_planners_drs_ros/local_planners/falco_plugin.cpp
-)
-
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-  ${PCL_LIBRARIES}
-  gtsam
-  gtsam_unstable
-  ${YAML_CPP_LIBRARIES}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
 )
 
 # Declare node
-add_executable(local_planners_drs_node 
-               src/local_planners_drs_ros/local_planner_node.cpp)
+add_executable(local_planners_drs_node
+               src/local_planner_node.cpp)
 
-target_link_libraries(local_planners_drs_node 
-                        ${catkin_LIBRARIES}
-                        ${PROJECT_NAME}
+target_link_libraries(local_planners_drs_node
+                      ${catkin_LIBRARIES}
 )
 
 #############
@@ -104,7 +53,8 @@ target_link_libraries(local_planners_drs_node
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS 
+    local_planners_drs_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -112,13 +62,9 @@ install(
 
 # Mark cpp header files for installation
 install(
-  DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DIRECTORY
+    include/${PROJECT_NAME}/
+  DESTINATION
+    ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.hpp"
-)
-
-# Mark other files for installation
-install(
-  FILES local_planners_drs_plugins.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

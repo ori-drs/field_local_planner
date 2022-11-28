@@ -1,5 +1,5 @@
 #include <pluginlib/class_loader.h>
-#include <local_planners_drs_ros/base_plugin.hpp>
+#include <local_planners_drs_plugins/base_plugin.hpp>
 #include <ros/ros.h>
 #include <ros/console.h>
 
@@ -9,7 +9,7 @@ int main(int argc, char** argv)
   ros::NodeHandle nh("~");
 
   // Prepare loader
-  pluginlib::ClassLoader<local_planners_drs::BasePlugin> plugin_loader("local_planners_drs_ros", "local_planners_drs::BasePlugin");
+  pluginlib::ClassLoader<local_planners_drs::BasePlugin> plugin_loader("local_planners_drs_plugins", "local_planners_drs::BasePlugin");
 
   try
   {
@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     return -1;
   }
 
-  ROS_INFO_STREAM("Locally Reactive Controller ros ready");
+
   ros::spin();
   return 0;
 }

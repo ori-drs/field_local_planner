@@ -1,6 +1,5 @@
 #pragma once
-#include <local_planners_drs_ros/base_plugin.hpp>
-#include <pluginlib/class_list_macros.h>
+#include <local_planners_drs_plugins/base_plugin.hpp>
 
 namespace local_planners_drs
 {

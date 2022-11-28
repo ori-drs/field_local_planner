@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>local_planners_drs_ros</name>
+  <name>local_planners_drs_plugins</name>
   <version>0.0.0</version>
 
-  <description>ROS node for local_planners_drs</description>
+  <description>Implementation of local planners used in DRS</description>
 
   <maintainer email="matias@robots.ox.ac.uk">Matias Mattamala</maintainer>
   <author email="matias@robots.ox.ac.uk">Matias Mattamala</author>
@@ -12,8 +12,15 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- Catkin packages -->
-  <depend>local_planners_drs_plugins</depend>
+  <depend>local_planners_drs</depend>
+  <depend>grid_map_core</depend>
+  <depend>grid_map_msgs</depend>
   <depend>pluginlib</depend>
   <depend>roscpp</depend>
+
+  <!-- Plugins -->
+  <export>
+    <local_planners_drs_plugins plugin="${prefix}/local_planners_drs_plugins.xml" />
+  </export>
 
 </package>
