@@ -2,19 +2,15 @@
 #include <local_planners_drs/local_planners/falco.hpp>
 #include <local_planners_drs_plugins/base_plugin.hpp>
 
-namespace local_planners_drs
-{
+namespace local_planners_drs {
 
-class FalcoPlugin : public BasePlugin
-{
-public:
+class FalcoPlugin : public BasePlugin {
+ public:
   FalcoPlugin();
   // void initialize(ros::NodeHandle& nh);
 
-private:
+ private:
   Falco planner_;
-
 };
 
-}
-
+}  // namespace local_planners_drs

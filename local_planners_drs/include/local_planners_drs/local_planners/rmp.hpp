@@ -11,10 +11,9 @@
 namespace local_planners_drs {
 
 class Rmp : public BaseLocalPlanner {
-public:
-  struct Parameters : BaseLocalPlanner::Parameters
-  {
-    std::string config_folder = "/controllers/rmp/"; // pathFolder
+ public:
+  struct Parameters : BaseLocalPlanner::Parameters {
+    std::string config_folder = "/controllers/rmp/";  // pathFolder
     double robot_clearance = 0.1;
 
     double sphere_radius_factor = 1.0;
@@ -52,7 +51,7 @@ public:
     double obstacle_weight = 1.0;
     double damping_weight = 1.0;
     double heading_weight = 1.0;
-    bool check_internal_collisions = false; 
+    bool check_internal_collisions = false;
   };
 
   struct ControlPointStruct {
@@ -81,20 +80,20 @@ public:
     double weight;
   };
 
-public:
+ public:
   Rmp();
   void initialize(const Parameters& parameters);
   Twist computeTwist();
 
-private:
+ private:
   void computeOptimalAcceleration();
   void prepareControlPoints();
 
-protected:
+ protected:
   Parameters parameters_;
 
   // Other internal variables
-   // Internal
+  // Internal
   Vector3 velocity_2d_;
   Vector3 optimal_velocity_;
   Vector3 optimal_acc_;
@@ -102,17 +101,16 @@ protected:
 
   Pose3 T_m_b_;
 
-  Pose2 T_m_b_SE2_; // Pose of robot in map frame
-  Pose2 T_f_b_SE2_; // Pose of robot in fixed frame
-  Pose2 T_f_g_SE2_; // Pose of goal in fixed frame
+  Pose2 T_m_b_SE2_;  // Pose of robot in map frame
+  Pose2 T_f_b_SE2_;  // Pose of robot in fixed frame
+  Pose2 T_f_g_SE2_;  // Pose of goal in fixed frame
 
   // Control points stuff
   std::vector<ControlPointStruct> control_points_;
   std::vector<AccelerationVisualization> vis_accelerations_;
 };
 
-} // namespace local_planners_drs
-
+}  // namespace local_planners_drs
 
 // class RmpController : public ControllerBase {
 
@@ -156,10 +154,9 @@ protected:
 //     double weight_;
 //   };
 
-
 // public:
 //   RmpController(const ControllerParameters& params);
-  
+
 //   // Set parameters
 //   void updateControllerParameters(ros::NodeHandle& node_handle);
 
@@ -175,12 +172,12 @@ protected:
 //   // Controller implementation
 //   void customPreProcessLocalMap();
 //   void customPreProcessController();
-//   ControllerBase::OutputAction computeCommandGoalBehind(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandTurnToGoal(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandForward(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandTurnToDestination(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandFinished(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   void computeCommandPostProcess(ControllerBase::OutputAction& action, 
+//   ControllerBase::OutputAction computeCommandGoalBehind(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d&
+//   output_angular_velocity); ControllerBase::OutputAction computeCommandTurnToGoal(Eigen::Vector3d& output_linear_velocity,
+//   Eigen::Vector3d& output_angular_velocity); ControllerBase::OutputAction computeCommandForward(Eigen::Vector3d& output_linear_velocity,
+//   Eigen::Vector3d& output_angular_velocity); ControllerBase::OutputAction computeCommandTurnToDestination(Eigen::Vector3d&
+//   output_linear_velocity, Eigen::Vector3d& output_angular_velocity); ControllerBase::OutputAction computeCommandFinished(Eigen::Vector3d&
+//   output_linear_velocity, Eigen::Vector3d& output_angular_velocity); void computeCommandPostProcess(ControllerBase::OutputAction& action,
 //                                  Eigen::Vector3d& output_linear_velocity,
 //                                  Eigen::Vector3d& output_angular_velocity,
 //                                  std::vector<Eigen::Vector3d>& path_to_goal);
@@ -192,7 +189,7 @@ protected:
 
 //   // Preallocates the control points
 //   void prepareControlPoints();
- 
+
 //   // Utils
 //   // void resetControlPointsValidity();
 //   visualization_msgs::MarkerArray controlPointsToMarkerArray(const std::vector<ControlPointStruct>& control_points,
@@ -216,14 +213,14 @@ protected:
 //   // Control points stuff
 //   std::vector<ControlPointStruct> control_points_;
 //   std::vector<AccelerationVisualization> vis_accelerations_;
-  
+
 //   // std::vector<gtsam::ControlPoint2> control_points_;
 //   // std::vector<gtsam::ControlPoint2_> control_points_expressions_;
 //   // std::vector<bool> valid_control_points_;
 //   // std::vector<bool> goal_affected_control_points_;
 //   // std::vector<bool> obstacle_affected_control_points_;
 //   std::map<std::string, size_t> control_points_indices_;
-  
+
 //   // Visualizations
 //   // std::vector<ControlPoint2Vis> vis_control_points_;
 //   // std::vector<ControlPoint2Vis> vis_control_points_goal_;

@@ -1,443 +1,390 @@
-#include <local_planners_drs/local_planners/rmp.hpp>
 #include <math.h>
 #include <yaml-cpp/yaml.h>
+#include <local_planners_drs/local_planners/rmp.hpp>
 
 namespace local_planners_drs {
 
-Rmp::Rmp()
-: BaseLocalPlanner()
-{}
+Rmp::Rmp() : BaseLocalPlanner() {}
 
-void Rmp::initialize(const Rmp::Parameters& parameters)
-{
+void Rmp::initialize(const Rmp::Parameters& parameters) {
   parameters_ = parameters;
   prepareControlPoints();
 }
 
-Twist Rmp::computeTwist()
-{
-    // Get pose in map frame
-    T_m_b_ = T_m_f_ * T_f_b_;
+Twist Rmp::computeTwist() {
+  // Get pose in map frame
+  T_m_b_ = T_m_f_ * T_f_b_;
 
-    // Cnvert 3D poses to SE(2)
-    T_f_b_SE2_ = Pose2(T_f_b_.translation().x(),
-                       T_f_b_.translation().y(),
-                       T_f_b_.rotation().yaw());
+  // Cnvert 3D poses to SE(2)
+  T_f_b_SE2_ = Pose2(T_f_b_.translation().x(), T_f_b_.translation().y(), T_f_b_.rotation().yaw());
 
-    T_m_b_SE2_ = Pose2(T_m_b_.translation().x(),
-                       T_m_b_.translation().y(),
-                       T_m_b_.rotation().yaw());
+  T_m_b_SE2_ = Pose2(T_m_b_.translation().x(), T_m_b_.translation().y(), T_m_b_.rotation().yaw());
 
-    T_f_g_SE2_ = Pose2(T_f_g_.translation().x(),
-                       T_f_g_.translation().y(),
-                       T_f_g_.rotation().yaw());
+  T_f_g_SE2_ = Pose2(T_f_g_.translation().x(), T_f_g_.translation().y(), T_f_g_.rotation().yaw());
 
-    // Compute RMPs
-    computeOptimalAcceleration();
+  // Compute RMPs
+  computeOptimalAcceleration();
 
-    // Fill twist
-    Twist twist;
-    twist(0) = 0.0; // Angular x
-    twist(1) = 0.0; // Angular y
-    twist(2) = optimal_velocity_.z();
-    // Linear
-    twist(3) = optimal_velocity_.x();
-    twist(4) = optimal_velocity_.y();
-    twist(5) = 0.0; // Linear z
+  // Fill twist
+  Twist twist;
+  twist(0) = 0.0;  // Angular x
+  twist(1) = 0.0;  // Angular y
+  twist(2) = optimal_velocity_.z();
+  // Linear
+  twist(3) = optimal_velocity_.x();
+  twist(4) = optimal_velocity_.y();
+  twist(5) = 0.0;  // Linear z
 
-    return twist;
+  return twist;
 }
 
 //-------------------------------------------------------------------------------------------------
 // RMP optimization
 //-------------------------------------------------------------------------------------------------
 
-void Rmp::computeOptimalAcceleration()
-{
-    // ------------------------------------------------------------------------------------
-    // Initialize
-    // ------------------------------------------------------------------------------------
+void Rmp::computeOptimalAcceleration() {
+  // ------------------------------------------------------------------------------------
+  // Initialize
+  // ------------------------------------------------------------------------------------
 
-    // Create problem
-    gtsam::Symbol acc_se2_key = gtsam::symbol_shorthand::X(0);
-    gtsam::Symbol acc_diff_key = gtsam::symbol_shorthand::X(1);
-    Vector3_ acc_se2(acc_se2_key);    // Full SE(2) acceleration
-    Vector2_ acc_diff(acc_diff_key);  // Differentially constrained acceleration
+  // Create problem
+  gtsam::Symbol acc_se2_key = gtsam::symbol_shorthand::X(0);
+  gtsam::Symbol acc_diff_key = gtsam::symbol_shorthand::X(1);
+  Vector3_ acc_se2(acc_se2_key);    // Full SE(2) acceleration
+  Vector2_ acc_diff(acc_diff_key);  // Differentially constrained acceleration
 
-    // Create general RMP problem
-    RmpProblem problem;
+  // Create general RMP problem
+  RmpProblem problem;
 
-    // Create initial values
-    // We use the last optimal acceleration
-    Values initial_se2_acc;
-    initial_se2_acc.insert(acc_se2_key, optimal_acc_);
+  // Create initial values
+  // We use the last optimal acceleration
+  Values initial_se2_acc;
+  initial_se2_acc.insert(acc_se2_key, optimal_acc_);
 
-    Values initial_diff_acc;
-    initial_diff_acc.insert(acc_diff_key, Vector2(optimal_acc_(0), optimal_acc_(2)));
+  Values initial_diff_acc;
+  initial_diff_acc.insert(acc_diff_key, Vector2(optimal_acc_(0), optimal_acc_(2)));
 
-    // Create differential model (if required)
-    DifferentialModel motion_model(0.0);
-    DifferentialModel_ motion_model_(motion_model);
+  // Create differential model (if required)
+  DifferentialModel motion_model(0.0);
+  DifferentialModel_ motion_model_(motion_model);
 
-    // Clear visualizations
-    vis_accelerations_.clear();
+  // Clear visualizations
+  vis_accelerations_.clear();
 
-    Eigen::Rotation2Dd flip_front_direction(0);
-    double flip_front_angle = 1.0;
-    // if (parameters_.back_is_front_)
-    // {
-    //     flip_front_direction = Eigen::Rotation2Dd(M_PI);
-    //     flip_front_angle = -1;
-    // }
+  Eigen::Rotation2Dd flip_front_direction(0);
+  double flip_front_angle = 1.0;
+  // if (parameters_.back_is_front_)
+  // {
+  //     flip_front_direction = Eigen::Rotation2Dd(M_PI);
+  //     flip_front_angle = -1;
+  // }
 
-    // ------------------------------------------------------------------------------------
-    // Add RMPs for control points
-    // ------------------------------------------------------------------------------------
-    for (size_t i = 0; i < control_points_.size(); i++)
+  // ------------------------------------------------------------------------------------
+  // Add RMPs for control points
+  // ------------------------------------------------------------------------------------
+  for (size_t i = 0; i < control_points_.size(); i++) {
+    // Create expressions for control points
+    ControlPoint2 cp(Pose2(), control_points_.at(i).point);
+    ControlPoint2_ cp_(cp);
+
+    // Store coordinates in fixed frame
+    Vector2 cp_in_map_frame = T_m_b_SE2_ * cp.point();
+    control_points_.at(i).point_fixed = cp_in_map_frame;
+    float radius = control_points_.at(i).radius;
+
+    // Obstacles
     {
-        // Create expressions for control points
-        ControlPoint2 cp(Pose2(), control_points_.at(i).point);
-        ControlPoint2_ cp_(cp);
+      // Get distance to obstacle and gradient in fixed frame
+      double obstacle_distance, obstacle_grad_x, obstacle_grad_y;
+      try {
+        obstacle_distance = grid_map_.atPosition("sdf", cp_in_map_frame) - radius;
+        obstacle_grad_x = grid_map_.atPosition("sdf_gradient_x", cp_in_map_frame);
+        obstacle_grad_y = grid_map_.atPosition("sdf_gradient_y", cp_in_map_frame);
+      } catch (const std::out_of_range& oor) {
+        std::cout << "Error while trying to access [sdf] layer at " << cp.point().transpose() << "\n Error: \n" << oor.what() << std::endl;
+      }
+      Vector2 gradient_in_base_frame = T_m_b_SE2_.rotation().inverse() * Vector2(obstacle_grad_x, obstacle_grad_y);
 
-        // Store coordinates in fixed frame
-        Vector2 cp_in_map_frame = T_m_b_SE2_ * cp.point();
-        control_points_.at(i).point_fixed = cp_in_map_frame;
-        float radius = control_points_.at(i).radius;
+      // Create Obstacle RMP
+      SdfObstaclePointRmp obstacle_rmp(cp.point(), cp.apply(velocity_2d_), obstacle_distance, gradient_in_base_frame,
+                                       parameters_.obstacle_gain, parameters_.obstacle_offset, parameters_.obstacle_steepness,
+                                       parameters_.obstacle_weight);
+      AccelerationVisualization acc;
+      acc.id = "obstacle_" + control_points_.at(i).id;
+      acc.acc = flip_front_direction * obstacle_rmp.acceleration().head<2>();
+      acc.metric = obstacle_rmp.metric().block(0, 0, 2, 2);
+      acc.point = flip_front_direction * control_points_.at(i).point;
+      acc.color = Vector3(1.0, 0.0, 0.0);
+      acc.weight = parameters_.obstacle_weight;
+      vis_accelerations_.push_back(acc);
 
-        // Obstacles
-        {
-            // Get distance to obstacle and gradient in fixed frame
-            double obstacle_distance, obstacle_grad_x, obstacle_grad_y;
-            try
-            {
-                obstacle_distance = grid_map_.atPosition("sdf", cp_in_map_frame) - radius;
-                obstacle_grad_x = grid_map_.atPosition("sdf_gradient_x", cp_in_map_frame);
-                obstacle_grad_y = grid_map_.atPosition("sdf_gradient_y", cp_in_map_frame);
-            }
-            catch (const std::out_of_range& oor)
-            {
-                std::cout << "Error while trying to access [sdf] layer at "
-                                 << cp.point().transpose() << "\n Error: \n"
-                                 << oor.what() << std::endl;
-            }
-            Vector2 gradient_in_base_frame = T_m_b_SE2_.rotation().inverse() *
-                                             Vector2(obstacle_grad_x, obstacle_grad_y);
+      // Add RMP
+      if (control_points_.at(i).affected_by_obstacle) {
+        // if (parameters_.differential_drive)
+        // {
+        //     problem.addRmp(
+        //         applyControlPoint2(cp_, applyDifferentialModel(motion_model_, acc_diff)),
+        //         obstacle_rmp);
+        // }
+        // else
+        // {
+        problem.addRmp(applyControlPoint2(cp_, acc_se2), obstacle_rmp);
+        // }
+      }
+    }  // end obstacles
+  }
 
-            // Create Obstacle RMP
-            SdfObstaclePointRmp obstacle_rmp(
-                cp.point(), cp.apply(velocity_2d_), obstacle_distance, gradient_in_base_frame,
-                parameters_.obstacle_gain, parameters_.obstacle_offset,
-                parameters_.obstacle_steepness, parameters_.obstacle_weight);
-            AccelerationVisualization acc;
-            acc.id = "obstacle_" + control_points_.at(i).id;
-            acc.acc = flip_front_direction * obstacle_rmp.acceleration().head<2>();
-            acc.metric = obstacle_rmp.metric().block(0, 0, 2, 2);
-            acc.point = flip_front_direction * control_points_.at(i).point;
-            acc.color = Vector3(1.0, 0.0, 0.0);
-            acc.weight = parameters_.obstacle_weight;
-            vis_accelerations_.push_back(acc);
+  // ------------------------------------------------------------------------------------
+  // Add other RMPs to general problem
+  // ------------------------------------------------------------------------------------
+  // Goal
+  // Get distance to goal and gradient in fixed frame
+  double goal_distance, goal_grad_x, goal_grad_y;
+  gtsam::Vector2 base_position = T_m_b_SE2_.translation();
+  try {
+    goal_distance = grid_map_.atPosition("geodesic", base_position);
+    goal_grad_x = grid_map_.atPosition("geodesic_gradient_x", base_position);
+    goal_grad_y = grid_map_.atPosition("geodesic_gradient_y", base_position);
 
-            // Add RMP
-            if (control_points_.at(i).affected_by_obstacle)
-            {
-                // if (parameters_.differential_drive)
-                // {
-                //     problem.addRmp(
-                //         applyControlPoint2(cp_, applyDifferentialModel(motion_model_, acc_diff)),
-                //         obstacle_rmp);
-                // }
-                // else
-                // {
-                    problem.addRmp(applyControlPoint2(cp_, acc_se2), obstacle_rmp);
-                // }
-            }
-        }  // end obstacles
-    }
+  } catch (const std::out_of_range& oor) {
+    std::cout << "Error while trying to access [geodesic] layer at " << base_position.transpose() << "\n Error: \n"
+              << oor.what() << std::endl;
+  }
+  // Create Goal RMP
+  Vector2 gradient_in_base_frame = T_m_b_SE2_.rotation().inverse() * Vector2(goal_grad_x, goal_grad_y);
 
-    // ------------------------------------------------------------------------------------
-    // Add other RMPs to general problem
-    // ------------------------------------------------------------------------------------
-    // Goal
-    // Get distance to goal and gradient in fixed frame
-    double goal_distance, goal_grad_x, goal_grad_y;
-    gtsam::Vector2 base_position = T_m_b_SE2_.translation();
-    try {
-        goal_distance = grid_map_.atPosition("geodesic", base_position);
-        goal_grad_x   = grid_map_.atPosition("geodesic_gradient_x", base_position);
-        goal_grad_y   = grid_map_.atPosition("geodesic_gradient_y", base_position);
+  GeodesicGoal2DRmp geodesic_goal_rmp(T_m_b_SE2_, velocity_2d_, goal_distance, gradient_in_base_frame, parameters_.geodesic_goal_gain,
+                                      parameters_.geodesic_goal_offset, parameters_.geodesic_goal_steepness,
+                                      parameters_.geodesic_goal_weight);
+  AccelerationVisualization acc;
+  acc.id = "geodesic_goal";
+  acc.acc = flip_front_direction * geodesic_goal_rmp.acceleration().head<2>();
+  acc.angular_acc = flip_front_angle * geodesic_goal_rmp.acceleration()(2);
+  acc.metric = geodesic_goal_rmp.metric().block(0, 0, 2, 2);
+  acc.point = Vector2(0.0, 0.0);
+  acc.color = Vector3(1.0, 1.0, 0.0);
+  acc.weight = parameters_.geodesic_goal_weight;
+  vis_accelerations_.push_back(acc);
 
-    } catch (const std::out_of_range& oor) {
-        std::cout << "Error while trying to access [geodesic] layer at " << 
-                        base_position.transpose() << "\n Error: \n" << oor.what() << std::endl;
-    }
-    // Create Goal RMP
-    Vector2 gradient_in_base_frame = T_m_b_SE2_.rotation().inverse() * Vector2(goal_grad_x, goal_grad_y);
+  // Create Geodesic Alignment RMP
+  GeodesicFlowHeadingRmp geodesic_heading_rmp(T_m_b_SE2_, velocity_2d_, goal_distance, gradient_in_base_frame,
+                                              parameters_.geodesic_heading_gain, parameters_.geodesic_heading_offset,
+                                              parameters_.geodesic_heading_steepness, parameters_.geodesic_heading_weight);
+  AccelerationVisualization acc_alignment;
+  acc_alignment.id = "geodesic_heading";
+  acc_alignment.acc = flip_front_direction * geodesic_heading_rmp.acceleration().head<2>();
+  acc_alignment.angular_acc = flip_front_angle * geodesic_heading_rmp.acceleration()(2);
+  acc_alignment.metric = geodesic_heading_rmp.metric().block(0, 0, 2, 2);
+  acc_alignment.point = Vector2(0.0, 0.0);
+  acc_alignment.color = Vector3(1.0, 1.0, 0.0);
+  acc_alignment.weight = parameters_.geodesic_heading_weight;
+  vis_accelerations_.push_back(acc_alignment);
 
-    GeodesicGoal2DRmp geodesic_goal_rmp(T_m_b_SE2_,
-                            velocity_2d_,
-                            goal_distance,
-                            gradient_in_base_frame,
-                            parameters_.geodesic_goal_gain,
-                            parameters_.geodesic_goal_offset,
-                            parameters_.geodesic_goal_steepness,
-                            parameters_.geodesic_goal_weight);
-    AccelerationVisualization acc;
-    acc.id  = "geodesic_goal";
-    acc.acc = flip_front_direction * geodesic_goal_rmp.acceleration().head<2>();
-    acc.angular_acc = flip_front_angle * geodesic_goal_rmp.acceleration()(2);
-    acc.metric = geodesic_goal_rmp.metric().block(0,0,2,2);
-    acc.point = Vector2(0.0, 0.0);
-    acc.color = Vector3(1.0, 1.0, 0.0);
-    acc.weight = parameters_.geodesic_goal_weight;
-    vis_accelerations_.push_back(acc);
+  // Goal Position RMP (Base)
+  Goal2DRmp goal_position_rmp(T_f_b_SE2_, velocity_2d_, T_f_g_SE2_, parameters_.goal_position_gain, parameters_.goal_position_offset,
+                              parameters_.goal_position_steepness, parameters_.goal_position_weight);
+  AccelerationVisualization acc_goal_position;
+  acc_goal_position.id = "goal_position";
+  acc_goal_position.acc = flip_front_direction * goal_position_rmp.acceleration().head<2>();
+  acc_goal_position.angular_acc = flip_front_angle * goal_position_rmp.acceleration()(2);
+  acc_goal_position.metric = goal_position_rmp.metric().block(0, 0, 2, 2);
+  acc_goal_position.point = Vector2(0.0, 0.0);
+  acc_goal_position.color = Vector3(1.0, 0.5, 0.0);
+  acc_goal_position.weight = parameters_.goal_position_weight;
+  vis_accelerations_.push_back(acc_goal_position);
 
-    // Create Geodesic Alignment RMP
-    GeodesicFlowHeadingRmp geodesic_heading_rmp(T_m_b_SE2_,
-                            velocity_2d_,
-                            goal_distance,
-                            gradient_in_base_frame,
-                            parameters_.geodesic_heading_gain,
-                            parameters_.geodesic_heading_offset,
-                            parameters_.geodesic_heading_steepness,
-                            parameters_.geodesic_heading_weight);
-    AccelerationVisualization acc_alignment;
-    acc_alignment.id  = "geodesic_heading";
-    acc_alignment.acc = flip_front_direction * geodesic_heading_rmp.acceleration().head<2>();
-    acc_alignment.angular_acc = flip_front_angle * geodesic_heading_rmp.acceleration()(2);
-    acc_alignment.metric = geodesic_heading_rmp.metric().block(0,0,2,2);
-    acc_alignment.point = Vector2(0.0, 0.0);
-    acc_alignment.color = Vector3(1.0, 1.0, 0.0);
-    acc_alignment.weight = parameters_.geodesic_heading_weight;
-    vis_accelerations_.push_back(acc_alignment);
+  // Goal Heading RMP (Base)
+  GoalHeadingRmp goal_heading_rmp(T_f_b_SE2_, velocity_2d_, T_f_g_SE2_, parameters_.goal_heading_gain, parameters_.goal_heading_offset,
+                                  parameters_.goal_heading_steepness, parameters_.goal_heading_weight);
+  AccelerationVisualization acc_goal_heading;
+  acc_goal_heading.id = "goal_heading";
+  acc_goal_heading.acc = flip_front_direction * goal_heading_rmp.acceleration().head<2>();
+  acc_goal_heading.angular_acc = flip_front_angle * goal_heading_rmp.acceleration()(2);
+  acc_goal_heading.metric = goal_heading_rmp.metric().block(0, 0, 2, 2);
+  acc_goal_heading.point = Vector2(0.0, 0.0);
+  acc_goal_heading.color = Vector3(1.0, 0.5, 0.0);
+  acc_goal_heading.weight = parameters_.goal_heading_weight;
+  vis_accelerations_.push_back(acc_goal_heading);
 
-    // Goal Position RMP (Base)
-    Goal2DRmp goal_position_rmp(
-        T_f_b_SE2_, velocity_2d_, T_f_g_SE2_,
-        parameters_.goal_position_gain, parameters_.goal_position_offset,
-        parameters_.goal_position_steepness, parameters_.goal_position_weight);
-    AccelerationVisualization acc_goal_position;
-    acc_goal_position.id = "goal_position";
-    acc_goal_position.acc = flip_front_direction * goal_position_rmp.acceleration().head<2>();
-    acc_goal_position.angular_acc = flip_front_angle * goal_position_rmp.acceleration()(2);
-    acc_goal_position.metric = goal_position_rmp.metric().block(0, 0, 2, 2);
-    acc_goal_position.point = Vector2(0.0, 0.0);
-    acc_goal_position.color = Vector3(1.0, 0.5, 0.0);
-    acc_goal_position.weight = parameters_.goal_position_weight;
-    vis_accelerations_.push_back(acc_goal_position);
+  // Damping RMP
+  DampingRmp damping_rmp(T_f_b_SE2_, velocity_2d_, parameters_.damping, parameters_.damping_weight);
+  AccelerationVisualization acc_damping;
+  acc_damping.id = "damping";
+  acc_damping.acc = flip_front_direction * damping_rmp.acceleration().head<2>();
+  acc_damping.angular_acc = flip_front_angle * damping_rmp.acceleration()(2);
+  acc_damping.metric = damping_rmp.metric().block(0, 0, 2, 2);
+  acc_damping.point = Vector2(0.0, 0.0);
+  acc_damping.color = Vector3(0.0, 0.0, 1.0);
+  acc_damping.weight = parameters_.damping_weight;
+  vis_accelerations_.push_back(acc_damping);
 
-    // Goal Heading RMP (Base)
-    GoalHeadingRmp goal_heading_rmp(
-        T_f_b_SE2_, velocity_2d_, T_f_g_SE2_,
-        parameters_.goal_heading_gain, parameters_.goal_heading_offset,
-        parameters_.goal_heading_steepness, parameters_.goal_heading_weight);
-    AccelerationVisualization acc_goal_heading;
-    acc_goal_heading.id = "goal_heading";
-    acc_goal_heading.acc = flip_front_direction * goal_heading_rmp.acceleration().head<2>();
-    acc_goal_heading.angular_acc = flip_front_angle * goal_heading_rmp.acceleration()(2);
-    acc_goal_heading.metric = goal_heading_rmp.metric().block(0, 0, 2, 2);
-    acc_goal_heading.point = Vector2(0.0, 0.0);
-    acc_goal_heading.color = Vector3(1.0, 0.5, 0.0);
-    acc_goal_heading.weight = parameters_.goal_heading_weight;
-    vis_accelerations_.push_back(acc_goal_heading);
+  // // Heading RMP
+  // double goal_distance = grid_map_.atPosition("geodesic", gtsam_current_pose_in_fixed_.translation());
+  HeadingRmp heading_rmp(T_f_b_SE2_, velocity_2d_, Vector2(1.0, 0.0), goal_distance, parameters_.heading_gain, parameters_.heading_offset,
+                         parameters_.heading_steepness, parameters_.heading_weight);
+  AccelerationVisualization acc_heading;
+  acc_heading.id = "heading";
+  acc_heading.acc = flip_front_direction * heading_rmp.acceleration().head<2>();
+  acc_heading.angular_acc = flip_front_angle * heading_rmp.acceleration()(2);
+  acc_heading.metric = heading_rmp.metric().block(0, 0, 2, 2);
+  acc_heading.point = Vector2(0.0, 0.0);
+  acc_heading.color = Vector3(0.0, 1.0, 0.0);
+  acc_heading.weight = parameters_.heading_weight;
+  vis_accelerations_.push_back(acc_heading);
 
-    // Damping RMP
-    DampingRmp damping_rmp(T_f_b_SE2_, velocity_2d_, parameters_.damping,
-                           parameters_.damping_weight);
-    AccelerationVisualization acc_damping;
-    acc_damping.id = "damping";
-    acc_damping.acc = flip_front_direction * damping_rmp.acceleration().head<2>();
-    acc_damping.angular_acc = flip_front_angle * damping_rmp.acceleration()(2);
-    acc_damping.metric = damping_rmp.metric().block(0, 0, 2, 2);
-    acc_damping.point = Vector2(0.0, 0.0);
-    acc_damping.color = Vector3(0.0, 0.0, 1.0);
-    acc_damping.weight = parameters_.damping_weight;
-    vis_accelerations_.push_back(acc_damping);
+  // Add RMPs
+  // if (parameters_.differential_drive_)
+  // {
+  //     // Geodesic goal RMP
+  //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), geodesic_goal_rmp);
 
-    // // Heading RMP
-    // double goal_distance = grid_map_.atPosition("geodesic", gtsam_current_pose_in_fixed_.translation());
-    HeadingRmp heading_rmp(
-        T_f_b_SE2_, velocity_2d_, Vector2(1.0, 0.0), goal_distance,
-        parameters_.heading_gain, parameters_.heading_offset,
-        parameters_.heading_steepness, parameters_.heading_weight);
-    AccelerationVisualization acc_heading;
-    acc_heading.id = "heading";
-    acc_heading.acc = flip_front_direction * heading_rmp.acceleration().head<2>();
-    acc_heading.angular_acc = flip_front_angle * heading_rmp.acceleration()(2);
-    acc_heading.metric = heading_rmp.metric().block(0, 0, 2, 2);
-    acc_heading.point = Vector2(0.0, 0.0);
-    acc_heading.color = Vector3(0.0, 1.0, 0.0);
-    acc_heading.weight = parameters_.heading_weight;
-    vis_accelerations_.push_back(acc_heading);
+  //     // Geodesic heading RMP
+  //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), geodesic_heading_rmp);
 
-    // Add RMPs
+  //     // Goal Position RMP
+  //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_position_rmp);
+
+  //     // Goal Heading RMP
+  //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_heading_rmp);
+
+  //     // Regularization RMP
+  //     Vector2 optimal_acc_diff = Vector2::Zero();
+  //     optimal_acc_diff(0) = optimal_acc_(0);
+  //     optimal_acc_diff(1) = optimal_acc_(2);
+  //     problem.addRmp(acc_diff,
+  //                    Regularization2Rmp(optimal_acc_diff, parameters_.regularization_));
+
+  //     // Damping RMP
+  //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), damping_rmp);
+
+  //     // Heading RMP
+  //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), heading_rmp);
+  // }
+  // else
+  // {
+  // Geodesic goal RMP
+  problem.addRmp(acc_se2, geodesic_goal_rmp);
+
+  // Geodesic heading RMP
+  problem.addRmp(acc_se2, geodesic_heading_rmp);
+
+  // Goal Position RMP
+  problem.addRmp(acc_se2, goal_position_rmp);
+
+  // Goal Heading RMP
+  problem.addRmp(acc_se2, goal_heading_rmp);
+
+  // Regularization RMP
+  problem.addRmp(acc_se2, Regularization3Rmp(optimal_acc_, parameters_.regularization));
+
+  // Damping RMP
+  problem.addRmp(acc_se2, damping_rmp);
+
+  // Heading RMP
+  problem.addRmp(acc_se2, heading_rmp);
+  // }
+  // profiler_ptr_->endEvent("1.3.1.prepare_rmps");
+
+  // ------------------------------------------------------------------------------------
+  // Solve RMP general problem
+  // ------------------------------------------------------------------------------------
+  // profiler_ptr_->startEvent("1.3.2.solve_rmps");
+  Values solution;
+  bool valid_solution = true;
+  try {
     // if (parameters_.differential_drive_)
     // {
-    //     // Geodesic goal RMP
-    //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), geodesic_goal_rmp);
-
-    //     // Geodesic heading RMP
-    //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), geodesic_heading_rmp);
-
-    //     // Goal Position RMP
-    //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_position_rmp);
-
-    //     // Goal Heading RMP
-    //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), goal_heading_rmp);
-
-    //     // Regularization RMP
-    //     Vector2 optimal_acc_diff = Vector2::Zero();
-    //     optimal_acc_diff(0) = optimal_acc_(0);
-    //     optimal_acc_diff(1) = optimal_acc_(2);
-    //     problem.addRmp(acc_diff,
-    //                    Regularization2Rmp(optimal_acc_diff, parameters_.regularization_));
-
-    //     // Damping RMP
-    //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), damping_rmp);
-
-        
-
-    //     // Heading RMP
-    //     problem.addRmp(applyDifferentialModel(motion_model_, acc_diff), heading_rmp);
+    //     solution = problem.solve(initial_diff_acc, true);
     // }
     // else
     // {
-        // Geodesic goal RMP
-        problem.addRmp(acc_se2, geodesic_goal_rmp);
-
-        // Geodesic heading RMP
-        problem.addRmp(acc_se2, geodesic_heading_rmp);
-
-        // Goal Position RMP
-        problem.addRmp(acc_se2, goal_position_rmp);
-
-        // Goal Heading RMP
-        problem.addRmp(acc_se2, goal_heading_rmp);
-
-        // Regularization RMP
-        problem.addRmp(acc_se2,
-                       Regularization3Rmp(optimal_acc_, parameters_.regularization));
-
-        // Damping RMP
-        problem.addRmp(acc_se2, damping_rmp);
-
-        // Heading RMP
-        problem.addRmp(acc_se2, heading_rmp);
+    solution = problem.solve(initial_se2_acc, true);
     // }
-    // profiler_ptr_->endEvent("1.3.1.prepare_rmps");
+  } catch (const std::exception& e) {
+    std::cout << "Error thrown during optimization of RMP problem:\n" << std::string(e.what()) << std::endl;
+    optimal_acc_ = Vector3::Zero();
+    optimal_metric_ = Matrix3::Identity();
+    valid_solution = false;
+  }
 
-    // ------------------------------------------------------------------------------------
-    // Solve RMP general problem
-    // ------------------------------------------------------------------------------------
-    // profiler_ptr_->startEvent("1.3.2.solve_rmps");
-    Values solution;
-    bool valid_solution = true;
-    try
-    {
-        // if (parameters_.differential_drive_)
-        // {
-        //     solution = problem.solve(initial_diff_acc, true);
-        // }
-        // else
-        // {
-            solution = problem.solve(initial_se2_acc, true);
-        // }
-    }
-    catch (const std::exception& e)
-    {
-        std::cout << "Error thrown during optimization of RMP problem:\n"
-                         << std::string(e.what()) << std::endl;
-        optimal_acc_ = Vector3::Zero();
-        optimal_metric_ = Matrix3::Identity();
-        valid_solution = false;
-    }
+  // Extract solution
+  if (valid_solution) {
+    // if (parameters_.differential_drive_)
+    // {
+    //     Vector2 optimal_acc_diff = solution.at<Vector2>(acc_diff_key);
+    //     Matrix2 optimal_metric_diff = problem.metric();
 
-    // Extract solution
-    if (valid_solution)
-    {
-        // if (parameters_.differential_drive_)
-        // {
-        //     Vector2 optimal_acc_diff = solution.at<Vector2>(acc_diff_key);
-        //     Matrix2 optimal_metric_diff = problem.metric();
+    //     // Fill optimal acceleration
+    //     optimal_acc_(0) = optimal_acc_diff(0);
+    //     optimal_acc_(1) = 0.0;
+    //     optimal_acc_(2) = optimal_acc_diff(1);
 
-        //     // Fill optimal acceleration
-        //     optimal_acc_(0) = optimal_acc_diff(0);
-        //     optimal_acc_(1) = 0.0;
-        //     optimal_acc_(2) = optimal_acc_diff(1);
+    //     // Fill optimal metric
+    //     optimal_metric_ = Eigen::Matrix3d::Identity();
+    //     optimal_metric_(0, 0) = optimal_metric_diff(0, 0);
+    //     optimal_metric_(0, 2) = optimal_metric_diff(0, 1);
+    //     optimal_metric_(2, 0) = optimal_metric_diff(1, 0);
+    //     optimal_metric_(2, 2) = optimal_metric_diff(1, 1);
+    // }
+    // else
+    // {
+    optimal_acc_ = solution.at<Vector3>(acc_se2_key);
+    optimal_metric_ = problem.metric();
+    // }
+  } else {
+    std::cout << "Invalid solution" << std::endl;
+  }
 
-        //     // Fill optimal metric
-        //     optimal_metric_ = Eigen::Matrix3d::Identity();
-        //     optimal_metric_(0, 0) = optimal_metric_diff(0, 0);
-        //     optimal_metric_(0, 2) = optimal_metric_diff(0, 1);
-        //     optimal_metric_(2, 0) = optimal_metric_diff(1, 0);
-        //     optimal_metric_(2, 2) = optimal_metric_diff(1, 1);
-        // }
-        // else
-        // {
-            optimal_acc_ = solution.at<Vector3>(acc_se2_key);
-            optimal_metric_ = problem.metric();
-        // }
-    } else {
-      std::cout << "Invalid solution" << std::endl;
-    }
+  // profiler_ptr_->endEvent("1.3.2.solve_rmps");
 
-    // profiler_ptr_->endEvent("1.3.2.solve_rmps");
-
-    // ------------------------------------------------------------------------------------
-    // Integrate acceleration
-    // ------------------------------------------------------------------------------------
-    optimal_velocity_ = optimal_acc_ * parameters_.integration_time;
+  // ------------------------------------------------------------------------------------
+  // Integrate acceleration
+  // ------------------------------------------------------------------------------------
+  optimal_velocity_ = optimal_acc_ * parameters_.integration_time;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Control points
 //-------------------------------------------------------------------------------------------------
-void Rmp::prepareControlPoints()
-{
-    control_points_.clear();
+void Rmp::prepareControlPoints() {
+  control_points_.clear();
 
-    // Open YAML file
-    YAML::Node cp_config = YAML::LoadFile(parameters_.config_folder + "control_points.yaml");
+  // Open YAML file
+  YAML::Node cp_config = YAML::LoadFile(parameters_.config_folder + "control_points.yaml");
 
-    // Preallocate robot dimensions
-    double robot_half_length = (parameters_.robot_length + parameters_.robot_clearance) / 2;
-    double robot_half_width = (parameters_.robot_width + parameters_.robot_clearance) / 2;
+  // Preallocate robot dimensions
+  double robot_half_length = (parameters_.robot_length + parameters_.robot_clearance) / 2;
+  double robot_half_width = (parameters_.robot_width + parameters_.robot_clearance) / 2;
 
-    // Read the YAML file
-    for (YAML::const_iterator it = cp_config["control_points"].begin();
-         it != cp_config["control_points"].end(); ++it)
-    {
-        ControlPointStruct control_point;
-        // Id
-        control_point.id = it->first.as<std::string>();
+  // Read the YAML file
+  for (YAML::const_iterator it = cp_config["control_points"].begin(); it != cp_config["control_points"].end(); ++it) {
+    ControlPointStruct control_point;
+    // Id
+    control_point.id = it->first.as<std::string>();
 
-        YAML::Node cp_attributes = it->second.as<YAML::Node>();
-        // Point
-        std::vector<double> factors =
-            utils::get<std::vector<double>>(cp_attributes, "point_factor", std::vector<double>());
-        control_point.point = Vector2(robot_half_length * factors[0], robot_half_width * factors[1]);
-        // Color
-        std::vector<double> rgb =
-            utils::get<std::vector<double>>(cp_attributes, "color", std::vector<double>());
-        control_point.color = Vector3(rgb[0], rgb[1], rgb[2]);
-        // Accelerations
-        control_point.acc = Vector2::Zero();
-        // Metric
-        control_point.metric = Matrix2::Identity();
-        // Affected by forces
-        control_point.affected_by_goal = utils::get<bool>(cp_attributes, "affected_by_goal", true);
-        control_point.affected_by_obstacle =
-            utils::get<bool>(cp_attributes, "affected_by_obstacle", true);
-        // Radius
-        control_point.radius =
-            std::min(parameters_.robot_length, parameters_.robot_width) * 0.5 * parameters_.sphere_radius_factor; 
+    YAML::Node cp_attributes = it->second.as<YAML::Node>();
+    // Point
+    std::vector<double> factors = utils::get<std::vector<double>>(cp_attributes, "point_factor", std::vector<double>());
+    control_point.point = Vector2(robot_half_length * factors[0], robot_half_width * factors[1]);
+    // Color
+    std::vector<double> rgb = utils::get<std::vector<double>>(cp_attributes, "color", std::vector<double>());
+    control_point.color = Vector3(rgb[0], rgb[1], rgb[2]);
+    // Accelerations
+    control_point.acc = Vector2::Zero();
+    // Metric
+    control_point.metric = Matrix2::Identity();
+    // Affected by forces
+    control_point.affected_by_goal = utils::get<bool>(cp_attributes, "affected_by_goal", true);
+    control_point.affected_by_obstacle = utils::get<bool>(cp_attributes, "affected_by_obstacle", true);
+    // Radius
+    control_point.radius = std::min(parameters_.robot_length, parameters_.robot_width) * 0.5 * parameters_.sphere_radius_factor;
 
-        // Add to control points
-        control_points_.push_back(control_point);
-    }
+    // Add to control points
+    control_points_.push_back(control_point);
+  }
 }
 
-} // namespace local_planners_drs
-
+}  // namespace local_planners_drs
 
 // //-------------------------------------------------------------------------------------------------
 // // Constructor and parameters
@@ -473,7 +420,7 @@ void Rmp::prepareControlPoints()
 //         utils::getParameterDefault<double>(node_handle, "geodesic_goal_offset", 0.5);
 //     parameters_.geodesic_goal_steepness_ =
 //         utils::getParameterDefault<double>(node_handle, "geodesic_goal_steepness", 1.0);
-    
+
 //     parameters_.geodesic_heading_gain_ =
 //         utils::getParameterDefault<double>(node_handle, "geodesic_heading_gain", 7.0);
 //     parameters_.geodesic_heading_offset_ =
@@ -494,7 +441,7 @@ void Rmp::prepareControlPoints()
 //         utils::getParameterDefault<double>(node_handle, "goal_heading_offset", 0.5);
 //     parameters_.goal_heading_steepness_ =
 //         utils::getParameterDefault<double>(node_handle, "goal_heading_steepness", 1.0);
-    
+
 //     parameters_.damping_ = utils::getParameterDefault<double>(node_handle, "damping", 1.0);
 //     parameters_.obstacle_gain_ =
 //         utils::getParameterDefault<double>(node_handle, "obstacle_gain", 1.0);
@@ -523,7 +470,7 @@ void Rmp::prepareControlPoints()
 //         utils::getParameterDefault<double>(node_handle, "goal_position_weight", 1.0);
 //     parameters_.goal_heading_weight_ =
 //         utils::getParameterDefault<double>(node_handle, "goal_heading_weight", 1.0);
-        
+
 //     parameters_.damping_weight_ =
 //         utils::getParameterDefault<double>(node_handle, "damping_weight", 1.0);
 //     parameters_.obstacle_weight_ =
@@ -560,7 +507,7 @@ void Rmp::prepareControlPoints()
 //                               config.geodesic_goal_offset);
 //     utils::assignAndPrintDiff("geodesic_goal_steepness", parameters_.geodesic_goal_steepness_,
 //                               config.geodesic_goal_steepness);
-    
+
 //     utils::assignAndPrintDiff("geodesic_heading_gain", parameters_.geodesic_heading_gain_,
 //                               config.geodesic_heading_gain);
 //     utils::assignAndPrintDiff("geodesic_heading_offset", parameters_.geodesic_heading_offset_,
@@ -612,7 +559,7 @@ void Rmp::prepareControlPoints()
 //                               config.goal_position_weight);
 //     utils::assignAndPrintDiff("goal_heading_weight", parameters_.goal_heading_weight_,
 //                               config.goal_heading_weight);
-    
+
 //     utils::assignAndPrintDiff("damping_weight", parameters_.damping_weight_,
 //                               config.damping_weight);
 //     utils::assignAndPrintDiff("obstacle_weight", parameters_.obstacle_weight_,
@@ -626,7 +573,6 @@ void Rmp::prepareControlPoints()
 //     // Prepare control points
 //     prepareControlPoints();
 // }
-
 
 // //-------------------------------------------------------------------------------------------------
 // // Controller methods
@@ -766,8 +712,6 @@ void Rmp::prepareControlPoints()
 //         path_to_goal.push_back(Eigen::Vector3d(pose_t.x(), pose_t.y(), 0.0));
 //     }
 // }
-
-
 
 // //-------------------------------------------------------------------------------------------------
 // // Visualizations

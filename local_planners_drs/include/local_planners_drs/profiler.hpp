@@ -1,12 +1,12 @@
 #pragma once
 
-#include <chrono>
-#include <map>
-#include <iostream>
-#include <fstream>
-#include <mutex>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
+#include <chrono>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <mutex>
 
 #include "timer.hpp"
 
@@ -17,20 +17,16 @@
 // Has a single timer to track everything
 // It also computes online statistics using an exponential moving average
 
-class Profiler
-{
+class Profiler {
   static constexpr double BUFFER_SIZE = 10000;
 
-  public:
+ public:
   // The Event class is to keep track of the performance of an 'event'
   // in terms of computational time
-  class Event
-  {
-  public:
+  class Event {
+   public:
     // Constructor
-    Event(std::string name = "Unnamed", 
-            Timer::Units units = Timer::millisecs,
-            double alpha = 0.3);
+    Event(std::string name = "Unnamed", Timer::Units units = Timer::millisecs, double alpha = 0.3);
     // Destructor
     ~Event();
 
@@ -55,61 +51,61 @@ class Profiler
 
     // Overload of the operator <<
     // TODO make this compliant with csv instead
-    //friend std::ostream &operator<<(std::ostream &os, const Event &e);
+    // friend std::ostream &operator<<(std::ostream &os, const Event &e);
 
-private:
-    Timer timer_; // Internal timer of the event
+   private:
+    Timer timer_;  // Internal timer of the event
 
-    std::string name_; // The event name
-    double lastDt_;    // The last added measurement
+    std::string name_;  // The event name
+    double lastDt_;     // The last added measurement
 
-    double average_; // Current computed average
-    double var_;     // Current variance (squared std)
-    double maxDt_;   // Maximum measurement so far
-    double minDt_;   // Minimum measurement so far
-    double alpha_;   // Factor for exponential moving average
+    double average_;  // Current computed average
+    double var_;      // Current variance (squared std)
+    double maxDt_;    // Maximum measurement so far
+    double minDt_;    // Minimum measurement so far
+    double alpha_;    // Factor for exponential moving average
 
     bool isRunning_;  // Flag to check if the event started
 
     // Logging of measurements
-    std::vector<double> measurementsTimestamp_; // All the measurements collected so far
-    std::vector<double> measurements_; // All the measurements collected so far
-};
+    std::vector<double> measurementsTimestamp_;  // All the measurements collected so far
+    std::vector<double> measurements_;           // All the measurements collected so far
+  };
 
-public:
-    //Constructor
-    Profiler(std::string name);
+ public:
+  // Constructor
+  Profiler(std::string name);
 
-    // Enable/disable the profiler
-    void setEnabled(bool enabled);
+  // Enable/disable the profiler
+  void setEnabled(bool enabled);
 
-    // Add events to be tracked by the profiler
-    // Events are added dynamically
-    //void addEvent(std::string event, Timer::Units units = Timer::millisecs);
+  // Add events to be tracked by the profiler
+  // Events are added dynamically
+  // void addEvent(std::string event, Timer::Units units = Timer::millisecs);
 
-    // Returns the event
-    const Event &getEvent(std::string event);
+  // Returns the event
+  const Event& getEvent(std::string event);
 
-    // Starts to track and event
-    void startEvent(std::string event, Timer::Units units = Timer::millisecs);
+  // Starts to track and event
+  void startEvent(std::string event, Timer::Units units = Timer::millisecs);
 
-    // Finishes tracking and updates the statistics of the event
-    void endEvent(std::string event);
+  // Finishes tracking and updates the statistics of the event
+  void endEvent(std::string event);
 
-    // Returns a human-readable report of the tracked events
-    std::string getReport();
+  // Returns a human-readable report of the tracked events
+  std::string getReport();
 
-private:
-    // Name of the profiler
-    std::string name_;
+ private:
+  // Name of the profiler
+  std::string name_;
 
-    // The events are stored in a map, where the name of the events are the keys
-    // It is not as efficient as an enum, but allows more flexibility for now
-    std::map<std::string, Event> events_;
+  // The events are stored in a map, where the name of the events are the keys
+  // It is not as efficient as an enum, but allows more flexibility for now
+  std::map<std::string, Event> events_;
 
-    // Flag to disable the profiler internally
-    bool enabled_;
+  // Flag to disable the profiler internally
+  bool enabled_;
 
-    // Mutex to make it thread-safe
-    std::mutex mutex_; 
+  // Mutex to make it thread-safe
+  std::mutex mutex_;
 };

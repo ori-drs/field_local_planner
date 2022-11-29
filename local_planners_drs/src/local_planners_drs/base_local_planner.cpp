@@ -2,28 +2,22 @@
 
 namespace local_planners_drs {
 
-BaseLocalPlanner::BaseLocalPlanner()
-: sensing_ready_(false),
-  point_cloud_(new pcl::PointCloud<pcl::PointXYZI>())
-{
-}
+BaseLocalPlanner::BaseLocalPlanner() : sensing_ready_(false), point_cloud_(new pcl::PointCloud<pcl::PointXYZI>()) {}
 
-void BaseLocalPlanner::initialize(const Parameters& parameters)
-{
+void BaseLocalPlanner::initialize(const Parameters& parameters) {
   parameters_ = parameters;
 }
 
-BaseLocalPlanner::Output BaseLocalPlanner::execute()
-{
+BaseLocalPlanner::Output BaseLocalPlanner::execute() {
   // Check distance and orientation to goal
   computeDistanceAndOrientationToGoal();
-  
+
   // Check status of the controller
   Status status = checkStatus();
 
   // Compute twist - planner specific
   Twist twist = computeTwist();
-  
+
   // Make output
   Output output;
   output.twist = twist;
@@ -33,8 +27,7 @@ BaseLocalPlanner::Output BaseLocalPlanner::execute()
 }
 
 // Other steps
-void BaseLocalPlanner::computeDistanceAndOrientationToGoal()
-{
+void BaseLocalPlanner::computeDistanceAndOrientationToGoal() {
   // Goal to current pose
   dT_b_g_ = T_f_b_.inverse() * T_f_g_;
 
@@ -59,93 +52,75 @@ void BaseLocalPlanner::computeDistanceAndOrientationToGoal()
   orientation_to_start_ = rpy_start.z();
 }
 
-BaseLocalPlanner::Status BaseLocalPlanner::checkStatus()
-{
-  if (parameters_.requires_sensing && !sensing_ready_)
-  {
+BaseLocalPlanner::Status BaseLocalPlanner::checkStatus() {
+  if (parameters_.requires_sensing && !sensing_ready_) {
     return Status::NOT_READY;
   }
-  if (distance_to_goal_ < parameters_.distance_to_goal_thr &&
-      orientation_to_goal_ < parameters_.orientation_to_goal_thr)
-  {
+  if (distance_to_goal_ < parameters_.distance_to_goal_thr && orientation_to_goal_ < parameters_.orientation_to_goal_thr) {
     return Status::FINISHED;
-  }
-  else if (checkFailure())
-  {
+  } else if (checkFailure()) {
     return Status::FAILURE;
-  }
-  else // All good, it must be working 
+  } else  // All good, it must be working
   {
     return Status::EXECUTING;
   }
 }
 
-bool BaseLocalPlanner::checkFailure()
-{
-  return false; // TODO implement proper solution
+bool BaseLocalPlanner::checkFailure() {
+  return false;  // TODO implement proper solution
 }
 
 // Interfaces for external data
-void BaseLocalPlanner::setImageRgb(const cv::Mat& img, const Pose3& T_b_s)
-{
+void BaseLocalPlanner::setImageRgb(const cv::Mat& img, const Pose3& T_b_s) {
   image_rgb_ = img.clone();
   T_b_s_rgb_ = T_b_s;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setImageRgbd(const cv::Mat& img, const Pose3& T_b_s)
-{
+void BaseLocalPlanner::setImageRgbd(const cv::Mat& img, const Pose3& T_b_s) {
   image_rgbd_ = img.clone();
   T_b_s_rgbd_ = T_b_s;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setImageDepth(const cv::Mat& img, const Pose3& T_b_s)
-{
+void BaseLocalPlanner::setImageDepth(const cv::Mat& img, const Pose3& T_b_s) {
   image_depth_ = img.clone();
   T_b_s_depth_ = T_b_s;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_b_s)
-{
+void BaseLocalPlanner::setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_b_s) {
   point_cloud_ = cloud;
   T_b_s_pc_ = T_b_s;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_b_s)
-{
+void BaseLocalPlanner::setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_b_s) {
   grid_map_ = grid_map;
   T_b_s_gm_ = T_b_s;
   sensing_ready_ = true;
 }
 
 // Set single goal
-void BaseLocalPlanner::setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b) 
-{
+void BaseLocalPlanner::setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b) {
   T_f_g_ = T_f_g;
   T_f_b_start_ = T_f_b;
   sensing_ready_ = true;
 }
 
 // Set state (pose + twist)
-void BaseLocalPlanner::setRobotState(const Pose3& T_f_b, const Twist& b_v)
-{
+void BaseLocalPlanner::setRobotState(const Pose3& T_f_b, const Twist& b_v) {
   T_f_b_ = T_f_b;
   b_v_ = b_v_;
   sensing_ready_ = true;
 }
 
 // Set the T_m_f transform to compute stuff in the fixed frame f into the map frame m
-void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
-{
+void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f) {
   T_m_f_ = T_m_f;
 }
 
-
-} // namespace local_planners_drs
-
+}  // namespace local_planners_drs
 
 // ControllerBase::ControllerBase() :
 //       new_elevation_map_(false) {
@@ -161,7 +136,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 
 // ControllerBase::ControllerBase(const ControllerParameters& params) :
 //     params_(params) {
-  
+
 //   g_Tgoal_gb_t_.translation()[0] = std::numeric_limits<double>::infinity();
 //   has_got_near_to_current_goal_ = false;
 //   can_rotate_ = true;
@@ -186,7 +161,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   // Save current pose and timestamp
 //   f_T_fb_t_ = current_pose;
 //   ts_t_ = header.stamp.toSec();;
- 
+
 //   profiler_ptr_->startEvent("0.controller_compute");
 
 //   // If the controller is perceptive execute the stuff below
@@ -211,7 +186,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //     controller_status_.goal_reached_ = true;
 //     return controller_status_;
 //   }
-  
+
 //   // Convert goal to fixed frame
 //   convertGoalToFixedFrame();
 
@@ -241,12 +216,14 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   profiler_ptr_->startEvent("4.0.compute_control_comand");
 //   computeControlCommand();
 //   profiler_ptr_->endEvent("4.0.compute_control_comand");
-//   // ROS_INFO_STREAM("pre     linear velocity: " << output_linear_velocity_.transpose() << " | angular velocity: " << output_angular_velocity_.transpose() );
+//   // ROS_INFO_STREAM("pre     linear velocity: " << output_linear_velocity_.transpose() << " | angular velocity: " <<
+//   output_angular_velocity_.transpose() );
 
 //   profiler_ptr_->startEvent("5.0.post_processing");
 //   // Enforce velocity limits and other cases
 //   enforceVelocityLimits();
-//   // ROS_INFO_STREAM("limited linear velocity: " << output_linear_velocity_.transpose() << " | angular velocity: " << output_angular_velocity_.transpose() );
+//   // ROS_INFO_STREAM("limited linear velocity: " << output_linear_velocity_.transpose() << " | angular velocity: " <<
+//   output_angular_velocity_.transpose() );
 
 //   // Check if new goal is needed
 //   checkNewGoal();
@@ -255,7 +232,6 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   publishVisualizations(header);
 //   profiler_ptr_->endEvent("5.0.post_processing");
 
-
 //   profiler_ptr_->endEvent("0.controller_compute");
 //   ROS_WARN_STREAM_THROTTLE(1, "-- Profiler report (throttled (5s)\n" << profiler_ptr_->getReport());
 //   ROS_INFO_STREAM_THROTTLE(1, "----------finish compute control ----------");
@@ -263,7 +239,6 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   // Return output
 //   return controller_status_;
 // }
-
 
 // bool ControllerBase::checkValidGoals(){
 //   // if there is a goal try to follow it, otherwise return.
@@ -282,7 +257,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //         Eigen::AngleAxisd(0, Eigen::Vector3d::UnitX()) *
 //         Eigen::AngleAxisd(0, Eigen::Vector3d::UnitY()) *
 //         Eigen::AngleAxisd(M_PI, Eigen::Vector3d::UnitZ());
-    
+
 //     // Flip base pose and goal pose
 //     f_T_fb_t_ = f_T_fb_t_ * flip_front_direction;
 //   }
@@ -308,8 +283,8 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //     b_v_b_t_(4) = dT_b.translation().y() / controller_dt_;
 //     b_v_b_t_(5) = dT_b.translation().z() / controller_dt_;
 
-//     ROS_DEBUG_STREAM("estimated velocity: wx: " << b_v_b_t_(3) 
-//                                   << ", wy: " << b_v_b_t_(4) 
+//     ROS_DEBUG_STREAM("estimated velocity: wx: " << b_v_b_t_(3)
+//                                   << ", wy: " << b_v_b_t_(4)
 //                                   << ", wz: " << b_v_b_t_(5)
 //                                   << ",  x: " << b_v_b_t_(0)
 //                                   << ",  y: " << b_v_b_t_(1)
@@ -322,7 +297,8 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //     dT_base_goal_.translation()[2] = 0; // not interested in z error TODO
 //   }
 //   error_distance_to_goal_ = hypot(dT_base_goal_.translation().x(), dT_base_goal_.translation().y());
-//   ROS_INFO_STREAM_THROTTLE(1, "x to goal: " << dT_base_goal_.translation()[0] << ", y to goal: " << dT_base_goal_.translation()[1] << ", distance to goal: " << error_distance_to_goal_);
+//   ROS_INFO_STREAM_THROTTLE(1, "x to goal: " << dT_base_goal_.translation()[0] << ", y to goal: " << dT_base_goal_.translation()[1] << ",
+//   distance to goal: " << error_distance_to_goal_);
 
 //   ////////////// If we want to track position to the goal pose
 //   // This is the angle, in the robot base frame from the current position to the goal position
@@ -367,7 +343,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 // // Check unreachable state
 // //-------------------------------------------------------------------------------------------------
 // bool ControllerBase::checkUnreachableState() {
-  
+
 //   bool unreachability_detected = false;
 
 //   // Compute ratio of the distances as the progress so far
@@ -380,7 +356,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   // ROS_INFO_STREAM("[check unreachable] delta_progress " << delta_progress);
 //   // ROS_INFO_STREAM("[check unreachable] potential_unreachability_ " << potential_unreachability_);
 //   // ROS_INFO_STREAM("[check unreachable] unreachability_detected " << unreachability_detected);
-  
+
 //   // If the progress seems to be stuck
 //   if(delta_progress <= params_.unreachability_delta_progress_threshold_) {
 //     if(!potential_unreachability_) {
@@ -403,7 +379,6 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   return unreachability_detected;
 // }
 
-
 // //-------------------------------------------------------------------------------------------------
 // // Check controller state
 // //-------------------------------------------------------------------------------------------------
@@ -419,7 +394,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   else if (error_distance_to_goal_ < params_.goal_distance_threshold_){
 //     has_got_near_to_current_goal_ = true;
 //     // ROS_INFO_THROTTLE(1,"TRN2DES: close to goal now. Only TRN2DES possible now"); // comment this after testing
-    
+
 //     // Check the orientation error
 //     if ( (fabs(error_orientation_to_goal_) < params_.goal_heading_threshold_ ||
 //         (params_.ignore_intermediate_goal_heading_ && !goals_.empty()))){
@@ -451,7 +426,8 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //       if(can_rotate_){
 //         // We only need to turn to reach the destination
 //         state_ = State::TURN_TO_DESTINATION;
-//         // ROS_INFO_THROTTLE(1,"TRN2DES: Have drifted outside goal_heading_threshold_. Insisting on TRN2DES"); // comment this after testing
+//         // ROS_INFO_THROTTLE(1,"TRN2DES: Have drifted outside goal_heading_threshold_. Insisting on TRN2DES"); // comment this after
+//         testing
 //       } else {
 //         // if we cannot rotate, we report unreachable state
 //         state_ = State::UNREACHABLE;
@@ -539,7 +515,6 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   computeCommandPostProcess(controller_status_.action_, output_linear_velocity_, output_angular_velocity_, path_to_goal_);
 // }
 
-
 // //-------------------------------------------------------------------------------------------------
 // // Set robot velocity
 // //-------------------------------------------------------------------------------------------------
@@ -559,7 +534,8 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 // }
 
 // // Set list of goals
-// void ControllerBase::setGoalList(const std::deque<Eigen::Isometry3d>& goals, std::string goal_frame, const Eigen::Isometry3d& current_pose){
+// void ControllerBase::setGoalList(const std::deque<Eigen::Isometry3d>& goals, std::string goal_frame, const Eigen::Isometry3d&
+// current_pose){
 //   goals_.clear();
 //   goals_ = goals;
 //   goals_frame_ = goal_frame;
@@ -612,7 +588,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //       // Convert to Isometry3d
 //       Eigen::Isometry3d goal_to_fixed = Eigen::Isometry3d::Identity();
 //       tf::transformTFToEigen (goal_to_fixed_transform, goal_to_fixed);
-      
+
 //       // Update goal
 //       f_Tgoal_fb_t_ = goal_to_fixed * g_Tgoal_gb_t_;
 //       return true;
@@ -638,7 +614,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   enforceVelocityLimits(output_linear_velocity_(2),
 //                         params_.min_linear_velocity_,
 //                         params_.max_lateral_linear_velocity_);
-//   // Angular                                            
+//   // Angular
 //   enforceVelocityLimits(output_angular_velocity_(0),
 //                         params_.min_angular_velocity_,
 //                         params_.max_angular_velocity_);
@@ -648,7 +624,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   enforceVelocityLimits(output_angular_velocity_(2),
 //                         params_.min_angular_velocity_,
 //                         params_.max_angular_velocity_);
-  
+
 //   // Enforce specific modes
 //   // Differential mode disregards the lateral velocity
 //   if (params_.differential_drive_){
@@ -658,7 +634,7 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   // Back is front flips the control commands
 //   if (params_.back_is_front_){
 //     output_linear_velocity_ = -output_linear_velocity_;
-//   } 
+//   }
 
 //   // Checks planar motion
 //   if(params_.planar_motion_){
@@ -672,16 +648,18 @@ void BaseLocalPlanner::setFixedToMapTransform(const Pose3& T_m_f)
 //   double limited_velocity = velocity;
 //   // Check min velocity
 //   if (velocity != 0 && std::fabs(velocity) < min_velocity) {
-//     // ROS_INFO("linear twist value changed from %f to the specified minimum of %f (with the same sign)", cmd.twist.linear.y, minLinearVelocity_);  
+//     // ROS_INFO("linear twist value changed from %f to the specified minimum of %f (with the same sign)", cmd.twist.linear.y,
+//     minLinearVelocity_);
 //     //limited_velocity = (velocity < 0)? -min_velocity : min_velocity;
 //     limited_velocity = 0.0;
 //   }
 //   // Check max velocity
 //   if (std::fabs(velocity) > max_velocity) {
-//     // ROS_INFO("y linear twist value changed from %f to the specified minimum of %f (with the same sign)", cmd.twist.linear.y, minLinearVelocity_);  
-//     limited_velocity = (velocity < 0)? -max_velocity : max_velocity;
+//     // ROS_INFO("y linear twist value changed from %f to the specified minimum of %f (with the same sign)", cmd.twist.linear.y,
+//     minLinearVelocity_); limited_velocity = (velocity < 0)? -max_velocity : max_velocity;
 //   }
-//   // ROS_INFO_STREAM("Limiting velocity " << velocity << " to interval [" << min_velocity << ", " << max_velocity << "] -> " << limited_velocity);
+//   // ROS_INFO_STREAM("Limiting velocity " << velocity << " to interval [" << min_velocity << ", " << max_velocity << "] -> " <<
+//   limited_velocity);
 
 //   // Output velocity
 //   velocity = limited_velocity;

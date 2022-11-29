@@ -1,42 +1,41 @@
 #pragma once
-#include <local_planners_drs/base_local_planner.hpp>
-#include <local_planners_drs/utils.hpp>
-#include <stdio.h>
-#include <stdlib.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <local_planners_drs/base_local_planner.hpp>
+#include <local_planners_drs/utils.hpp>
 
 namespace local_planners_drs {
 
 class Falco : public BaseLocalPlanner {
-public:
-  struct Parameters : BaseLocalPlanner::Parameters
-  {
-    std::string config_folder = "/controllers/falco/"; // pathFolder
-    
+ public:
+  struct Parameters : BaseLocalPlanner::Parameters {
+    std::string config_folder = "/controllers/falco/";  // pathFolder
+
     double goal_clearance = 0.1;  // goalClearRange
     double robot_clearance = 0.1;
 
     double sensor_range = 2.0;
 
     // gains
-    double linear_gain_p  = 1.0;
+    double linear_gain_p = 1.0;
     double angular_gain_p = 1.0;
     // linear acceleration
     double linear_acceleration = 0.0001;
 
     // Path scale
-    double path_scale = 1.25;        // pathScale
-    
+    double path_scale = 1.25;  // pathScale
+
     // adjust path scale
     double path_scale_step = 0.25;  // pathScaleStep
     double min_path_scale = 0.75;   // minPathScale
 
-    double path_range_step = 0.5;   // pathRangeStep
-    double min_path_range = 1.0;    // minPathRange
+    double path_range_step = 0.5;  // pathRangeStep
+    double min_path_range = 1.0;   // minPathRange
 
     // command generation
-    double look_ahead_distance = 0.5; // lookAheadDis // Used to select a point in the path to be followed
+    double look_ahead_distance = 0.5;  // lookAheadDis // Used to select a point in the path to be followed
 
     // costs
     double differential_mode_cost = 1.0;
@@ -49,16 +48,16 @@ public:
     // Used to accept a path as a candidate
     int point_per_path_thr = 2;  // pointPerPathThre
 
-    bool check_rotational_collisions = true; // checkRotObstacle
-    bool use_path_crop_by_goal = false; // pathCropByGoal
+    bool check_rotational_collisions = true;  // checkRotObstacle
+    bool use_path_crop_by_goal = false;       // pathCropByGoal
   };
 
-public:
+ public:
   Falco();
   void initialize(const Parameters& parameters);
   Twist computeTwist();
 
-private:
+ private:
   // Load paths
   FILE* openFile(std::string& file);
   int readPlyHeader(FILE* file_ptr);
@@ -75,11 +74,11 @@ private:
   void computePathScores();
   bool findBestPath();
   void computeIntermediateCarrot();
-  
-protected:
+
+ protected:
   Parameters parameters_;
 
-  static constexpr int NUM_PATHS  = 343;
+  static constexpr int NUM_PATHS = 343;
   static constexpr int NUM_GROUPS = 7;
   static constexpr int NUM_MAP_CLOUD_STACK = 1;
   static constexpr int NUM_GRID_VOXELS_X = 161;
@@ -99,17 +98,18 @@ protected:
   double last_linear_velocity_;
 
   // FALCO
-  Vector3 intermediate_carrot_; // a collision-free intermediate goal before reaching the desired goal
-  Vector3 path_end_; // end of the best chosen path
- 
+  Vector3 intermediate_carrot_;  // a collision-free intermediate goal before reaching the desired goal
+  Vector3 path_end_;             // end of the best chosen path
+
   // Path allocation
   pcl::PointCloud<pcl::PointXYZI>::Ptr map_cloud_stack[NUM_MAP_CLOUD_STACK];
-  pcl::PointCloud<pcl::PointXYZ>::Ptr precomputed_paths_[NUM_GROUPS]; // precomputed trajectories
+  pcl::PointCloud<pcl::PointXYZ>::Ptr precomputed_paths_[NUM_GROUPS];  // precomputed trajectories
 
-  pcl::PointCloud<pcl::PointXYZI>::Ptr paths_[NUM_PATHS]; // visualization: all the precomputed trajectories. They are visualized with different rotations  
-  pcl::PointCloud<pcl::PointXYZI>::Ptr free_paths_;       // visualization: free paths after collision checking
+  pcl::PointCloud<pcl::PointXYZI>::Ptr
+      paths_[NUM_PATHS];  // visualization: all the precomputed trajectories. They are visualized with different rotations
+  pcl::PointCloud<pcl::PointXYZI>::Ptr free_paths_;  // visualization: free paths after collision checking
 
-  std::vector<int> correspondences_[NUM_GRID_VOXELS]; // the number of correspondences is equal to the number of voxels
+  std::vector<int> correspondences_[NUM_GRID_VOXELS];  // the number of correspondences is equal to the number of voxels
 
   // Path validity
   int path_list_[NUM_PATHS] = {0};
@@ -117,16 +117,15 @@ protected:
   float end_dir_path_list_[NUM_PATHS] = {0};
   int clear_path_list_[36 * NUM_PATHS] = {0};
 
-  float path_likelihood_[36 * NUM_PATHS] = {0}; // The likelihood of each path to reach the goal
-  float path_group_likelihood_[36 * NUM_GROUPS] = {0}; // The likelihood of the group to reach the goal
-  
+  float path_likelihood_[36 * NUM_PATHS] = {0};         // The likelihood of each path to reach the goal
+  float path_group_likelihood_[36 * NUM_GROUPS] = {0};  // The likelihood of the group to reach the goal
+
   // The quantities below are used to compute the traversability probability of a path
-  float path_traversability_score_[36 * NUM_PATHS] = {0}; // Integrated traversability score along the path
-  int path_traversability_crossed_voxels_[36 * NUM_PATHS] = {0}; // Number of voxels crossed by the path
+  float path_traversability_score_[36 * NUM_PATHS] = {0};         // Integrated traversability score along the path
+  int path_traversability_crossed_voxels_[36 * NUM_PATHS] = {0};  // Number of voxels crossed by the path
 
+  float path_deformation_list_[36 * NUM_PATHS] = {0};  // Deformation of the path due to the terrain
 
-  float path_deformation_list_[36 * NUM_PATHS] = {0}; // Deformation of the path due to the terrain
-  
   // Feasible path found
   bool feasible_path_found_;
   int best_path_group_id_;
@@ -134,7 +133,7 @@ protected:
   std::vector<Vector3> best_path_;
 };
 
-} // namespace local_planners_drs
+}  // namespace local_planners_drs
 
 // class FalcoController : public ControllerBase {
 
@@ -154,19 +153,18 @@ protected:
 //   // Dynamic reconfigure
 //   void setupDynamicReconfigureServer(ros::NodeHandle& node_handle);
 //   void dynamicReconfigureCallback(local_planners_drs::FalcoControllerConfig &config, uint32_t level);
-  
+
 // private:
-  
 
 //   // Controller implementation
 //   void customPreProcessLocalMap();
 //   void customPreProcessController();
-//   ControllerBase::OutputAction computeCommandGoalBehind(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandTurnToGoal(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandForward(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandTurnToDestination(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   ControllerBase::OutputAction computeCommandFinished(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d& output_angular_velocity);
-//   void computeCommandPostProcess(ControllerBase::OutputAction& action, 
+//   ControllerBase::OutputAction computeCommandGoalBehind(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d&
+//   output_angular_velocity); ControllerBase::OutputAction computeCommandTurnToGoal(Eigen::Vector3d& output_linear_velocity,
+//   Eigen::Vector3d& output_angular_velocity); ControllerBase::OutputAction computeCommandForward(Eigen::Vector3d& output_linear_velocity,
+//   Eigen::Vector3d& output_angular_velocity); ControllerBase::OutputAction computeCommandTurnToDestination(Eigen::Vector3d&
+//   output_linear_velocity, Eigen::Vector3d& output_angular_velocity); ControllerBase::OutputAction computeCommandFinished(Eigen::Vector3d&
+//   output_linear_velocity, Eigen::Vector3d& output_angular_velocity); void computeCommandPostProcess(ControllerBase::OutputAction& action,
 //                                  Eigen::Vector3d& output_linear_velocity,
 //                                  Eigen::Vector3d& output_angular_velocity,
 //                                  std::vector<Eigen::Vector3d>& path_to_goal);
@@ -222,13 +220,13 @@ protected:
 //   pcl::PointCloud<CollisionPoint>::Ptr collision_map_;
 //   pcl::PointCloud<CollisionPoint>::Ptr collision_map_in_base_;
 //   pcl::PointCloud<CollisionPoint>::Ptr collision_map_wnormals_in_base_;
-  
+
 //   // Path allocation
 //   pcl::PointCloud<pcl::PointXYZI>::Ptr map_cloud_stack[NUM_MAP_CLOUD_STACK];
 //   pcl::PointCloud<pcl::PointXYZ>::Ptr precomputed_paths_[NUM_GROUPS]; // precomputed trajectories
 
-//   pcl::PointCloud<pcl::PointXYZI>::Ptr paths_[NUM_PATHS]; // visualization: all the precomputed trajectories. They are visualized with different rotations  
-//   pcl::PointCloud<pcl::PointXYZI>::Ptr free_paths_;       // visualization: free paths after collision checking
+//   pcl::PointCloud<pcl::PointXYZI>::Ptr paths_[NUM_PATHS]; // visualization: all the precomputed trajectories. They are visualized with
+//   different rotations pcl::PointCloud<pcl::PointXYZI>::Ptr free_paths_;       // visualization: free paths after collision checking
 
 //   std::vector<int> correspondences_[NUM_GRID_VOXELS]; // the number of correspondences is equal to the number of voxels
 
@@ -240,14 +238,13 @@ protected:
 
 //   float path_likelihood_[36 * NUM_PATHS] = {0}; // The likelihood of each path to reach the goal
 //   float path_group_likelihood_[36 * NUM_GROUPS] = {0}; // The likelihood of the group to reach the goal
-  
+
 //   // The quantities below are used to compute the traversability probability of a path
 //   float path_traversability_score_[36 * NUM_PATHS] = {0}; // Integrated traversability score along the path
 //   int path_traversability_crossed_voxels_[36 * NUM_PATHS] = {0}; // Number of voxels crossed by the path
 
-
 //   float path_deformation_list_[36 * NUM_PATHS] = {0}; // Deformation of the path due to the terrain
-  
+
 //   // Feasible path found
 //   bool feasible_path_found_;
 //   int best_path_group_id_;
