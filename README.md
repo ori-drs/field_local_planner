@@ -20,7 +20,7 @@ The controllers implement **the same interfaces as the original position control
 To run a controller, you only need to run:
 
 ```sh
-roslaunch locally_reactive_controller controller.launch controller:=<controller_name>
+roslaunch field_local_planners controller.launch controller:=<controller_name>
 ```
 
 **The default controller is RMP**. This will launch the main node using the controller specified by `<controller_name>`. If the controller is not `trackline` it is assummed to be *perceptive*, so a *filter chain* (from `grid_map_filters_drs`) will be also launched to compute filtered layers on the elevation map.
@@ -31,7 +31,7 @@ If you're running the ANYmal simulator, you can easily send position commands us
 The controller also can be used to send velocity commands and correct them to be collision-free. This only requires to launch the controller and the following:
 
 ```sh
-roslaunch locally_reactive_controller joystick_teleop.launch
+roslaunch field_local_planners joystick_teleop.launch
 ```
 
 By default it uses the configuration of a [Xbox controller](config/teleop_twist_joy/xbox.config.yaml). `RB` must be pressed to send commands and the left and right joysticks are used to move forward/backward or rotate in place, respectively.
@@ -47,7 +47,7 @@ The `controller.rviz` file can be used as a reference.
 
 ## Configuring controllers
 ### Common parameters
-By default the launchfile is configured for ANYmal C. If you want to setup the main signals for other robot, you can check the [launchfile for extrm](/launch/locally_reactive_controller_extrm.launch)
+By default the launchfile is configured for ANYmal C. If you want to setup the main signals for other robot, you can check the [launchfile for extrm](/launch/field_local_planners_extrm.launch)
 
 The launchfile includes a description of the main common parameters required by the controller, such as the robot's specifications, as well as elevation map processing (voxel filters, maximum size of the elevation map, and traversability threshold).
 
@@ -55,7 +55,7 @@ The launchfile includes a description of the main common parameters required by 
 Since FALCO and RMP use way different approaches, their parameters are set in YAML files available in the [config/controllers](config/controllers/) folder. They are loaded to the parameter server when you run the launchfile, please refer to the files for further details.
 
 ## Implementation aspects
-All the controllers share the structure implemented in [`controller_base.cpp`](src/locally_reactive_controller/controllers/controller_base.cpp), which implements the interfaces to set goals, current pose, and elevation map data when required. It also implements the state machine of the controller, which has the following states:
+All the controllers share the structure implemented in [`controller_base.cpp`](src/field_local_planners/controllers/controller_base.cpp), which implements the interfaces to set goals, current pose, and elevation map data when required. It also implements the state machine of the controller, which has the following states:
 
 - `UNKNOWN`: Starting state
 - `FINISHED`: When the goal was reached according to the distance threshold
