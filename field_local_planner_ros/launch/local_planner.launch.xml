@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <!-- This file just launches the default nodes assuming that the parameters are already in the parameter server 
+       It must not be used independently
+  -->
+
+  <!-- Signals -->
+  <arg name="pose_topic"         default=""/>
+  <arg name="twist_topic"        default=""/>
+  <arg name="odometry_topic"     default=""/>
+  <arg name="point_cloud_topic"  default=""/>
+  <arg name="grid_map_topic"     default=""/>
+  <arg name="goal_topic"         default=""/>
+  <arg name="joy_twist_topic"    default=""/>
+  <arg name="output_twist_type"  default="twist"/>
+  <arg name="output_twist_topic" default="/field_local_planner/twist"/>
+  <arg name="valid_goal_frames"  default="[map, odom]"/>
+
+  <!-- Debugging flags -->
+  <arg name="debug"          default="false"/>
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg     if="$(arg debug)" name="launch_prefix" value="gdb -ex run --args" />
+
+  <!-- Carrot -->
+  <arg name="real_carrot"          default="false"/>
+  
+  <!-- Launch nodes -->
+  <!-- Local planner -->
+  <node pkg="field_local_planner_ros" type="field_local_planner_node" name="field_local_planner_ros" output="screen" launch-prefix="$(arg launch_prefix)">
+    <param name="pose_topic"         value="$(arg pose_topic)"/>
+    <param name="twist_topic"        value="$(arg twist_topic)"/>
+    <param name="odometry_topic"     value="$(arg odometry_topic)"/>
+    <param name="point_cloud_topic"  value="$(arg point_cloud_topic)"/>
+    <param name="grid_map_topic"     value="$(arg grid_map_topic)"/>
+    <param name="goal_topic"         value="$(arg goal_topic)"/>
+    <param name="joy_twist_topic"    value="$(arg joy_twist_topic)"/>
+    <param name="output_twist_type"  value="$(arg output_twist_type)"/>
+    <param name="output_twist_topic" value="$(arg output_twist_topic)"/>
+    <param name="valid_goal_frames"  value="$(arg valid_goal_frames)"/>
+  </node>
+
+  <!-- Real carrot -->
+  <node if="$(arg real_carrot)" pkg="field_local_planner" type="carrot_publisher.py" name="field_local_planner_carrot" output="screen"/>
+
+</launch>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>field_local_planner_rmp</name>
+  <version>0.0.0</version>
+
+  <description>Rmp local planner</description>
+
+  <maintainer email="matias@robots.ox.ac.uk">Matias Mattamala</maintainer>
+  <author email="matias@robots.ox.ac.uk">Matias Mattamala</author>
+  <author email="mfallon@robots.ox.ac.uk">Maurice Fallon</author>
+
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Catkin packages -->
+  <depend>field_local_planner_base</depend>
+  <depend>grid_map_core</depend>
+  <depend>rmp</depend>
+
+  <!-- Non-catkin packages -->
+  <depend>gtsam</depend>
+
+</package>

@@ -1,0 +1,8 @@
+
+<library path="lib/libfield_local_planner_falco_plugin">
+  <class type="field_local_planner::FalcoPlugin" base_class_type="field_local_planner::BasePlugin" >
+    <description>
+      FALCO-inspired local planner
+    </description>
+  </class>
+</library>

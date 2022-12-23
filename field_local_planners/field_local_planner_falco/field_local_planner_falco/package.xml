@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>field_local_planner_falco</name>
+  <version>0.0.0</version>
+
+  <description>FALCO-like local planner</description>
+
+  <maintainer email="matias@robots.ox.ac.uk">Matias Mattamala</maintainer>
+  <author email="matias@robots.ox.ac.uk">Matias Mattamala</author>
+
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Catkin packages -->
+  <depend>field_local_planner_base</depend>
+  <depend>grid_map_core</depend>
+
+</package>

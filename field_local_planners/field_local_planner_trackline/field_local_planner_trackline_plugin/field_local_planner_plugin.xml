@@ -1,0 +1,8 @@
+
+<library path="lib/libfield_local_planner_trackline_plugin">
+  <class type="field_local_planner::TracklinePlugin" base_class_type="field_local_planner::BasePlugin" >
+    <description>
+      Trackline controller - not a real local planner
+    </description>
+  </class>
+</library>

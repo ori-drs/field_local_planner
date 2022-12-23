@@ -1,0 +1,8 @@
+
+<library path="lib/libfield_local_planner_apf_plugin">
+  <class type="field_local_planner::ApfPlugin" base_class_type="field_local_planner::BasePlugin" >
+    <description>
+      Artificial Potential Fields (APF) local planner
+    </description>
+  </class>
+</library>
