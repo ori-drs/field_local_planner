@@ -20,12 +20,12 @@ class Trackline : public BaseLocalPlanner {
 
  public:
   Trackline();
-
+  void loadParameters(const Parameters& p);
   Twist computeTwist();
+  Path computePath();
 
  protected:
   Parameters parameters_;
-
   State state_;
 
   // Trackline directed velocity commands

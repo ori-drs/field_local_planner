@@ -8,8 +8,9 @@ namespace field_local_planner {
 
 Falco::Falco() : BaseLocalPlanner() {}
 
-void Falco::initialize(const Falco::Parameters& parameters) {
-  parameters_ = parameters;
+void Falco::loadParameters(const Falco::Parameters& p) {
+  parameters_ = p;
+
   loadPathsFromFile(parameters_.config_folder);
 
   // Precompute robot diameters
@@ -52,6 +53,10 @@ Twist Falco::computeTwist() {
   twist(5) = 0.0;  // Linear z
 
   return twist;
+}
+
+Path Falco::computePath() {
+  // TODO
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -66,7 +66,7 @@ include_directories(
 
 # Declare library
 add_library(${PROJECT_NAME}
-            src/field_local_planner_falco_plugin/plugin.cpp
+            src/field_local_planner_falco_plugin/falco_plugin.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

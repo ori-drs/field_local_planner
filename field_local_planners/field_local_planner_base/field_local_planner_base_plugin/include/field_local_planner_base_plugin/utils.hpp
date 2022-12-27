@@ -1,11 +1,18 @@
 #pragma once
+
+#include <ros/console.h>
+#include <ros/ros.h>
+#include <tf/tf.h>
+
 #include <eigen_conversions/eigen_msg.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <ros/console.h>
-#include <ros/ros.h>
-#include <tf/tf.h>
+#include <tf_conversions/tf_eigen.h>
+
+#include <gtsam/base/Vector.h>
+#include <gtsam/geometry/Pose2.h>
+#include <gtsam/geometry/Pose3.h>
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 
@@ -13,7 +20,7 @@ namespace field_local_planner {
 namespace utils {
 
 //-------------------------------------------------------------------------------------------------
-// Utils
+// Parameter reading
 //-------------------------------------------------------------------------------------------------
 template <typename T>
 T getParameter(const ros::NodeHandle& nh, const std::string& param) {
@@ -56,15 +63,6 @@ std::vector<T> getParameterVector(const ros::NodeHandle& nh, const std::string& 
   return vector;
 }
 
-static inline pcl::PointXYZI createPointXYZI(float x, float y, float z, float i) {
-  pcl::PointXYZI p;
-  p.x = (float)x;
-  p.y = (float)y;
-  p.z = (float)z;
-  p.intensity = (float)i;
-  return p;
-}
-
 template <typename T>
 static void assignAndPrintDiff(std::string var_name, T& var, const T& new_val) {
   if (var != new_val) {
@@ -73,34 +71,56 @@ static void assignAndPrintDiff(std::string var_name, T& var, const T& new_val) {
   var = new_val;
 }
 
-const inline int64_t getHeaderUTime(const std_msgs::Header& header) {
-  return (int64_t)floor(header.stamp.toNSec() / 1000);
+//-------------------------------------------------------------------------------------------------
+// Data converters
+//-------------------------------------------------------------------------------------------------
+
+// To GTSAM types
+static inline Pose3 toPose3(const geometry_msgs::Pose& pose_msg) {
+  Eigen::Isometry3d eigen_pose;
+  tf::poseMsgToEigen(pose_msg, eigen_pose);
+  return Pose3(eigen_pose.matrix());
 }
 
-static inline void poseStampedToIsometry3dAndFrame(const geometry_msgs::PoseStampedConstPtr& msg, Eigen::Isometry3d& pose,
-                                                   std::string& frame) {
-  tf::poseMsgToEigen(msg->pose, pose);
-  frame = msg->header.frame_id;
-}
-
-static inline void poseWithCovarianceStampedToIsometry3dAndFrame(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg,
-                                                                 Eigen::Isometry3d& pose, std::string& frame) {
-  tf::poseMsgToEigen(msg->pose.pose, pose);
-  frame = msg->header.frame_id;
-}
-
-static inline Twist twistMsgToTwist(const geometry_msgs::TwistStampedConstPtr& msg) {
-  Twist b_v = Twist::Zero();
+static inline Twist toTwist(const geometry_msgs::Twist& twist_msg) {
+  Twist twist = Twist::Zero();
 
   // We use GTSAM's convention with orientation-then-position (i.e, angular velocity and then linear)
-  b_v(0) = msg->twist.angular.x;
-  b_v(1) = msg->twist.angular.y;
-  b_v(2) = msg->twist.angular.z;
-  b_v(3) = msg->twist.linear.x;
-  b_v(4) = msg->twist.linear.y;
-  b_v(5) = msg->twist.linear.z;
+  twist(0) = twist_msg.angular.x;
+  twist(1) = twist_msg.angular.y;
+  twist(2) = twist_msg.angular.z;
+  twist(3) = twist_msg.linear.x;
+  twist(4) = twist_msg.linear.y;
+  twist(5) = twist_msg.linear.z;
 
-  return b_v;
+  return twist;
+}
+
+// To ROS types
+static inline geometry_msgs::Twist toTwistMsg(const Twist& twist) {
+  geometry_msgs::Twist twist_msg;
+
+  // We use GTSAM's convention with orientation-then-position (i.e, angular velocity and then linear)
+  twist_msg.angular.x = twist(0);
+  twist_msg.angular.y = twist(1);
+  twist_msg.angular.z = twist(2);
+  twist_msg.linear.x = twist(3);
+  twist_msg.linear.y = twist(4);
+  twist_msg.linear.z = twist(5);
+
+  return twist_msg;
+}
+
+static inline field_local_planner_msgs::Status toStatusMsg(const BaseLocalPlanner::Status& status) {
+  ROS_FATAL("not implemented");
+}
+
+//-------------------------------------------------------------------------------------------------
+// Other
+//-------------------------------------------------------------------------------------------------
+
+const inline int64_t getHeaderUTime(const std_msgs::Header& header) {
+  return (int64_t)floor(header.stamp.toNSec() / 1000);
 }
 
 }  // namespace utils

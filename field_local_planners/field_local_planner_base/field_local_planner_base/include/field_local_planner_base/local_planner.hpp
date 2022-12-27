@@ -21,16 +21,19 @@
 namespace field_local_planner {
 
 using namespace gtsam;
-
 using Twist = gtsam::Vector6;
+using Path = std::vector<Pose3>;
 
 class BaseLocalPlanner {
  public:
   struct Parameters {
+    bool requires_sensing = true;
+    bool base_inverted = false;
+    bool differential_mode = false;
+    double control_rate = false;
     double robot_length = 1.0;
     double robot_width = 1.0;
     double robot_height = 1.0;
-    bool requires_sensing = false;
     double distance_to_goal_thr = 0.1;     // meters
     double orientation_to_goal_thr = 0.1;  // radians
     double max_linear_velocity_x = 1.0;    // m/s
@@ -49,12 +52,14 @@ class BaseLocalPlanner {
   // This defines the output of the local planner
   struct Output {
     Twist twist;
+    Path path;
     Status status;
   };
 
  public:
   // Compute the twist command - this function depends on the local planner
   virtual Twist computeTwist() = 0;
+  virtual Path computePath() = 0;
 
   // Check failure - it may depend on the method
   bool checkFailure();
@@ -64,7 +69,7 @@ class BaseLocalPlanner {
   BaseLocalPlanner();
 
   // Initializer
-  void initialize(const Parameters& parameters);
+  void loadParameters(const Parameters& parameters);
 
   // Main method to execute the local planner
   Output execute();
@@ -75,56 +80,51 @@ class BaseLocalPlanner {
   void computeDistanceAndOrientationToGoal();
 
   // Interfaces for external data
-  void setImageRgb(const cv::Mat& img, const Pose3& T_b_s);
-  void setImageRgbd(const cv::Mat& img, const Pose3& T_b_s);
-  void setImageDepth(const cv::Mat& img, const Pose3& T_b_s);
-  void setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_b_s);
-  void setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_b_s);
+  void setImageRgb(const cv::Mat& img, const Pose3& T_f_s);
+  void setImageRgbd(const cv::Mat& img, const Pose3& T_f_s);
+  void setImageDepth(const cv::Mat& img, const Pose3& T_f_s);
+  void setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_f_s);
+  void setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_f_s);
 
   // Set state (pose + twist)
   void setPoseInFixed(const Pose3& T_f_b);
   void setVelocityInBase(const Twist& b_v);
 
-  // Set the T_m_f transform to compute stuff in the fixed frame f into the map frame m
-  void setFixedToMapTransform(const Pose3& T_m_f);
-
   // Set single goal
   void setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b);
 
- protected:
+ public:
   // Parameters
   Parameters parameters_;
 
+ protected:
   // Possible sensor modalities and their sensor poses in the base frame
-  cv::Mat image_rgb_;
-  cv::Mat image_rgbd_;
-  cv::Mat image_depth_;
-  pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud_;
-  grid_map::GridMap grid_map_;
-  Pose3 T_b_s_rgb_;
-  Pose3 T_b_s_rgbd_;
-  Pose3 T_b_s_depth_;
-  Pose3 T_b_s_pc_;  // Pose of point cloud in base frame
-  Pose3 T_b_s_gm_;  // Pose of grid map in base frame
+  cv::Mat image_rgb_;                                 // RGB (color) image
+  cv::Mat image_rgbd_;                                // RGB-D image
+  cv::Mat image_depth_;                               // Depth image
+  pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud_;  // Point cloud
+  grid_map::GridMap grid_map_;                        // Grid map
+  Pose3 T_f_s_rgb_;                                   // Pose of RGB camera in fixed frame
+  Pose3 T_f_s_rgbd_;                                  // Pose of RGB-D camera in fixed frame
+  Pose3 T_f_s_depth_;                                 // Pose of Depth camera in fixed frame
+  Pose3 T_f_s_pc_;                                    // Pose of point cloud in fixed frame
+  Pose3 T_f_s_gm_;                                    // Pose of grid map in fixed frame
 
   // Robot state
-  Pose3 T_f_b_;  // Pose of body in fixed frame
+  Pose3 T_f_b_;  // Pose of base in fixed frame
   Twist b_v_;    // Twist in base frame
-
-  // Helper transforms
-  Pose3 T_m_f_;  // Pose of fixed frame in map frame
 
   // Goal
   Pose3 T_f_b_start_;  // Pose when the goal was set
   Pose3 T_f_g_;        // Goal in fixed frame
 
   // Helpers
-  Pose3 dT_b_g_;
-  Pose3 dT_b_start_;
-  double distance_to_goal_;
-  double orientation_to_goal_;
-  double distance_to_start_;
-  double orientation_to_start_;
+  Pose3 dT_b_g_;                 // Pose difference w.r.t goal
+  Pose3 dT_b_start_;             // Pose differente w.r.t pose when goal was set
+  double distance_to_goal_;      // distance w.r.t target position
+  double orientation_to_goal_;   // orientation w.r.t target orientation
+  double distance_to_start_;     // distance w.r.t starting position when goal was set
+  double orientation_to_start_;  // orientation w.r.t starting orientation when goal was set
   double heading_towards_goal_;  // How much the robot should rotate to point towards the goal
 
   // Other flags

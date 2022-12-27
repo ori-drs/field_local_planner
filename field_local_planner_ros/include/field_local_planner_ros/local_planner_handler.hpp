@@ -3,7 +3,7 @@
 #include <field_local_planner_msgs/NewGoalAction.h>
 #include <field_local_planner_msgs/Status.h>
 #include <field_local_planner_base/utils.hpp>
-#include <field_local_planner_base_plugin/plugin.hpp>
+#include <field_local_planner_base_plugin/base_plugin.hpp>
 
 #include <actionlib/server/simple_action_server.h>
 #include <eigen_conversions/eigen_msg.h>

@@ -17,10 +17,5 @@
   <depend>field_local_planner_rmp</depend>
   <depend>pluginlib</depend>
   <depend>roscpp</depend>
-
-  <!-- Plugins -->
-  <export>
-    <field_local_planner_base_plugin plugin="${prefix}/field_local_planner_plugin.xml" />
-  </export>
-
+  
 </package>

@@ -14,12 +14,19 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 set(CATKIN_PACKAGE_LIST
-  dynamic_reconfigure  
+  dynamic_reconfigure
+  eigen_conversions
   grid_map_core
   grid_map_msgs
+  grid_map_ros
   field_local_planner_base
   field_local_planner_msgs
+  geometry_msgs
+  std_msgs
+  nav_msgs
   roscpp
+  tf
+  tf_conversions
 )
 
 find_package(catkin REQUIRED COMPONENTS
@@ -80,7 +87,7 @@ include_directories(
 
 # Declare library with all the local planners
 add_library(${PROJECT_NAME}
-            src/field_local_planner_base_plugin/plugin.cpp
+            src/field_local_planner_base_plugin/base_plugin.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

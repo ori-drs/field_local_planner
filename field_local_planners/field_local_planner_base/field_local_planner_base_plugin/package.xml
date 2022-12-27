@@ -12,15 +12,17 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- Catkin packages -->
-  <depend>actionlib_msgs</depend>
   <depend>dynamic_reconfigure</depend>
+  <depend>eigen_conversions</depend>
   <depend>grid_map_core</depend>
   <depend>grid_map_msgs</depend>
+  <depend>grid_map_ros</depend>
   <depend>field_local_planner_base</depend>
   <depend>field_local_planner_msgs</depend>
-  <depend>roscpp</depend>
   <depend>geometry_msgs</depend>
   <depend>std_msgs</depend>
   <depend>nav_msgs</depend>
+  <depend>roscpp</depend>
   <depend>tf</depend>
+  <depend>tf_conversions</depend>
 </package>

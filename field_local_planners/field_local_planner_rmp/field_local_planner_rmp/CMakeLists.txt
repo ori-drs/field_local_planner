@@ -74,7 +74,7 @@ include_directories(
 
 ## Declare planners library
 add_library(${PROJECT_NAME} 
-                src/field_local_planner_rmp/rmp.cpp
+                src/field_local_planner_rmp/rmp_local_planner.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

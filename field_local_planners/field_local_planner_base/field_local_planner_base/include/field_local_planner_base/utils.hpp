@@ -1,9 +1,6 @@
 #pragma once
-// #include <ros/ros.h>
-// #include <ros/console.h>
-// #include <tf/tf.h>
-// #include <eigen_conversions/eigen_msg.h>
-// #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <gtsam/geometry/Pose2.h>
+#include <gtsam/geometry/Pose3.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <yaml-cpp/yaml.h>
@@ -14,48 +11,20 @@ namespace utils {
 
 #define COL_WIDTH 40
 
-static inline std::string capitalize(const std::string& s) {
-  // From https://stackoverflow.com/a/14494432
-  bool cap = true;
+using namespace gtsam;
+using Twist = gtsam::Vector6;
+using Path = std::vector<Pose3>;
 
-  std::string capitalized = s;
-
-  for (unsigned int i = 0; i <= s.length(); i++) {
-    if (isalpha(capitalized[i]) && cap == true) {
-      capitalized[i] = toupper(capitalized[i]);
-      cap = false;
-    } else if (isspace(capitalized[i])) {
-      cap = true;
-    }
-  }
-
-  return capitalized;
+//-------------------------------------------------------------------------------------------------
+// Data converters
+//-------------------------------------------------------------------------------------------------
+static inline Pose2 toSE2(const Pose3& T_SE3) {
+  return Pose2(T_SE3.translation().x(), T_SE3.translation().y(), T_SE3.rotation().yaw());
 }
 
-/// @brief Wrapper for yaml-cpp to provide default config files if not provided.
-/// @author David Wisth
-template <typename T>
-T get(const YAML::Node& node, const int& param, const T& default_value, bool silent = false) {
-  if (!node[param]) {
-    // if(!silent) std::cout << std::left << std::setw(COL_WIDTH) << param << ": Not found. Using default value: " << default_value <<
-    // std::endl;
-    return default_value;
-  }
-  // if(!silent) std::cout << std::left << std::setw(COL_WIDTH) << ": " << node[param].as<T>() << std::endl;
-  return node[param].as<T>();
-}
-
-template <typename T>
-T get(const YAML::Node& node, const std::string& param, const T& default_value, bool silent = false) {
-  if (!node[param]) {
-    // if(!silent) std::cout << std::left << std::setw(COL_WIDTH) << param << ": Not found. Using default value: " << default_value <<
-    // std::endl;
-    return default_value;
-  }
-  // if(!silent) std::cout << std::left << std::setw(COL_WIDTH)  << param << ": " << node[param].as<T>() << std::endl;
-  return node[param].as<T>();
-}
-
+//-------------------------------------------------------------------------------------------------
+// Math utils
+//-------------------------------------------------------------------------------------------------
 static inline double clipValue(double value, double max_value) {
   return std::max(std::min(value, max_value), -max_value);
 }

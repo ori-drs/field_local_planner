@@ -82,7 +82,7 @@ include_directories(
 
 # Declare library
 add_library(${PROJECT_NAME}
-            src/field_local_planner_trackline_plugin/plugin.cpp
+            src/field_local_planner_trackline_plugin/trackline_plugin.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
