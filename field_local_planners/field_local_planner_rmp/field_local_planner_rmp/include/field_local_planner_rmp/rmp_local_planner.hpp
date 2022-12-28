@@ -6,13 +6,13 @@
 #include <gtsam/base/Vector.h>
 #include <rmp/rmp.hpp>
 
+#include <boost/any.hpp>
 #include <map>
 
 namespace field_local_planner {
 
 class Rmp : public BaseLocalPlanner {
  public:
-
   struct RmpParameters {
     std::string name;
     double weight;
@@ -30,37 +30,45 @@ class Rmp : public BaseLocalPlanner {
     std::map<std::string, RmpParameters> rmp_parameters;
   };
 
-  struct RmpViz {
-    std::string name;
-    Vector2 acc;
-    Matrix2 metric;
-    Vector3 color;
-    double weight;
+  struct ControlPoint {
+    std::string id;  // ID of the control point
+    double radius;   // Radius for the collision sphere
+    double inflated_radius;
+    Vector2 position;                        // Position in the base frame
+    Vector2 point_factor;                    // Factor used to scale the robot size and get the position
+    Vector3 color;                           // color for visualization
+    std::vector<std::string> affected_by;    // RMPs that affect the control point
+    std::map<std::string, boost::any> rmps;  // RMPs used for visualization
   };
 
-  struct ControlPoint {
-    std::string id;
-    std::string frame_id;
-    double radius;
-    Vector2 position;
-    Vector3 color;
-    std::vector<std::string> affected_by;
-    std::map<std::string, RmpViz> rmp_viz;
-  };
+  using ControlPoints = std::vector<Rmp::ControlPoint>;
 
  public:
+  // Default constructor
   Rmp();
-  void loadParameters(const Parameters& parameters);
-  void addControlPoint(const ControlPoint& cp);
-
+  // Interface to load parameters
+  void setParameters(const Parameters& parameters);
+  // Interface to get parameters
+  Parameters getParameters() const;
+  // COmputes the output twist
   Twist computeTwist();
+
+  // Computes a path for visualization
   Path computePath();
 
   // Utils
+  // Adds a control point
+  void setControlPoints(const ControlPoints& control_points);
+  // Gets the control points
+  ControlPoints getControlPoints() const;
+  // Gets a list of available RMPs
   std::vector<std::string> getAvailableRmps();
 
  private:
+  // Solves the RMP optimization problem
   void computeOptimalAcceleration();
+
+  // Helpers to make specific RMPs
   rmp::Rmp3 makeGeodesicGoalPolicy(ControlPoint& cp);
   rmp::Rmp3 makeGeodesicHeadingPolicy(ControlPoint& cp);
   rmp::Rmp3 makeGoalPositionPolicy(ControlPoint& cp);
@@ -69,6 +77,8 @@ class Rmp : public BaseLocalPlanner {
   rmp::Rmp3 makeDampingPolicy(ControlPoint& cp);
   rmp::Rmp2 makeSdfObstaclePolicy(ControlPoint& cp);
   rmp::Rmp3 makeRegularizationPolicy(ControlPoint& cp);
+
+  // Helper to query layers of the grid map
   void getGradientsFromGridMap(const std::string& layer, const Pose2& T_m_b_query, double& distance, Vector2& grad_in_base);
 
  protected:
@@ -76,6 +86,7 @@ class Rmp : public BaseLocalPlanner {
 
   // Other internal variables
   // Internal
+  Twist optimal_twist_;  // 6 DoF
   Vector3 velocity_2d_;
   Vector3 optimal_velocity_;
   Vector3 optimal_acc_;
@@ -89,7 +100,6 @@ class Rmp : public BaseLocalPlanner {
 
   // Control points stuff
   std::vector<ControlPoint> control_points_;
-  // std::vector<AccelerationVisualization> vis_accelerations_;
 };
 
 }  // namespace field_local_planner

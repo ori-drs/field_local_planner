@@ -41,11 +41,13 @@ void RmpPlugin::loadParameters(ros::NodeHandle& nh) {
 
     p.rmp_parameters[rmp_name] = rmp_p;
   }
-  std::dynamic_pointer_cast<Rmp>(local_planner_)->loadParameters(p);
+  std::dynamic_pointer_cast<Rmp>(local_planner_)->setParameters(p);
 
   // Prepare control points
   XmlRpc::XmlRpcValue control_points_list;
   nh.getParam("rmp/control_points", control_points_list);
+
+  Rmp::ControlPoints control_points;
 
   for (size_t i = 0; i < control_points_list.size(); ++i) {
     XmlRpc::XmlRpcValue node = control_points_list[i];
@@ -53,8 +55,11 @@ void RmpPlugin::loadParameters(ros::NodeHandle& nh) {
     Rmp::ControlPoint cp;
     cp.id = static_cast<std::string>(node["id"]);
     cp.radius = static_cast<double>(node["radius"]);
-    cp.position(0) = static_cast<double>(node["point_factor"][0]) * p.robot_length * 0.5;
-    cp.position(1) = static_cast<double>(node["point_factor"][1]) * p.robot_width * 0.5;
+    cp.inflated_radius = cp.radius * p.sphere_radius_factor;
+    cp.point_factor(0) = static_cast<double>(node["point_factor"][0]);
+    cp.point_factor(1) = static_cast<double>(node["point_factor"][1]);
+    cp.position(0) = cp.point_factor(0) * p.robot_length * 0.5;
+    cp.position(1) = cp.point_factor(1) * p.robot_width * 0.5;
     cp.color(0) = static_cast<double>(node["color"][0]);
     cp.color(1) = static_cast<double>(node["color"][1]);
     cp.color(2) = static_cast<double>(node["color"][2]);
@@ -63,9 +68,9 @@ void RmpPlugin::loadParameters(ros::NodeHandle& nh) {
     for (size_t j = 0; j < affected_by_list.size(); ++j) {
       cp.affected_by.push_back(static_cast<std::string>(affected_by_list[j]));
     }
-
-    std::dynamic_pointer_cast<Rmp>(local_planner_)->addControlPoint(cp);
+    control_points.push_back(cp);
   }
+  std::dynamic_pointer_cast<Rmp>(local_planner_)->setControlPoints(control_points);
 }
 
 void RmpPlugin::setupRos(ros::NodeHandle& nh) {
@@ -74,7 +79,49 @@ void RmpPlugin::setupRos(ros::NodeHandle& nh) {
 }
 
 void RmpPlugin::dynamicReconfigureCallback(RmpConfig& config, uint32_t level) {
-  //
+  Rmp::Parameters p = std::dynamic_pointer_cast<Rmp>(local_planner_)->getParameters();
+  Rmp::ControlPoints cps = std::dynamic_pointer_cast<Rmp>(local_planner_)->getControlPoints();
+
+#define UPDATE_COMMON_PARAMS(VAR) utils::assignAndPrintDiff(#VAR, p.VAR, config.VAR);
+#define UPDATE_RMP_PARAMS(RMP, VAR) utils::assignAndPrintDiff(#RMP "_" #VAR, p.rmp_parameters[#RMP].VAR, config.RMP##_##VAR);
+
+#define UPDATE_RMP(RMP)                 \
+  UPDATE_RMP_PARAMS(RMP, weight)        \
+  UPDATE_RMP_PARAMS(RMP, gain)          \
+  UPDATE_RMP_PARAMS(RMP, metric_type)   \
+  UPDATE_RMP_PARAMS(RMP, metric_offset) \
+  UPDATE_RMP_PARAMS(RMP, metric_steepness)
+
+  // RMP parameters
+  UPDATE_COMMON_PARAMS(robot_length)
+  UPDATE_COMMON_PARAMS(robot_width)
+  UPDATE_COMMON_PARAMS(robot_height)
+  UPDATE_COMMON_PARAMS(distance_to_goal_thr)
+  UPDATE_COMMON_PARAMS(orientation_to_goal_thr)
+  UPDATE_COMMON_PARAMS(max_linear_velocity_x)
+  UPDATE_COMMON_PARAMS(max_linear_velocity_y)
+  UPDATE_COMMON_PARAMS(max_angular_velocity_z)
+  UPDATE_COMMON_PARAMS(sphere_radius_factor)
+  UPDATE_COMMON_PARAMS(integration_time)
+
+  UPDATE_RMP(geodesic_goal)
+  UPDATE_RMP(geodesic_heading)
+  UPDATE_RMP(goal_position)
+  UPDATE_RMP(goal_orientation)
+  UPDATE_RMP(velocity_heading)
+  UPDATE_RMP(damping)
+  UPDATE_RMP(sdf_obstacle)
+  UPDATE_RMP(regularization)
+
+  // Update control points
+  for (auto& cp : cps) {
+    cp.inflated_radius = cp.radius * p.sphere_radius_factor;
+    cp.position(0) = cp.point_factor(0) * p.robot_length * 0.5;
+    cp.position(1) = cp.point_factor(1) * p.robot_width * 0.5;
+  }
+
+  std::dynamic_pointer_cast<Rmp>(local_planner_)->setParameters(p);
+  std::dynamic_pointer_cast<Rmp>(local_planner_)->setControlPoints(cps);
 }
 
 }  // namespace field_local_planner

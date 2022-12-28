@@ -22,7 +22,7 @@ void TracklinePlugin::loadParameters(ros::NodeHandle& nh) {
   p.angular_gain_p = utils::getParameterDefault(nh, "angular_gain_p", 1.0);
   p.linear_gain_p = utils::getParameterDefault(nh, "linear_gain_p", 1.0);
 
-  std::dynamic_pointer_cast<Trackline>(local_planner_)->loadParameters(p);
+  std::dynamic_pointer_cast<Trackline>(local_planner_)->setParameters(p);
 }
 
 void TracklinePlugin::setupRos(ros::NodeHandle& nh) {

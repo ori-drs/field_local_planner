@@ -6,8 +6,20 @@ namespace field_local_planner {
 
 Rmp::Rmp() : BaseLocalPlanner() {}
 
-void Rmp::loadParameters(const Rmp::Parameters& parameters) {
+void Rmp::setParameters(const Rmp::Parameters& parameters) {
   parameters_ = parameters;
+}
+
+Rmp::Parameters Rmp::getParameters() const {
+  return parameters_;
+}
+
+void Rmp::setControlPoints(const Rmp::ControlPoints& control_points) {
+  control_points_ = control_points;
+}
+
+Rmp::ControlPoints Rmp::getControlPoints() const {
+  return control_points_;
 }
 
 Twist Rmp::computeTwist() {
@@ -23,25 +35,27 @@ Twist Rmp::computeTwist() {
   computeOptimalAcceleration();
 
   // Fill twist
-  Twist twist;
-  twist(0) = 0.0;  // Angular x
-  twist(1) = 0.0;  // Angular y
-  twist(2) = optimal_velocity_.z();
+  optimal_twist_(0) = 0.0;  // Angular x
+  optimal_twist_(1) = 0.0;  // Angular y
+  optimal_twist_(2) = optimal_velocity_.z();
   // Linear
-  twist(3) = optimal_velocity_.x();
-  twist(4) = optimal_velocity_.y();
-  twist(5) = 0.0;  // Linear z
+  optimal_twist_(3) = optimal_velocity_.x();
+  optimal_twist_(4) = optimal_velocity_.y();
+  optimal_twist_(5) = 0.0;  // Linear z
 
-  return twist;
+  return optimal_twist_;
 }
 
 Path Rmp::computePath() {
-  // TODO
-  // compute path by velocity integration
-}
+  double time_horizon = 2;  // seconds
+  double dt = 0.1;          // seconds
 
-void Rmp::addControlPoint(const ControlPoint& cp) {
-  control_points_.push_back(cp);
+  Path path;
+  for (double t = 0.0; t <= time_horizon; t += dt) {
+    path.push_back(Pose3::Expmap(optimal_twist_ * t));
+  }
+
+  return path;
 }
 
 std::vector<std::string> Rmp::getAvailableRmps() {
@@ -215,17 +229,8 @@ rmp::Rmp3 Rmp::makeGeodesicGoalPolicy(ControlPoint& cp) {
   Matrix3 metric =
       rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
 
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
-
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric);
+  return rmp::Rmp3(acc, metric, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeGeodesicHeadingPolicy(ControlPoint& cp) {
@@ -242,117 +247,60 @@ rmp::Rmp3 Rmp::makeGeodesicHeadingPolicy(ControlPoint& cp) {
   Matrix3 metric =
       rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
 
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
-
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric);
+  return rmp::Rmp3(acc, metric, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeGoalPositionPolicy(ControlPoint& cp) {
   const std::string rmp_name = "goal_position";
 
-  // Get distance to goal
-  double distance = traits<Pose2>::Local(T_f_b_SE2_, T_f_g_SE2_).head<2>().norm();
-
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGoalPositionPolicy(T_f_b_SE2_, T_f_g_SE2_, params.gain);
-  Matrix3 metric =
-      rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
-
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric);
+  return rmp::Rmp3(acc, metric, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeGoalOrientationPolicy(ControlPoint& cp) {
   const std::string rmp_name = "goal_orientation";
 
-  // Get distance to goal
-  double distance = traits<Pose2>::Local(T_f_b_SE2_, T_f_g_SE2_).head<2>().norm();
-
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGoalOrientationPolicy(T_f_b_SE2_, T_f_g_SE2_, params.gain);
-  Matrix3 metric =
-      rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
-
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric);
+  return rmp::Rmp3(acc, metric, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeVelocityHeadingPolicy(ControlPoint& cp) {
   const std::string rmp_name = "velocity_heading";
 
-  // Get distance to goal
-  double distance = traits<Pose2>::Local(T_f_b_SE2_, T_f_g_SE2_).head<2>().norm();
-
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeVelocityOrientationPolicy(velocity_2d_, Vector2(1.0, 0.0), params.gain);
-  Matrix3 metric =
-      rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
-
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric);
+  return rmp::Rmp3(acc, metric, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeDampingPolicy(ControlPoint& cp) {
   const std::string rmp_name = "damping";
 
-  // Get distance to goal
-  double distance = traits<Pose2>::Local(T_f_b_SE2_, T_f_g_SE2_).head<2>().norm();
-
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeDampingPolicy(velocity_2d_, params.gain);
-  Matrix3 metric =
-      rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
-
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric);
+  return rmp::Rmp3(acc, metric, rmp_name, params.color);
 }
 
 rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
@@ -368,48 +316,28 @@ rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
   double distance = 0;
   Vector2 grad_in_base;
   getGradientsFromGridMap("sdf", T_m_cp_SE2_, distance, grad_in_base);
+  distance = distance - cp.inflated_radius;
 
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector2 acc = rmp::MotionPolicy::makeObstaclePolicy(grad_in_base, distance, params.gain);
   Matrix2 metric = rmp::Metric2::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity, params.weight);
 
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
-
   // Return Riemannian Motion Policy
-  return rmp::Rmp2(acc, metric);
+  return rmp::Rmp2(acc, metric, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeRegularizationPolicy(ControlPoint& cp) {
   const std::string rmp_name = "regularization";
 
-  // Get distance to goal
-  double distance = traits<Pose2>::Local(T_f_b_SE2_, T_f_g_SE2_).head<2>().norm();
-
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = optimal_acc_;
-  Matrix3 metric =
-      rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
-
-  // Fill visualizations
-  RmpViz viz;
-  viz.name = rmp_name;
-  viz.acc = acc.head<2>();
-  viz.metric = metric.block(0, 0, 2, 2);
-  viz.color = params.color;
-  viz.weight = params.weight;
-  cp.rmp_viz[rmp_name] = viz;
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric);
+  return rmp::Rmp3(acc, metric, rmp_name, params.color);
 }
 
 }  // namespace field_local_planner

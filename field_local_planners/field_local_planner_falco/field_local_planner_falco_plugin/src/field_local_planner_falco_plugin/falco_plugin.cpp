@@ -43,7 +43,7 @@ void FalcoPlugin::loadParameters(ros::NodeHandle& nh) {
   p.use_path_crop_by_goal = utils::getParameterDefault(nh, "falco/use_path_crop_by_goal", false);
 
   // Initialize local planner
-  std::dynamic_pointer_cast<Falco>(local_planner_)->loadParameters(p);
+  std::dynamic_pointer_cast<Falco>(local_planner_)->setParameters(p);
 }
 
 void FalcoPlugin::setupRos(ros::NodeHandle& nh) {

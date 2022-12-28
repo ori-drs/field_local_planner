@@ -9,35 +9,38 @@
 #include <gtsam/linear/NoiseModel.h>
 #include <iostream>
 
-using namespace gtsam;
-
 namespace gtsam {
 namespace rmp {
 
-template <typename M, typename TM, typename METRIC>
+template <typename ACC, typename METRIC>
 class RiemannianMotionPolicy {
  protected:
-  using State = M;
-  using Velocity = TM;
-  using Acceleration = TM;
+  using Acceleration = ACC;
   using Metric = METRIC;
 
   // Internal variables
   Acceleration acceleration_;
   Metric metric_;
+  std::string name_;
+  Vector3 color_;
 
  public:
-  RiemannianMotionPolicy() : acceleration_(Acceleration::Zero()), metric_(Metric::Identity()) {}
+  // Constructors
+  RiemannianMotionPolicy() : acceleration_(Acceleration::Zero()), metric_(Metric::Identity()), name_("rmp"), color_(1.0, 1.0, 1.0) {}
 
-  RiemannianMotionPolicy(const Acceleration& acc, const Metric& metric) : acceleration_(acc), metric_(metric) {}
+  RiemannianMotionPolicy(const Acceleration& acc, const Metric& metric, const std::string& name = "rmp",
+                         const Vector3& color = Vector3::Ones())
+      : acceleration_(acc), metric_(metric), name_(name), color_(color) {}
 
   const Acceleration acceleration() const { return acceleration_; }
   const Metric metric() const { return metric_; }
+  const std::string name() const { return name_; }
+  const Vector3 color() const { return color_; } 
 };
 
-using Rmp1 = RiemannianMotionPolicy<Vector1, Vector1, Matrix1>;
-using Rmp2 = RiemannianMotionPolicy<Vector2, Vector2, Matrix2>;
-using Rmp3 = RiemannianMotionPolicy<Vector3, Vector3, Matrix3>;
+using Rmp1 = RiemannianMotionPolicy<Vector1, Matrix1>;
+using Rmp2 = RiemannianMotionPolicy<Vector2, Matrix2>;
+using Rmp3 = RiemannianMotionPolicy<Vector3, Matrix3>;
 
 }  // namespace rmp
 }  // namespace gtsam

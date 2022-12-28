@@ -21,7 +21,7 @@ class GTSAM_EXPORT DifferentialModel {
 
  public:
   enum { dimension = 1 };
-  typedef boost::shared_ptr<DifferentialModel> shared_ptr;  ///< shared pointer to calibration object
+  typedef boost::shared_ptr<DifferentialModel> shared_ptr;  ///< shared pointer to object
 
   /*
    * Constructors

@@ -32,7 +32,7 @@ class GTSAM_EXPORT AckermannModel {
 
  public:
   enum { dimension = 5 };
-  typedef boost::shared_ptr<AckermannModel> shared_ptr;  ///< shared pointer to calibration object
+  typedef boost::shared_ptr<AckermannModel> shared_ptr;  ///< shared pointer to object
 
   /*
    * Constructors

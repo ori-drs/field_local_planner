@@ -69,7 +69,7 @@ class BaseLocalPlanner {
   BaseLocalPlanner();
 
   // Initializer
-  void loadParameters(const Parameters& parameters);
+  void setParameters(const Parameters& parameters);
 
   // Main method to execute the local planner
   Output execute();

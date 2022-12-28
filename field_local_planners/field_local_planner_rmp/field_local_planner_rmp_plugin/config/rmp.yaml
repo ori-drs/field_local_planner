@@ -83,7 +83,7 @@ rmp:
       gain: 20.0
       color: [1.0, 1.0, 0.0]
       metric:
-        type: inv_logistic
+        type: logistic
         offset: 0.0
         steepness: 20.0
     geodesic_heading:
@@ -107,7 +107,7 @@ rmp:
       gain: 20.0
       color: [1.0, 0.5, 0.0]
       metric:
-        type: inv_logistic
+        type: logistic
         offset: 0.5
         steepness: 20.0
     velocity_heading:

@@ -24,7 +24,7 @@ class GTSAM_EXPORT ControlPoint2 {
 
  public:
   enum { dimension = 2 };
-  typedef boost::shared_ptr<ControlPoint2> shared_ptr;  ///< shared pointer to calibration object
+  typedef boost::shared_ptr<ControlPoint2> shared_ptr;  ///< shared pointer to object
 
   /*
    * Constructors

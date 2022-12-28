@@ -20,7 +20,7 @@ class Trackline : public BaseLocalPlanner {
 
  public:
   Trackline();
-  void loadParameters(const Parameters& p);
+  void setParameters(const Parameters& p);
   Twist computeTwist();
   Path computePath();
 

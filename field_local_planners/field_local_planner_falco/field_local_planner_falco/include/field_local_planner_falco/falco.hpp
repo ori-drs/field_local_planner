@@ -54,7 +54,7 @@ class Falco : public BaseLocalPlanner {
 
  public:
   Falco();
-  void loadParameters(const Parameters& parameters);
+  void setParameters(const Parameters& parameters);
   Twist computeTwist();
   Path computePath();
 

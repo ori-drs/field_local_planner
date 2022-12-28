@@ -8,7 +8,7 @@ namespace field_local_planner {
 
 Falco::Falco() : BaseLocalPlanner() {}
 
-void Falco::loadParameters(const Falco::Parameters& p) {
+void Falco::setParameters(const Falco::Parameters& p) {
   parameters_ = p;
 
   loadPathsFromFile(parameters_.config_folder);

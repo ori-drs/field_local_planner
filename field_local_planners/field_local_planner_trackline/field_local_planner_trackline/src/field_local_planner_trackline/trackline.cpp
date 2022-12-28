@@ -6,7 +6,7 @@ namespace field_local_planner {
 
 Trackline::Trackline() : BaseLocalPlanner(), state_(State::UNKNOWN) {}
 
-void Trackline::loadParameters(const Trackline::Parameters& p) {
+void Trackline::setParameters(const Trackline::Parameters& p) {
   parameters_ = p;
 }
 

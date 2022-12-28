@@ -46,13 +46,13 @@ class Problem : public ExpressionFactorGraph {
   /**
    * ExpressionFactor implements |h(x)-z|^2_R directly from the variable (h(x)) and the RMP (z) using the metric as noise model
    */
-  template <typename M, typename TM, typename METRIC>
-  void addRmp(const Expression<TM>& variable, const RiemannianMotionPolicy<M, TM, METRIC>& rmp) {
+  template <typename ACC, typename METRIC>
+  void addRmp(const Expression<ACC>& variable, const RiemannianMotionPolicy<ACC, METRIC>& rmp) {
     addExpressionFactor(variable, rmp.acceleration(), noiseModel::Gaussian::Information(rmp.metric()));
   }
 
-  template <typename M, typename TM, typename METRIC>
-  void addRmp(const Expression<TM>& variable, const TM& acc, const METRIC& metric) {
+  template <typename ACC, typename METRIC>
+  void addRmp(const Expression<ACC>& variable, const ACC& acc, const METRIC& metric) {
     addExpressionFactor(variable, acc, noiseModel::Gaussian::Information(metric));
   }
 
