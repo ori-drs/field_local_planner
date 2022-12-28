@@ -24,6 +24,8 @@ set(CATKIN_PACKAGE_LIST
   geometry_msgs
   std_msgs
   nav_msgs
+  pcl_conversions
+  pcl_ros
   roscpp
   tf
   tf_conversions

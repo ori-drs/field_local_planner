@@ -2,7 +2,7 @@
 
 namespace field_local_planner {
 
-BaseLocalPlanner::BaseLocalPlanner() : sensing_ready_(false), point_cloud_(new pcl::PointCloud<pcl::PointXYZI>()) {}
+BaseLocalPlanner::BaseLocalPlanner() : sensing_ready_(false), point_cloud_(new pcl::PointCloud<PointType>()) {}
 
 bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output) {
   if ((ts - last_ts_) < utils::fromSeconds(1 / parameters_.control_rate)) {
@@ -16,7 +16,7 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   computeDistanceAndOrientationToGoal();
 
   // Check status of the controller
-  Status status = checkStatus();
+  State state = checkState();
 
   // Compute twist - planner specific
   Twist twist = computeTwist();
@@ -27,7 +27,7 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   // Make output
   output.twist = twist;
   output.path = path;
-  output.status = status;
+  output.status.state = state;
 
   return true;
 }
@@ -58,20 +58,20 @@ void BaseLocalPlanner::computeDistanceAndOrientationToGoal() {
   orientation_to_start_ = rpy_start.z();
 }
 
-BaseLocalPlanner::Status BaseLocalPlanner::checkStatus() {
+BaseLocalPlanner::State BaseLocalPlanner::checkState() {
   if (parameters_.requires_sensing && !sensing_ready_) {
-    return Status::NOT_READY;
+    return State::NOT_READY;
   }
 
   if (distance_to_goal_ < parameters_.distance_to_goal_thr && orientation_to_goal_ < parameters_.orientation_to_goal_thr) {
-    return Status::FINISHED;
+    return State::FINISHED;
 
   } else if (checkFailure()) {
-    return Status::FAILURE;
+    return State::FAILURE;
 
   } else {
     // All good, it must be working
-    return Status::EXECUTING;
+    return State::EXECUTING;
   }
 }
 
@@ -101,7 +101,7 @@ void BaseLocalPlanner::setImageDepth(const cv::Mat& img, const Pose3& T_f_s, con
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_f_s, const Time& ts) {
+void BaseLocalPlanner::setPointCloud(const pcl::PointCloud<PointType>::Ptr& cloud, const Pose3& T_f_s, const Time& ts) {
   point_cloud_ = cloud;
   T_f_s_pc_ = T_f_s;
   ts_pc_ = ts;

@@ -3,7 +3,6 @@
 #include <gtsam/geometry/Pose3.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <yaml-cpp/yaml.h>
 #include <iostream>
 
 #include <field_local_planner_base/basic_types.hpp>

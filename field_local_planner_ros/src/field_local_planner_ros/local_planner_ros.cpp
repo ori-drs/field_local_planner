@@ -174,8 +174,8 @@ void LocalPlannerRos::gridMapCallback(const grid_map_msgs::GridMap& gridmap_msg)
 }
 
 // Goal callback
-void LocalPlannerRos::goalCallback(const geometry_msgs::PoseStampedConstPtr& goal_msg) {
-  local_planner_plugin_->setGoal(goal_msg->pose, goal_msg->header);
+void LocalPlannerRos::goalCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& goal_msg) {
+  local_planner_plugin_->setGoal(goal_msg->pose.pose, goal_msg->header);
 }
 
 // Joystick callback

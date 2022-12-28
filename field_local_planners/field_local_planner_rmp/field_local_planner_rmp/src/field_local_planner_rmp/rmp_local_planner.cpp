@@ -1,5 +1,4 @@
 #include <math.h>
-#include <yaml-cpp/yaml.h>
 #include <field_local_planner_rmp/rmp_local_planner.hpp>
 
 namespace field_local_planner {

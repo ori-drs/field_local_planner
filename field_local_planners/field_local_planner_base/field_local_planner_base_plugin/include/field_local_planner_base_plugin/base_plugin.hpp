@@ -1,6 +1,7 @@
 #pragma once
 #include <field_local_planner_msgs/Status.h>
 #include <field_local_planner_base/local_planner.hpp>
+#include <field_local_planner_base/basic_types.hpp>
 #include <field_local_planner_base_plugin/utils.hpp>
 
 #include <dynamic_reconfigure/server.h>
@@ -8,11 +9,15 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <grid_map_msgs/GridMap.h>
+#include <nav_msgs/Path.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <nav_msgs/Path.h>
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
@@ -45,6 +50,9 @@ class BasePlugin {
                         const ros::Time& stamp = ros::Time::now());
   bool isValidFrame(const std::string& frame) const;
 
+  // Converters
+  void getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl::PointCloud<PointType>::Ptr& cloud, Pose3& T_f_s);
+
  public:
   // Interfaces for external data
   void setPose(const geometry_msgs::Pose& pose_msg, const std_msgs::Header& header = std_msgs::Header());
@@ -74,6 +82,12 @@ class BasePlugin {
   std::string fixed_frame_;  // usually 'odom' frame
   std::string base_frame_;   // usually 'base' frame
   std::vector<std::string> valid_goal_frames_;
+
+  // Point cloud utils
+  pcl::VoxelGrid<PointType> voxel_filter_;
+  bool grid_map_to_cloud_;
+  double grid_map_to_cloud_range_;
+  double grid_map_to_cloud_filter_size_;
 };
 
 }  // namespace field_local_planner

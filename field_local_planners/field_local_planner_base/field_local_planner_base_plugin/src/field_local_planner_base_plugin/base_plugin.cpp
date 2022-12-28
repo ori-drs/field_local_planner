@@ -17,9 +17,15 @@ void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
   fixed_frame_ = utils::getParameter<std::string>(nh, "fixed_frame");
   base_frame_ = utils::getParameter<std::string>(nh, "base_frame");
   valid_goal_frames_ = utils::getParameterVector<std::string>(nh, "valid_goal_frames");
+
+  grid_map_to_cloud_ = utils::getParameter<bool>(nh, "grid_map_to_cloud");
+  grid_map_to_cloud_range_ = utils::getParameter<double>(nh, "grid_map_to_cloud_range");
+  grid_map_to_cloud_filter_size_ = utils::getParameter<double>(nh, "grid_map_to_cloud_filter_size");
+
+  voxel_filter_.setLeafSize(grid_map_to_cloud_filter_size_, grid_map_to_cloud_filter_size_, grid_map_to_cloud_filter_size_);
 }
 
-bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg, nav_msgs::Path& path,
+bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg, nav_msgs::Path& path_msg,
                          field_local_planner_msgs::Status& status_msg) {
   // Convert stamp
   Time ts = utils::toTimeStamp(stamp);
@@ -32,6 +38,7 @@ bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg
     // Convert to ROS msgs
     twist_msg = utils::toTwistMsg(output.twist);
     status_msg = utils::toStatusMsg(output.status);
+    path_msg = utils::toPathMsg(output.path, base_frame_);
 
     // Publish visualizations
     publishVisualizations();
@@ -65,6 +72,31 @@ void BasePlugin::publishTransform(const Pose3& T_parent_child, const std::string
 
 bool BasePlugin::isValidFrame(const std::string& frame) const {
   return std::find(valid_goal_frames_.begin(), valid_goal_frames_.end(), frame) != valid_goal_frames_.end();
+}
+
+void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl::PointCloud<PointType>::Ptr& cloud, Pose3& T_f_s) {
+  grid_map::GridMap cropped_grid_map;
+  grid_map::Position position(grid_map.getPosition().x(), grid_map.getPosition().y());
+  grid_map::Length length(2.0 * grid_map_to_cloud_range_, 2.0 * grid_map_to_cloud_range_);
+
+  bool success;
+  cropped_grid_map = grid_map.getSubmap(position, length, success);
+
+  // Convert to point_cloud
+  pcl::PointCloud<PointType>::Ptr tmp_cloud(new pcl::PointCloud<PointType>());
+
+  sensor_msgs::PointCloud2 point_cloud;
+  grid_map::GridMapRosConverter::toPointCloud(cropped_grid_map, {"elevation", "traversability"}, "elevation", point_cloud);
+  pcl::fromROSMsg(point_cloud, *tmp_cloud);
+
+  // Filter using voxel_filter
+  voxel_filter_.setInputCloud(tmp_cloud);
+  voxel_filter_.filter(*tmp_cloud);
+
+  // Transform to base frame
+  Pose3 T_b_m = queryTransform(base_frame_, grid_map.getFrameId());
+  pcl::transformPointCloud(*tmp_cloud, *cloud, T_b_m.matrix());
+  T_f_s = queryTransform(fixed_frame_, base_frame_);
 }
 
 void BasePlugin::setPose(const geometry_msgs::Pose& pose_msg, const std_msgs::Header& header) {
@@ -145,7 +177,6 @@ void BasePlugin::setPointCloud(const sensor_msgs::PointCloud2ConstPtr& cloud_msg
   // Convert stamp
   Time ts = utils::toTimeStamp(cloud_msg->header.stamp);
   // local_planner_->setPointCloud(cloud, T_b_s);
-  // local_planner_->setFixedToMapTransform(T_m_f);
   ROS_FATAL("BasePlugin::setPointCloud: Not implemented");
 }
 
@@ -163,6 +194,14 @@ void BasePlugin::setGridMap(const grid_map_msgs::GridMap& grid_map_msg) {
 
   // Set grid map in local planner
   local_planner_->setGridMap(grid_map, T_f_m, ts);
+
+  if (grid_map_to_cloud_) {
+    pcl::PointCloud<PointType>::Ptr cloud;
+    Pose3 T_f_s;
+    getPointCloudFromGridMap(grid_map, cloud, T_f_s);
+
+    local_planner_->setPointCloud(cloud, T_f_s, ts);
+  }
 }
 
 void BasePlugin::setJoyCommand(const geometry_msgs::Twist& twist_msg) {

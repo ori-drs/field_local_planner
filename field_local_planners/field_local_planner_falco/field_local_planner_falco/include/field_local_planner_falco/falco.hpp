@@ -11,7 +11,7 @@ namespace field_local_planner {
 class Falco : public BaseLocalPlanner {
  public:
   struct Parameters : BaseLocalPlanner::Parameters {
-    std::string config_folder = "/local_planners/falco/";  // pathFolder
+    std::string config_folder = "config/";  // pathFolder
 
     double goal_clearance = 0.1;  // goalClearRange
     double robot_clearance = 0.1;
@@ -55,6 +55,7 @@ class Falco : public BaseLocalPlanner {
  public:
   Falco();
   void setParameters(const Parameters& parameters);
+  Parameters getParameters() const;
   Twist computeTwist();
   Path computePath();
 
@@ -103,7 +104,7 @@ class Falco : public BaseLocalPlanner {
   Vector3 path_end_;             // end of the best chosen path
 
   // Path allocation
-  pcl::PointCloud<pcl::PointXYZI>::Ptr map_cloud_stack[NUM_MAP_CLOUD_STACK];
+  pcl::PointCloud<PointType>::Ptr map_cloud_stack[NUM_MAP_CLOUD_STACK];
   pcl::PointCloud<pcl::PointXYZ>::Ptr precomputed_paths_[NUM_GROUPS];  // precomputed trajectories
 
   pcl::PointCloud<pcl::PointXYZI>::Ptr

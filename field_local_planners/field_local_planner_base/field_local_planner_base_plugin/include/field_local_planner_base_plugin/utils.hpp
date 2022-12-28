@@ -5,6 +5,9 @@
 
 #include <eigen_conversions/eigen_msg.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Pose.h>
+#include <nav_msgs/Path.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <tf_conversions/tf_eigen.h>
@@ -12,7 +15,6 @@
 #include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Pose2.h>
 #include <gtsam/geometry/Pose3.h>
-#include <yaml-cpp/yaml.h>
 #include <iostream>
 
 #include <field_local_planner_base/basic_types.hpp>
@@ -124,8 +126,35 @@ static inline geometry_msgs::Twist toTwistMsg(const Twist& twist) {
   return twist_msg;
 }
 
+static inline geometry_msgs::Pose toPoseMsg(const Pose3& pose) {
+  geometry_msgs::Pose pose_msg;
+  Eigen::Isometry3d eigen_pose(pose.matrix());
+  tf::poseEigenToMsg(eigen_pose, pose_msg);
+  return pose_msg;
+}
+
 static inline field_local_planner_msgs::Status toStatusMsg(const BaseLocalPlanner::Status& status) {
-  ROS_FATAL("not implemented");
+  field_local_planner_msgs::Status status_msg;
+  status_msg.state = status.state;
+  status_msg.progress = status.progress;
+  status_msg.header.stamp = ros::Time::now();
+
+  return status_msg;
+}
+
+static inline nav_msgs::Path toPathMsg(const Path& path, const std::string& frame) {
+  ros::Time now = ros::Time::now();
+
+  nav_msgs::Path path_msg;
+  path_msg.header.stamp = now;
+  path_msg.header.frame_id = frame;
+  for (auto p : path) {
+    geometry_msgs::PoseStamped ps;
+    ps.header.stamp = now;
+    ps.pose = toPoseMsg(p);
+    path_msg.poses.push_back(ps);
+  }
+  return path_msg;
 }
 
 static inline tf::Transform toTfTransform(const Pose3& pose) {

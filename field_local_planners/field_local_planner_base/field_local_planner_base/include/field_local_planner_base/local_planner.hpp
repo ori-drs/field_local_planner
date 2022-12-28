@@ -17,7 +17,6 @@
 
 #include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Pose3.h>
-#include <yaml-cpp/yaml.h>
 #include <string>
 
 namespace field_local_planner {
@@ -42,11 +41,16 @@ class BaseLocalPlanner {
   };
 
   // Possible local planner states
-  enum class Status {
+  enum State {
     NOT_READY = 0,  // Initial state
     FINISHED = 1,   // Robot at goal. Do nothing
     EXECUTING = 2,  // Robot trying to reach the goal
     FAILURE = 5,    // Robot cannot make any progress, potentially a failure
+  };
+
+  struct Status {
+    State state;
+    double progress;
   };
 
   // This defines the output of the local planner
@@ -75,7 +79,7 @@ class BaseLocalPlanner {
   bool execute(const Time& ts, Output& output);
 
   // Other steps
-  Status checkStatus();
+  State checkState();
 
   void computeDistanceAndOrientationToGoal();
 
@@ -83,7 +87,7 @@ class BaseLocalPlanner {
   void setImageRgb(const cv::Mat& img, const Pose3& T_f_s, const Time& ts);
   void setImageRgbd(const cv::Mat& img, const Pose3& T_f_s, const Time& ts);
   void setImageDepth(const cv::Mat& img, const Pose3& T_f_s, const Time& ts);
-  void setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_f_s, const Time& ts);
+  void setPointCloud(const pcl::PointCloud<PointType>::Ptr& cloud, const Pose3& T_f_s, const Time& ts);
   void setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_f_s, const Time& ts);
 
   // Set state (pose + twist)
@@ -105,7 +109,7 @@ class BaseLocalPlanner {
   cv::Mat image_rgb_;                                 // RGB (color) image
   cv::Mat image_rgbd_;                                // RGB-D image
   cv::Mat image_depth_;                               // Depth image
-  pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud_;  // Point cloud
+  pcl::PointCloud<PointType>::Ptr point_cloud_;  // Point cloud
   grid_map::GridMap grid_map_;                        // Grid map
   Pose3 T_f_s_rgb_;                                   // Pose of RGB camera in fixed frame
   Pose3 T_f_s_rgbd_;                                  // Pose of RGB-D camera in fixed frame

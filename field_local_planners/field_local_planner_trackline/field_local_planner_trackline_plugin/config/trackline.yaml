@@ -1,0 +1,36 @@
+# Plugin
+local_planner: field_local_planner::TracklinePlugin
+
+# Base settings
+requires_sensing: false # it should be true for all the local planners
+control_rate: 10 # in Hz, rate at which the control command is computed
+base_inverted: false # to flip the orientation of the robot 180 deg
+differential_mode: false # If the robot moves with a differential model
+
+# Robot size
+robot_length: 1.0
+robot_width: 0.5
+robot_height: 0.5
+
+# Frames
+base_frame: base
+fixed_frame: odom
+valid_goal_frames: ["odom", "map"]
+
+# Grid map conversion to cloud
+grid_map_to_cloud: false
+grid_map_to_cloud_range: 2.0
+grid_map_to_cloud_filter_size: 0.05 # meters
+
+# Thresholds
+distance_to_goal_thr: 0.1 # meters
+orientation_to_goal_thr: 0.1  # radians
+
+# Velocity limits
+max_linear_velocity_x: 1.0    # m/s
+max_linear_velocity_y: 1.0    # m/s
+max_angular_velocity_z: 1.0   # rad/s
+
+trackline:
+  angular_gain_p: 1.0
+  linear_gain_p: 1.0

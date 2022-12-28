@@ -42,7 +42,7 @@ class LocalPlannerRos {
   void gridMapCallback(const grid_map_msgs::GridMap& cloud_msg);
 
   // Goal callbacks
-  void goalCallback(const geometry_msgs::PoseStampedConstPtr& goal_msg);
+  void goalCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& goal_msg);
   void joyTwistCallback(const geometry_msgs::TwistConstPtr& twist_msg);
   void newGoalRequestActionHandler();
   void preemptActionHandler();

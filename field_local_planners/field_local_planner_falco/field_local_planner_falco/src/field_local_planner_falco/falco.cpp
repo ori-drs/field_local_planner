@@ -17,6 +17,10 @@ void Falco::setParameters(const Falco::Parameters& p) {
   robot_diameter_ = std::sqrt(std::pow(parameters_.robot_length, 2) + std::pow(parameters_.robot_width, 2));
 }
 
+Falco::Parameters Falco::getParameters() const {
+  return parameters_;
+}
+
 Twist Falco::computeTwist() {
   // check collisions and compute free path
   computeFreePath();
@@ -57,6 +61,7 @@ Twist Falco::computeTwist() {
 
 Path Falco::computePath() {
   // TODO
+  return Path();
 }
 
 //-------------------------------------------------------------------------------------------------
