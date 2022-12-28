@@ -55,4 +55,8 @@ void FalcoPlugin::dynamicReconfigureCallback(FalcoConfig& config, uint32_t level
   //
 }
 
+void FalcoPlugin::publishVisualizations() {
+  // TODO implement
+}
+
 }  // namespace field_local_planner

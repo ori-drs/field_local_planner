@@ -14,7 +14,6 @@
   <arg name="joy_twist_topic"    default=""/>
   <arg name="output_twist_type"  default="twist"/>
   <arg name="output_twist_topic" default="/field_local_planner/twist"/>
-  <arg name="valid_goal_frames"  default="[map, odom]"/>
 
   <!-- Debugging flags -->
   <arg name="debug"          default="false"/>
@@ -36,7 +35,6 @@
     <param name="joy_twist_topic"    value="$(arg joy_twist_topic)"/>
     <param name="output_twist_type"  value="$(arg output_twist_type)"/>
     <param name="output_twist_topic" value="$(arg output_twist_topic)"/>
-    <param name="valid_goal_frames"  value="$(arg valid_goal_frames)"/>
   </node>
 
   <!-- Real carrot -->

@@ -11,6 +11,8 @@ class FalcoPlugin : public BasePlugin {
 
   void loadParameters(ros::NodeHandle& nh);
   void setupRos(ros::NodeHandle& nh);
+  void publishVisualizations();
+
   void dynamicReconfigureCallback(FalcoConfig& config, uint32_t level);
 
  private:

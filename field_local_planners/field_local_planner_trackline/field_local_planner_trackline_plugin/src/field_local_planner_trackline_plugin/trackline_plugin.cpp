@@ -34,4 +34,8 @@ void TracklinePlugin::dynamicReconfigureCallback(TracklineConfig& config, uint32
   //
 }
 
+void TracklinePlugin::publishVisualizations() {
+  // TODO implement
+}
+
 }  // namespace field_local_planner

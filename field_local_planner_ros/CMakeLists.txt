@@ -55,7 +55,7 @@ include_directories(
 
 # Declare node
 add_executable(field_local_planner_node
-               src/field_local_planner_ros/local_planner_handler.cpp
+               src/field_local_planner_ros/local_planner_ros.cpp
                src/local_planner_node.cpp)
 
 target_link_libraries(field_local_planner_node

@@ -3,6 +3,10 @@
 #include <field_local_planner_base_plugin/base_plugin.hpp>
 #include <field_local_planner_rmp/rmp_local_planner.hpp>
 
+#include <ros/ros.h>
+#include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
+
 namespace field_local_planner {
 
 class RmpPlugin : public BasePlugin {
@@ -11,6 +15,8 @@ class RmpPlugin : public BasePlugin {
 
   void loadParameters(ros::NodeHandle& nh);
   void setupRos(ros::NodeHandle& nh);
+  void publishVisualizations();
+
   void dynamicReconfigureCallback(RmpConfig& config, uint32_t level);
 
  private:

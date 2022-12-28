@@ -6,20 +6,23 @@
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 
+#include <field_local_planner_base/basic_types.hpp>
+
 namespace field_local_planner {
 namespace utils {
 
 #define COL_WIDTH 40
 
 using namespace gtsam;
-using Twist = gtsam::Vector6;
-using Path = std::vector<Pose3>;
-
 //-------------------------------------------------------------------------------------------------
 // Data converters
 //-------------------------------------------------------------------------------------------------
 static inline Pose2 toSE2(const Pose3& T_SE3) {
   return Pose2(T_SE3.translation().x(), T_SE3.translation().y(), T_SE3.rotation().yaw());
+}
+
+static inline Time fromSeconds(const double& t) {
+  return (int64_t)floor(t * 1e6);
 }
 
 //-------------------------------------------------------------------------------------------------

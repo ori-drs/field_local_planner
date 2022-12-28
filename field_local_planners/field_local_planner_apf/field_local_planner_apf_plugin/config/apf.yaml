@@ -5,6 +5,7 @@ local_planner: field_local_planner::RmpPlugin
 requires_sensing: true # it should be true for all the local planners
 control_rate: 10 # in Hz, rate at which the control command is computed
 base_inverted: false # to flip the orientation of the robot 180 deg
+differential_mode: false # If the robot moves with a differential model
 
 # Robot size
 robot_length: 1.0
@@ -14,6 +15,7 @@ robot_height: 0.5
 # Frames
 base_frame: base
 fixed_frame: odom
+valid_goal_frames: ["odom", "map"]
 
 # Thresholds
 distance_to_goal_thr: 0.1 # meters
@@ -74,7 +76,7 @@ rmp:
         - sdf_obstacle
       
   # This defines the parameters for the RMPs
-  rmps:
+  policies:
     geodesic_goal:
       weight: 1.0
       gain: 20.0
@@ -133,7 +135,7 @@ rmp:
         steepness: 1.0
     regularization:
       weight: 1.0
-      gain: 1e-6
+      gain: 1.0e-6
       color: [0.0, 0.0, 0.0]
       metric:
         type: constant

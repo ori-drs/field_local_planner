@@ -22,9 +22,9 @@
 
 namespace field_local_planner {
 
-class LocalPlannerHandler {
+class LocalPlannerRos {
  public:
-  LocalPlannerHandler(ros::NodeHandle& nh);
+  LocalPlannerRos(ros::NodeHandle& nh);
 
  private:
   // State callbacks
@@ -37,7 +37,7 @@ class LocalPlannerHandler {
   // void imageRgbdCallback(const sensor_msgs::ImageConstPtr& rgb_msg, const sensor_msgs::ImageConstPtr& depth_msg,
   //                        const sensor_msgs::CameraInfoConstPtr& info_msg);
   // void imageDepthCallback(const sensor_msgs::ImageConstPtr& depth_msg, const sensor_msgs::CameraInfoConstPtr& info_msg);
-  
+
   void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg);
   void gridMapCallback(const grid_map_msgs::GridMap& cloud_msg);
 
@@ -53,13 +53,15 @@ class LocalPlannerHandler {
   void setupRos(ros::NodeHandle& nh);
 
   // Helpers
+  void publishPath(const nav_msgs::Path& path);
+  void publishStatus(const field_local_planner_msgs::Status& status);
   void publishTwist(const geometry_msgs::Twist& twist);
   void publishZeroTwist();
 
  protected:
   std::string local_planner_name_;
   std::shared_ptr<pluginlib::ClassLoader<field_local_planner::BasePlugin>> plugin_loader_;
-  boost::shared_ptr<field_local_planner::BasePlugin> local_planner_;  // The local planner plugin, needs to be boost:shared_ptr
+  boost::shared_ptr<field_local_planner::BasePlugin> local_planner_plugin_;  // The local planner plugin, needs to be boost:shared_ptr
 
   // Subscribers
   ros::Subscriber pose_sub_;
@@ -76,6 +78,7 @@ class LocalPlannerHandler {
 
   // Publishers
   ros::Publisher output_twist_pub_;
+  ros::Publisher path_pub_;
   ros::Publisher status_pub_;
   std::string output_twist_type_;
 

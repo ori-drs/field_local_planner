@@ -21,21 +21,24 @@ class RiemannianMotionPolicy {
   // Internal variables
   Acceleration acceleration_;
   Metric metric_;
+  double weight_;
   std::string name_;
   Vector3 color_;
 
  public:
   // Constructors
-  RiemannianMotionPolicy() : acceleration_(Acceleration::Zero()), metric_(Metric::Identity()), name_("rmp"), color_(1.0, 1.0, 1.0) {}
+  RiemannianMotionPolicy()
+      : acceleration_(Acceleration::Zero()), metric_(Metric::Identity()), weight_(1.0), name_("rmp"), color_(1.0, 1.0, 1.0) {}
 
-  RiemannianMotionPolicy(const Acceleration& acc, const Metric& metric, const std::string& name = "rmp",
-                         const Vector3& color = Vector3::Ones())
+  RiemannianMotionPolicy(const Acceleration& acc, const Metric& metric, const double& weight = 1.0,
+                         const std::string& name = "rmp", const Vector3& color = Vector3::Ones())
       : acceleration_(acc), metric_(metric), name_(name), color_(color) {}
 
   const Acceleration acceleration() const { return acceleration_; }
   const Metric metric() const { return metric_; }
+  const double weight() const { return weight_; }
   const std::string name() const { return name_; }
-  const Vector3 color() const { return color_; } 
+  const Vector3 color() const { return color_; }
 };
 
 using Rmp1 = RiemannianMotionPolicy<Vector1, Matrix1>;

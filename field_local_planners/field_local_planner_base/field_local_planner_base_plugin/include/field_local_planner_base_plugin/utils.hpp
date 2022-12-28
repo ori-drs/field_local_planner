@@ -1,5 +1,4 @@
 #pragma once
-
 #include <ros/console.h>
 #include <ros/ros.h>
 #include <tf/tf.h>
@@ -16,8 +15,12 @@
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 
+#include <field_local_planner_base/basic_types.hpp>
+
 namespace field_local_planner {
 namespace utils {
+
+#define UPDATE_COMMON_PARAMS(VAR) utils::assignAndPrintDiff(#VAR, p.VAR, config.VAR);
 
 //-------------------------------------------------------------------------------------------------
 // Parameter reading
@@ -96,6 +99,16 @@ static inline Twist toTwist(const geometry_msgs::Twist& twist_msg) {
   return twist;
 }
 
+static inline Time toTimeStamp(const ros::Time& t) {
+  return (int64_t)floor(t.toNSec() / 1000);
+}
+
+static inline ros::Time toRosTime(const Time& t) {
+  uint32_t sec = (uint32_t)floor(t * 1e-6);
+  uint32_t nsec = (uint32_t)((t - sec * 1e6) * 1e-3);
+  return ros::Time(sec, nsec);
+}
+
 // To ROS types
 static inline geometry_msgs::Twist toTwistMsg(const Twist& twist) {
   geometry_msgs::Twist twist_msg;
@@ -113,6 +126,14 @@ static inline geometry_msgs::Twist toTwistMsg(const Twist& twist) {
 
 static inline field_local_planner_msgs::Status toStatusMsg(const BaseLocalPlanner::Status& status) {
   ROS_FATAL("not implemented");
+}
+
+static inline tf::Transform toTfTransform(const Pose3& pose) {
+  tf::Transform tf_pose;
+  Eigen::Isometry3d eigen_pose(pose.matrix());
+  tf::transformEigenToTF(eigen_pose, tf_pose);
+  tf_pose.setRotation(tf_pose.getRotation().normalize());
+  return tf_pose;
 }
 
 //-------------------------------------------------------------------------------------------------

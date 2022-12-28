@@ -108,34 +108,42 @@ void Rmp::computeOptimalAcceleration() {
       if (rmp_name == "geodesic_goal") {
         rmp::Rmp3 policy = makeGeodesicGoalPolicy(cp);
         problem.addRmp(acc_se2, policy);
+        cp.rmps[rmp_name] = policy;
 
       } else if (rmp_name == "geodesic_heading") {
         rmp::Rmp3 policy = makeGeodesicHeadingPolicy(cp);
         problem.addRmp(acc_se2, policy);
+        cp.rmps[rmp_name] = policy;
 
       } else if (rmp_name == "goal_position") {
         rmp::Rmp3 policy = makeGoalPositionPolicy(cp);
         problem.addRmp(acc_se2, policy);
+        cp.rmps[rmp_name] = policy;
 
       } else if (rmp_name == "goal_orientation") {
         rmp::Rmp3 policy = makeGoalOrientationPolicy(cp);
         problem.addRmp(acc_se2, policy);
+        cp.rmps[rmp_name] = policy;
 
       } else if (rmp_name == "velocity_heading") {
         rmp::Rmp3 policy = makeVelocityHeadingPolicy(cp);
         problem.addRmp(acc_se2, policy);
+        cp.rmps[rmp_name] = policy;
 
       } else if (rmp_name == "damping") {
         rmp::Rmp3 policy = makeDampingPolicy(cp);
         problem.addRmp(acc_se2, policy);
+        cp.rmps[rmp_name] = policy;
 
       } else if (rmp_name == "sdf_obstacle") {
         rmp::Rmp2 policy = makeSdfObstaclePolicy(cp);
         problem.addRmp(rmp::pullback(cp_, acc_se2), policy);
+        cp.rmps[rmp_name] = convertToRmp3(policy);
 
       } else if (rmp_name == "regularization") {
         rmp::Rmp3 policy = makeRegularizationPolicy(cp);
         problem.addRmp(acc_se2, policy);
+        cp.rmps[rmp_name] = policy;
 
       } else {
         std::cout << "WARNING: motion policy [" << rmp_name << "] not implemented" << std::endl;
@@ -226,17 +234,16 @@ rmp::Rmp3 Rmp::makeGeodesicGoalPolicy(ControlPoint& cp) {
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGradientPositionPolicy(grad_in_base, params.gain);
-  Matrix3 metric =
-      rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric, rmp_name, params.color);
+  return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeGeodesicHeadingPolicy(ControlPoint& cp) {
   const std::string rmp_name = "geodesic_heading";
 
-  // Precompute geodesic gradients
+  // Get gradients
   double distance = 0;
   Vector2 grad_in_base;
   getGradientsFromGridMap("geodesic", T_m_b_SE2_, distance, grad_in_base);
@@ -244,11 +251,10 @@ rmp::Rmp3 Rmp::makeGeodesicHeadingPolicy(ControlPoint& cp) {
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGradientOrientationPolicy(grad_in_base, params.gain);
-  Matrix3 metric =
-      rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_, params.weight);
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric, rmp_name, params.color);
+  return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeGoalPositionPolicy(ControlPoint& cp) {
@@ -258,10 +264,10 @@ rmp::Rmp3 Rmp::makeGoalPositionPolicy(ControlPoint& cp) {
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGoalPositionPolicy(T_f_b_SE2_, T_f_g_SE2_, params.gain);
   Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
-                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric, rmp_name, params.color);
+  return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeGoalOrientationPolicy(ControlPoint& cp) {
@@ -271,10 +277,10 @@ rmp::Rmp3 Rmp::makeGoalOrientationPolicy(ControlPoint& cp) {
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGoalOrientationPolicy(T_f_b_SE2_, T_f_g_SE2_, params.gain);
   Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
-                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric, rmp_name, params.color);
+  return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeVelocityHeadingPolicy(ControlPoint& cp) {
@@ -284,10 +290,10 @@ rmp::Rmp3 Rmp::makeVelocityHeadingPolicy(ControlPoint& cp) {
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeVelocityOrientationPolicy(velocity_2d_, Vector2(1.0, 0.0), params.gain);
   Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
-                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric, rmp_name, params.color);
+  return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeDampingPolicy(ControlPoint& cp) {
@@ -297,10 +303,10 @@ rmp::Rmp3 Rmp::makeDampingPolicy(ControlPoint& cp) {
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeDampingPolicy(velocity_2d_, params.gain);
   Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
-                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric, rmp_name, params.color);
+  return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
 }
 
 rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
@@ -312,7 +318,7 @@ rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
   // This RMP is annoying since it requires 2d data
   Vector2 velocity = velocity_2d_.head<2>();
 
-  // Precompute geodesic gradients
+  // Get gradients
   double distance = 0;
   Vector2 grad_in_base;
   getGradientsFromGridMap("sdf", T_m_cp_SE2_, distance, grad_in_base);
@@ -321,10 +327,10 @@ rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector2 acc = rmp::MotionPolicy::makeObstaclePolicy(grad_in_base, distance, params.gain);
-  Matrix2 metric = rmp::Metric2::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity, params.weight);
+  Matrix2 metric = rmp::Metric2::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp2(acc, metric, rmp_name, params.color);
+  return rmp::Rmp2(acc, metric, params.weight, rmp_name, params.color);
 }
 
 rmp::Rmp3 Rmp::makeRegularizationPolicy(ControlPoint& cp) {
@@ -334,10 +340,20 @@ rmp::Rmp3 Rmp::makeRegularizationPolicy(ControlPoint& cp) {
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = optimal_acc_;
   Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
-                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_, params.weight);
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_);
 
   // Return Riemannian Motion Policy
-  return rmp::Rmp3(acc, metric, rmp_name, params.color);
+  return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
+}
+
+rmp::Rmp3 Rmp::convertToRmp3(const rmp::Rmp2& rmp) {
+  Vector3 acc = Vector3::Zero();
+  acc.head<2>() = rmp.acceleration();
+
+  Matrix3 metric = Matrix3::Zero();
+  metric.block(0, 0, 2, 2) = rmp.metric();
+
+  return rmp::Rmp3(acc, metric, rmp.weight(), rmp.name(), rmp.color());
 }
 
 }  // namespace field_local_planner

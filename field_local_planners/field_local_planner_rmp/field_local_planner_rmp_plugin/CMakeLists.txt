@@ -22,6 +22,7 @@ set(CATKIN_PACKAGE_LIST
   field_local_planner_rmp
   pluginlib
   roscpp
+  visualization_msgs
 )
 
 find_package(catkin REQUIRED COMPONENTS

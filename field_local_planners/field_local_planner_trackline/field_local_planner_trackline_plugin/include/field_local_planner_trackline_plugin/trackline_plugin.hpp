@@ -11,6 +11,8 @@ class TracklinePlugin : public BasePlugin {
 
   void loadParameters(ros::NodeHandle& nh);
   void setupRos(ros::NodeHandle& nh);
+  void publishVisualizations();
+
   void dynamicReconfigureCallback(TracklineConfig& config, uint32_t level);
 
  private:

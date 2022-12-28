@@ -22,40 +22,38 @@ class Metric {
                      const double& offset = 0.0,     // offset used for logistic-like metrics
                      const double& steepness = 0.0,  // stepness for logistic-like metrics
                      const double& state = 0.0,      // 'state' - a value to evaluate the metric
-                     const TM& twist = TM::Zero(),   // velocity (if required)
-                     const double& weight = 1.0     // weight of the metric
+                     const TM& twist = TM::Zero()   // velocity (if required)
   ) {
     // Check different types of metric
     if (type == "logistic") {
-      return makeLogisticMetric(state, offset, steepness, weight);
+      return makeLogisticMetric(state, offset, steepness);
 
     } else if (type == "inv_logistic") {
-      return makeInverseLogisticMetric(state, offset, steepness, weight);
+      return makeInverseLogisticMetric(state, offset, steepness);
 
     } else if (type == "velocity") {
-      return makeVelocityMetric(state, offset, steepness, twist, weight);
+      return makeVelocityMetric(state, offset, steepness, twist);
 
     } else {
       // Constant metric
-      return makeConstantMetric(weight);
+      return makeConstantMetric();
     }
   }
 
   // Explicit methods for each metric
-  static METRIC makeLogisticMetric(const double& state, const double& offset, const double& steepness, const double& weight = 1.0) {
-    return weight * logistic(state, offset, steepness) * METRIC::Identity();
+  static METRIC makeLogisticMetric(const double& state, const double& offset, const double& steepness) {
+    return logistic(state, offset, steepness) * METRIC::Identity();
   }
 
-  static METRIC makeInverseLogisticMetric(const double& state, const double& offset, const double& steepness, const double& weight = 1.0) {
-    return weight * inverseLogistic(state, offset, steepness) * METRIC::Identity();
+  static METRIC makeInverseLogisticMetric(const double& state, const double& offset, const double& steepness) {
+    return inverseLogistic(state, offset, steepness) * METRIC::Identity();
   }
 
-  static METRIC makeVelocityMetric(const double& state, const double& offset, const double& steepness, const TM& twist,
-                                   const double& weight = 1.0) {
-    return weight * inverseLogistic(state, offset, steepness) * METRIC(twist * twist.transpose());
+  static METRIC makeVelocityMetric(const double& state, const double& offset, const double& steepness, const TM& twist) {
+    return inverseLogistic(state, offset, steepness) * METRIC(twist * twist.transpose());
   }
 
-  static METRIC makeConstantMetric(const double& weight = 1.0) { return weight * METRIC::Identity(); }
+  static METRIC makeConstantMetric() { return METRIC::Identity(); }
 
   // helpers
   static double logistic(double x, double x0, double k) { return 1.0 / (1 + exp(-k * (x - x0))); }

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <field_local_planner_base/basic_types.hpp>
 #include <field_local_planner_base/profiler.hpp>
 #include <field_local_planner_base/timer.hpp>
+#include <field_local_planner_base/utils.hpp>
 
 #include <grid_map_core/GridMap.hpp>
 
@@ -21,8 +23,6 @@
 namespace field_local_planner {
 
 using namespace gtsam;
-using Twist = gtsam::Vector6;
-using Path = std::vector<Pose3>;
 
 class BaseLocalPlanner {
  public:
@@ -30,7 +30,7 @@ class BaseLocalPlanner {
     bool requires_sensing = true;
     bool base_inverted = false;
     bool differential_mode = false;
-    double control_rate = false;
+    double control_rate = 10.0;
     double robot_length = 1.0;
     double robot_width = 1.0;
     double robot_height = 1.0;
@@ -72,7 +72,7 @@ class BaseLocalPlanner {
   void setParameters(const Parameters& parameters);
 
   // Main method to execute the local planner
-  Output execute();
+  bool execute(const Time& ts, Output& output);
 
   // Other steps
   Status checkStatus();
@@ -80,24 +80,27 @@ class BaseLocalPlanner {
   void computeDistanceAndOrientationToGoal();
 
   // Interfaces for external data
-  void setImageRgb(const cv::Mat& img, const Pose3& T_f_s);
-  void setImageRgbd(const cv::Mat& img, const Pose3& T_f_s);
-  void setImageDepth(const cv::Mat& img, const Pose3& T_f_s);
-  void setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_f_s);
-  void setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_f_s);
+  void setImageRgb(const cv::Mat& img, const Pose3& T_f_s, const Time& ts);
+  void setImageRgbd(const cv::Mat& img, const Pose3& T_f_s, const Time& ts);
+  void setImageDepth(const cv::Mat& img, const Pose3& T_f_s, const Time& ts);
+  void setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_f_s, const Time& ts);
+  void setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_f_s, const Time& ts);
 
   // Set state (pose + twist)
-  void setPoseInFixed(const Pose3& T_f_b);
-  void setVelocityInBase(const Twist& b_v);
+  void setPoseInFixed(const Pose3& T_f_b, const Time& ts);
+  void setVelocityInBase(const Twist& b_v, const Time& ts);
 
   // Set single goal
-  void setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b);
+  void setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, const Time& ts);
 
  public:
   // Parameters
   Parameters parameters_;
 
  protected:
+  // Timestamp
+  Time last_ts_;
+
   // Possible sensor modalities and their sensor poses in the base frame
   cv::Mat image_rgb_;                                 // RGB (color) image
   cv::Mat image_rgbd_;                                // RGB-D image
@@ -109,6 +112,11 @@ class BaseLocalPlanner {
   Pose3 T_f_s_depth_;                                 // Pose of Depth camera in fixed frame
   Pose3 T_f_s_pc_;                                    // Pose of point cloud in fixed frame
   Pose3 T_f_s_gm_;                                    // Pose of grid map in fixed frame
+  Time ts_rgb_;                                       // Timestamp of RGB
+  Time ts_rgbd_;                                      // Timestamp of RGB-D
+  Time ts_depth_;                                     // Timestamp of Depth
+  Time ts_pc_;                                        // Timestamp of point cloud
+  Time ts_gm_;                                        // Timestamp of grid map
 
   // Robot state
   Pose3 T_f_b_;  // Pose of base in fixed frame
@@ -117,6 +125,11 @@ class BaseLocalPlanner {
   // Goal
   Pose3 T_f_b_start_;  // Pose when the goal was set
   Pose3 T_f_g_;        // Goal in fixed frame
+
+  // Timestamps
+  Time ts_T_f_b_;
+  Time ts_b_v_;
+  Time ts_T_f_g_;
 
   // Helpers
   Pose3 dT_b_g_;                 // Pose difference w.r.t goal

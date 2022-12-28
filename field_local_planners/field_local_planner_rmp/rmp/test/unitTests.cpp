@@ -13,6 +13,7 @@
 #include <gtsam/nonlinear/Values.h>
 
 #include <vector>
+#include <boost/any.hpp>
 
 using namespace std;
 using namespace gtsam;

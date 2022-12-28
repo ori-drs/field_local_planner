@@ -38,7 +38,7 @@ class Rmp : public BaseLocalPlanner {
     Vector2 point_factor;                    // Factor used to scale the robot size and get the position
     Vector3 color;                           // color for visualization
     std::vector<std::string> affected_by;    // RMPs that affect the control point
-    std::map<std::string, boost::any> rmps;  // RMPs used for visualization
+    std::map<std::string, rmp::Rmp3> rmps;  // RMPs used for visualization
   };
 
   using ControlPoints = std::vector<Rmp::ControlPoint>;
@@ -80,6 +80,9 @@ class Rmp : public BaseLocalPlanner {
 
   // Helper to query layers of the grid map
   void getGradientsFromGridMap(const std::string& layer, const Pose2& T_m_b_query, double& distance, Vector2& grad_in_base);
+
+  // Convert Rmp2 to Rmp3 for visualization purposes
+  rmp::Rmp3 convertToRmp3(const rmp::Rmp2& rmp);
 
  protected:
   Parameters parameters_;

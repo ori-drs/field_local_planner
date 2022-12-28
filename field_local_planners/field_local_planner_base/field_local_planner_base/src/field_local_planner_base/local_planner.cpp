@@ -4,7 +4,14 @@ namespace field_local_planner {
 
 BaseLocalPlanner::BaseLocalPlanner() : sensing_ready_(false), point_cloud_(new pcl::PointCloud<pcl::PointXYZI>()) {}
 
-BaseLocalPlanner::Output BaseLocalPlanner::execute() {
+bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output) {
+  if ((ts - last_ts_) < utils::fromSeconds(1 / parameters_.control_rate)) {
+    return false;
+  }
+  
+  // Save current timestamp
+  last_ts_ = ts;
+
   // Check distance and orientation to goal
   computeDistanceAndOrientationToGoal();
 
@@ -18,12 +25,11 @@ BaseLocalPlanner::Output BaseLocalPlanner::execute() {
   Path path = computePath();
 
   // Make output
-  Output output;
   output.twist = twist;
   output.path = path;
   output.status = status;
 
-  return output;
+  return true;
 }
 
 // Other steps
@@ -74,51 +80,59 @@ bool BaseLocalPlanner::checkFailure() {
 }
 
 // Interfaces for external data
-void BaseLocalPlanner::setImageRgb(const cv::Mat& img, const Pose3& T_f_s) {
+void BaseLocalPlanner::setImageRgb(const cv::Mat& img, const Pose3& T_f_s, const Time& ts) {
   image_rgb_ = img.clone();
   T_f_s_rgb_ = T_f_s;
+  ts_rgb_ = ts;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setImageRgbd(const cv::Mat& img, const Pose3& T_f_s) {
+void BaseLocalPlanner::setImageRgbd(const cv::Mat& img, const Pose3& T_f_s, const Time& ts) {
   image_rgbd_ = img.clone();
   T_f_s_rgbd_ = T_f_s;
+  ts_rgbd_ = ts;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setImageDepth(const cv::Mat& img, const Pose3& T_f_s) {
+void BaseLocalPlanner::setImageDepth(const cv::Mat& img, const Pose3& T_f_s, const Time& ts) {
   image_depth_ = img.clone();
   T_f_s_depth_ = T_f_s;
+  ts_depth_ = ts;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_f_s) {
+void BaseLocalPlanner::setPointCloud(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, const Pose3& T_f_s, const Time& ts) {
   point_cloud_ = cloud;
   T_f_s_pc_ = T_f_s;
+  ts_pc_ = ts;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_f_s) {
+void BaseLocalPlanner::setGridMap(const grid_map::GridMap& grid_map, const Pose3& T_f_s, const Time& ts) {
   grid_map_ = grid_map;
   T_f_s_gm_ = T_f_s;
+  ts_gm_ = ts;
   sensing_ready_ = true;
 }
 
 // Set single goal
-void BaseLocalPlanner::setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b) {
+void BaseLocalPlanner::setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, const Time& ts) {
   T_f_g_ = T_f_g;
   T_f_b_start_ = T_f_b;
+  ts_T_f_g_ = ts;
   sensing_ready_ = true;
 }
 
 // Set state (pose + twist)
-void BaseLocalPlanner::setPoseInFixed(const Pose3& T_f_b) {
+void BaseLocalPlanner::setPoseInFixed(const Pose3& T_f_b, const Time& ts) {
   T_f_b_ = T_f_b;
+  ts_T_f_b_ = ts;
   sensing_ready_ = true;
 }
 
-void BaseLocalPlanner::setVelocityInBase(const Twist& b_v) {
+void BaseLocalPlanner::setVelocityInBase(const Twist& b_v, const Time& ts) {
   b_v_ = b_v_;
+  ts_b_v_ = ts;
   sensing_ready_ = true;
 }
 
