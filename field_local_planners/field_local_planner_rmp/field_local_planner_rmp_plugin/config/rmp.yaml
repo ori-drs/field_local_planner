@@ -52,7 +52,7 @@ rmp:
         - geodesic_goal
         - geodesic_heading
         - goal_orientation
-        - regularization
+        # - regularization
         - damping
     -
       id: front_left
@@ -87,54 +87,54 @@ rmp:
   policies:
     geodesic_goal:
       weight: 1.0
-      gain: 20.0
-      color: [1.0, 1.0, 0.0] # yellow
-      metric:
-        type: logistic
-        offset: 0.0
-        steepness: 20.0
-    geodesic_heading:
-      weight: 1.0
-      gain: 20.0
+      gain: 10.0
       color: [1.0, 1.0, 0.0] # yellow
       metric:
         type: logistic
         offset: 0.5
-        steepness: 20.0
+        steepness: 10.0
+    geodesic_heading:
+      weight: 0.0 # 1.0
+      gain: 10.0
+      color: [1.0, 1.0, 0.0] # yellow
+      metric:
+        type: logistic
+        offset: 0.5
+        steepness: 10.0
     goal_position:
       weight: 0.0
-      gain: 20.0
+      gain: 10.0
       color: [1.0, 0.5, 0.0] # orange
       metric:
         type: inv_logistic
         offset: 0.5
-        steepness: 20.0
+        steepness: 10.0
     goal_orientation:
-      weight: 1.0
-      gain: 20.0
+      weight: 0.0 # 1.0
+      gain: 10.0
       color: [1.0, 0.5, 0.0] # orange
       metric:
         type: inv_logistic
         offset: 0.5
-        steepness: 20.0
+        steepness: 10.0
     velocity_heading:
       weight: 0.0
-      gain: 10.0
+      gain: 1.0
       color: [0.0, 1.0, 0.0] # green
       metric:
         type: logistic
         offset: 1.0
-        steepness: 20.0
+        steepness: 10.0
     damping:
-      weight: 1.0
-      gain: 0.5
+      weight: 0.0 # 1.0
+      gain: 0.1
       color: [0.0, 0.0, 1.0] # blue
       metric:
         type: constant
         offset: 1.0
         steepness: 1.0
     sdf_obstacle:
-      weight: 1.0
+      weight: 0.0 # 1.0
       gain: 1.0
       color: [1.0, 0.0, 0.0] # red
       metric:
@@ -142,7 +142,7 @@ rmp:
         offset: 0.3
         steepness: 10.0
     regularization:
-      weight: 1.0
+      weight: 0.0 # 1.0
       gain: 1.0e-6
       color: [0.0, 0.0, 0.0] # black
       metric:

@@ -79,6 +79,8 @@ void RmpPlugin::loadParameters(ros::NodeHandle& nh) {
 void RmpPlugin::setupRos(ros::NodeHandle& nh) {
   dynamic_reconfigure_callback_ = boost::bind(&RmpPlugin::dynamicReconfigureCallback, this, _1, _2);
   dynamic_reconfigure_server_.setCallback(dynamic_reconfigure_callback_);
+
+  control_points_pub_ = nh.advertise<visualization_msgs::MarkerArray>(ros::this_node::getName() + "/rmp/control_points", 10);
 }
 
 void RmpPlugin::dynamicReconfigureCallback(RmpConfig& config, uint32_t level) {
@@ -87,9 +89,9 @@ void RmpPlugin::dynamicReconfigureCallback(RmpConfig& config, uint32_t level) {
 #define UPDATE_RMP(RMP)                 \
   UPDATE_RMP_PARAMS(RMP, weight)        \
   UPDATE_RMP_PARAMS(RMP, gain)          \
-  UPDATE_RMP_PARAMS(RMP, metric_type)   \
-  UPDATE_RMP_PARAMS(RMP, metric_offset) \
-  UPDATE_RMP_PARAMS(RMP, metric_steepness)
+  // UPDATE_RMP_PARAMS(RMP, metric_type)   \
+  // UPDATE_RMP_PARAMS(RMP, metric_offset) \
+  // UPDATE_RMP_PARAMS(RMP, metric_steepness)
 
   Rmp::Parameters p = std::dynamic_pointer_cast<Rmp>(local_planner_)->getParameters();
   Rmp::ControlPoints cps = std::dynamic_pointer_cast<Rmp>(local_planner_)->getControlPoints();
@@ -287,6 +289,9 @@ void RmpPlugin::publishVisualizations() {
       i++;
     }
   }
+
+  // Publish
+  control_points_pub_.publish(cp_vis);
 }
 
 }  // namespace field_local_planner

@@ -1,0 +1,537 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+        - /TF1
+        - /Local Planner Path1
+        - /GridMap1
+      Splitter Ratio: 0.5
+    Tree Height: 787
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        LF_FOOT:
+          Value: true
+        LF_HAA:
+          Value: true
+        LF_HFE:
+          Value: true
+        LF_HIP:
+          Value: true
+        LF_KFE:
+          Value: true
+        LF_SHANK:
+          Value: true
+        LF_THIGH:
+          Value: true
+        LF_hip_fixed:
+          Value: true
+        LF_shank_fixed:
+          Value: true
+        LF_thigh_fixed:
+          Value: true
+        LH_FOOT:
+          Value: true
+        LH_HAA:
+          Value: true
+        LH_HFE:
+          Value: true
+        LH_HIP:
+          Value: true
+        LH_KFE:
+          Value: true
+        LH_SHANK:
+          Value: true
+        LH_THIGH:
+          Value: true
+        LH_hip_fixed:
+          Value: true
+        LH_shank_fixed:
+          Value: true
+        LH_thigh_fixed:
+          Value: true
+        RF_FOOT:
+          Value: true
+        RF_HAA:
+          Value: true
+        RF_HFE:
+          Value: true
+        RF_HIP:
+          Value: true
+        RF_KFE:
+          Value: true
+        RF_SHANK:
+          Value: true
+        RF_THIGH:
+          Value: true
+        RF_hip_fixed:
+          Value: true
+        RF_shank_fixed:
+          Value: true
+        RF_thigh_fixed:
+          Value: true
+        RH_FOOT:
+          Value: true
+        RH_HAA:
+          Value: true
+        RH_HFE:
+          Value: true
+        RH_HIP:
+          Value: true
+        RH_KFE:
+          Value: true
+        RH_SHANK:
+          Value: true
+        RH_THIGH:
+          Value: true
+        RH_hip_fixed:
+          Value: true
+        RH_shank_fixed:
+          Value: true
+        RH_thigh_fixed:
+          Value: true
+        base:
+          Value: true
+        base_inertia:
+          Value: true
+        battery:
+          Value: true
+        body_top:
+          Value: true
+        bottom_shell:
+          Value: true
+        control:
+          Value: true
+        depth_camera_front_camera:
+          Value: true
+        depth_camera_front_camera_parent:
+          Value: true
+        depth_camera_front_color_frame:
+          Value: true
+        depth_camera_front_color_optical_frame:
+          Value: true
+        depth_camera_front_depth_optical_frame:
+          Value: true
+        depth_camera_left_camera:
+          Value: true
+        depth_camera_left_camera_parent:
+          Value: true
+        depth_camera_left_color_frame:
+          Value: true
+        depth_camera_left_color_optical_frame:
+          Value: true
+        depth_camera_left_depth_optical_frame:
+          Value: true
+        depth_camera_rear_camera:
+          Value: true
+        depth_camera_rear_camera_parent:
+          Value: true
+        depth_camera_rear_color_frame:
+          Value: true
+        depth_camera_rear_color_optical_frame:
+          Value: true
+        depth_camera_rear_depth_optical_frame:
+          Value: true
+        depth_camera_right_camera:
+          Value: true
+        depth_camera_right_camera_parent:
+          Value: true
+        depth_camera_right_color_frame:
+          Value: true
+        depth_camera_right_color_optical_frame:
+          Value: true
+        depth_camera_right_depth_optical_frame:
+          Value: true
+        docking_hatch_cover:
+          Value: true
+        face_front:
+          Value: true
+        face_rear:
+          Value: true
+        feetcenter:
+          Value: true
+        floorplan_tf:
+          Value: true
+        footprint:
+          Value: true
+        front_handle:
+          Value: true
+        goal_local_planner:
+          Value: true
+        handle:
+          Value: true
+        hatch:
+          Value: true
+        imu_link:
+          Value: true
+        interface_hatch:
+          Value: true
+        lidar:
+          Value: true
+        lidar_cage:
+          Value: true
+        loco_footprint:
+          Value: true
+        map:
+          Value: true
+        odom:
+          Value: true
+        point_cloud_odom:
+          Value: true
+        remote:
+          Value: true
+        top_shell:
+          Value: true
+        wide_angle_camera_front_camera:
+          Value: true
+        wide_angle_camera_front_camera_parent:
+          Value: true
+        wide_angle_camera_rear_camera:
+          Value: true
+        wide_angle_camera_rear_camera_parent:
+          Value: true
+      Marker Alpha: 1
+      Marker Scale: 0.25
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        odom:
+          base:
+            LF_HAA:
+              LF_HIP:
+                LF_hip_fixed:
+                  LF_HFE:
+                    LF_THIGH:
+                      LF_thigh_fixed:
+                        LF_KFE:
+                          LF_SHANK:
+                            LF_shank_fixed:
+                              LF_FOOT:
+                                {}
+            LH_HAA:
+              LH_HIP:
+                LH_hip_fixed:
+                  LH_HFE:
+                    LH_THIGH:
+                      LH_thigh_fixed:
+                        LH_KFE:
+                          LH_SHANK:
+                            LH_shank_fixed:
+                              LH_FOOT:
+                                {}
+            RF_HAA:
+              RF_HIP:
+                RF_hip_fixed:
+                  RF_HFE:
+                    RF_THIGH:
+                      RF_thigh_fixed:
+                        RF_KFE:
+                          RF_SHANK:
+                            RF_shank_fixed:
+                              RF_FOOT:
+                                {}
+            RH_HAA:
+              RH_HIP:
+                RH_hip_fixed:
+                  RH_HFE:
+                    RH_THIGH:
+                      RH_thigh_fixed:
+                        RH_KFE:
+                          RH_SHANK:
+                            RH_shank_fixed:
+                              RH_FOOT:
+                                {}
+            base_inertia:
+              {}
+            battery:
+              {}
+            body_top:
+              {}
+            bottom_shell:
+              {}
+            depth_camera_left_camera:
+              depth_camera_left_camera_parent:
+                depth_camera_left_color_frame:
+                  depth_camera_left_color_optical_frame:
+                    {}
+                depth_camera_left_depth_optical_frame:
+                  {}
+            depth_camera_right_camera:
+              depth_camera_right_camera_parent:
+                depth_camera_right_color_frame:
+                  depth_camera_right_color_optical_frame:
+                    {}
+                depth_camera_right_depth_optical_frame:
+                  {}
+            docking_hatch_cover:
+              {}
+            face_front:
+              depth_camera_front_camera:
+                depth_camera_front_camera_parent:
+                  depth_camera_front_color_frame:
+                    depth_camera_front_color_optical_frame:
+                      {}
+                  depth_camera_front_depth_optical_frame:
+                    {}
+              wide_angle_camera_front_camera:
+                wide_angle_camera_front_camera_parent:
+                  {}
+            face_rear:
+              depth_camera_rear_camera:
+                depth_camera_rear_camera_parent:
+                  depth_camera_rear_color_frame:
+                    depth_camera_rear_color_optical_frame:
+                      {}
+                  depth_camera_rear_depth_optical_frame:
+                    {}
+              wide_angle_camera_rear_camera:
+                wide_angle_camera_rear_camera_parent:
+                  {}
+            front_handle:
+              {}
+            handle:
+              {}
+            imu_link:
+              {}
+            interface_hatch:
+              hatch:
+                {}
+            lidar_cage:
+              lidar:
+                {}
+            remote:
+              {}
+            top_shell:
+              {}
+          control:
+            {}
+          feetcenter:
+            {}
+          footprint:
+            {}
+          goal_local_planner:
+            {}
+          loco_footprint:
+            {}
+          map:
+            floorplan_tf:
+              {}
+          point_cloud_odom:
+            {}
+      Update Interval: 0
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/PoseWithCovariance
+      Color: 255; 25; 0
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Goal
+      Queue Size: 10
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic: /field_local_planner/current_goal
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 25; 255; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.20000000298023224
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Local Planner Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: Axes
+      Queue Size: 10
+      Radius: 0.019999999552965164
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /field_local_planner/path
+      Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /field_local_planner/rmp/control_points
+      Name: RMP Control Points
+      Namespaces:
+        acc_damping: true
+        acc_geodesic_goal: true
+        acc_geodesic_heading: true
+        acc_goal_orientation: true
+        acc_sdf_obstacle: true
+        control_point: true
+        metric_damping: true
+        metric_geodesic_goal: true
+        metric_geodesic_heading: true
+        metric_goal_orientation: true
+        metric_sdf_obstacle: true
+      Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Class: grid_map_rviz_plugin/GridMap
+      Color: 200; 200; 200
+      Color Layer: geodesic
+      Color Transformer: GridMapLayer
+      ColorMap: plasma
+      Enabled: true
+      Grid Cell Decimation: 1
+      Grid Line Thickness: 0.10000000149011612
+      Height Layer: elevation
+      Height Transformer: GridMapLayer
+      History Length: 1
+      Invert ColorMap: true
+      Max Color: 255; 255; 255
+      Max Intensity: 10
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: GridMap
+      Show Grid Lines: true
+      Topic: /elevation_mapping/elevation_map_filtered
+      Unreliable: false
+      Use ColorMap: true
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Default Light: true
+    Fixed Frame: odom
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
+      Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/ThirdPersonFollower
+      Distance: 6.192608833312988
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Field of View: 0.7853981852531433
+      Focal Point:
+        X: -0.30970287322998047
+        Y: -0.26881134510040283
+        Z: 0
+      Focal Shape Fixed Size: false
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.8603980541229248
+      Target Frame: base
+      Yaw: 2.755399227142334
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1016
+  Hide Left Dock: false
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd0000000400000000000001560000039efc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000039e000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000039efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000039e000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007380000003efc0100000002fb0000000800540069006d0065000000000000000738000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004c70000039e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 1848
+  X: 72
+  Y: 27

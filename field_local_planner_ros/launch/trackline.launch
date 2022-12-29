@@ -2,7 +2,7 @@
 <launch>
 
   <!-- Load local planner parameters -->
-  <rosparam ns="field_local_planner_ros" file="$(find field_local_planner_trackline_plugin)/config/trackline.yaml"/>
+  <rosparam ns="field_local_planner" file="$(find field_local_planner_trackline_plugin)/config/trackline.yaml"/>
   
   <!-- Debugging flags -->
   <arg name="debug"          default="false"/>

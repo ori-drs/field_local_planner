@@ -23,6 +23,9 @@ class RmpPlugin : public BasePlugin {
   // Dynamic reconfigure
   dynamic_reconfigure::Server<RmpConfig> dynamic_reconfigure_server_;
   dynamic_reconfigure::Server<RmpConfig>::CallbackType dynamic_reconfigure_callback_;
+
+  // Visualization publisher
+  ros::Publisher control_points_pub_;
 };
 
 }  // namespace field_local_planner

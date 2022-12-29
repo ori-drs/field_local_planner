@@ -1,7 +1,7 @@
 #pragma once
 #include <field_local_planner_msgs/Status.h>
-#include <field_local_planner_base/local_planner.hpp>
 #include <field_local_planner_base/basic_types.hpp>
+#include <field_local_planner_base/local_planner.hpp>
 #include <field_local_planner_base_plugin/utils.hpp>
 
 #include <dynamic_reconfigure/server.h>
@@ -41,6 +41,7 @@ class BasePlugin {
   // Initializes the plugin
   void initialize(ros::NodeHandle& nh);
   void loadBaseParameters(ros::NodeHandle& nh);
+  void setupBaseRos(ros::NodeHandle& nh);
   bool execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg, nav_msgs::Path& path, field_local_planner_msgs::Status& status_msg);
 
  private:
@@ -48,6 +49,7 @@ class BasePlugin {
   Pose3 queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp = ros::Time::now());
   void publishTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
                         const ros::Time& stamp = ros::Time::now());
+  void publishCurrentGoal(const Pose3& T_fixed_goal, const std::string& fixed_frame, const ros::Time& stamp = ros::Time::now());
   bool isValidFrame(const std::string& frame) const;
 
   // Converters
@@ -77,6 +79,9 @@ class BasePlugin {
   // TF
   tf::TransformListener tf_listener_;
   tf::TransformBroadcaster tf_broadcaster_;
+
+  // Goal publisher
+  ros::Publisher current_goal_pub_;
 
   // Frames
   std::string fixed_frame_;  // usually 'odom' frame

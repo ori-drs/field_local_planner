@@ -10,6 +10,7 @@ void BasePlugin::initialize(ros::NodeHandle& nh) {
   loadParameters(nh);
 
   // Setup ROS publishers and subscribers
+  setupBaseRos(nh);
   setupRos(nh);
 }
 
@@ -23,6 +24,11 @@ void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
   grid_map_to_cloud_filter_size_ = utils::getParameter<double>(nh, "grid_map_to_cloud_filter_size");
 
   voxel_filter_.setLeafSize(grid_map_to_cloud_filter_size_, grid_map_to_cloud_filter_size_, grid_map_to_cloud_filter_size_);
+}
+
+void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
+  // Current goal
+  current_goal_pub_ = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>(ros::this_node::getName() + "/current_goal", 10);
 }
 
 bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg, nav_msgs::Path& path_msg,
@@ -68,6 +74,14 @@ void BasePlugin::publishTransform(const Pose3& T_parent_child, const std::string
                                   const ros::Time& stamp) {
   tf::Transform tf_parent_child = utils::toTfTransform(T_parent_child);
   tf_broadcaster_.sendTransform(tf::StampedTransform(tf_parent_child, stamp, parent, child));
+}
+
+void BasePlugin::publishCurrentGoal(const Pose3& T_fixed_goal, const std::string& fixed_frame, const ros::Time& stamp) {
+  geometry_msgs::PoseWithCovarianceStamped pose_msg;
+  pose_msg.pose.pose = utils::toPoseMsg(T_fixed_goal);
+  pose_msg.header.frame_id = fixed_frame;
+  pose_msg.header.stamp = stamp;
+  current_goal_pub_.publish(pose_msg);
 }
 
 bool BasePlugin::isValidFrame(const std::string& frame) const {
@@ -140,7 +154,9 @@ void BasePlugin::setGoal(const geometry_msgs::Pose& goal_msg, const std_msgs::He
   // Transform message
   Pose3 T_a_g = utils::toPose3(goal_msg);  // Transformation of base b in auxiliary frame
   Pose3 T_f_g = T_f_a * T_a_g;             // Base in fixed frame
-  publishTransform(T_f_g, fixed_frame_, "goal_local_planner");
+  ros::Time now = ros::Time::now();
+  publishTransform(T_f_g, fixed_frame_, "goal_local_planner", now);
+  publishCurrentGoal(T_f_g, fixed_frame_, now);
 
   // Query base in fixed frame
   Pose3 T_f_b = queryTransform(fixed_frame_, base_frame_, header.stamp);

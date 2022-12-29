@@ -103,7 +103,10 @@ void Rmp::computeOptimalAcceleration() {
     ControlPoint& cp = control_points_.at(i);
     rmp::ControlPoint2_ cp_(ControlPoint2(cp.position));
 
+    printf("Adding rmps to [%s]\n", cp.id.c_str());
+
     for (auto rmp_name : cp.affected_by) {
+      printf(" - %s\n", rmp_name.c_str());
       if (rmp_name == "geodesic_goal") {
         rmp::Rmp3 policy = makeGeodesicGoalPolicy(cp);
         problem.addRmp(acc_se2, policy);
@@ -147,6 +150,10 @@ void Rmp::computeOptimalAcceleration() {
       } else {
         std::cout << "WARNING: motion policy [" << rmp_name << "] not implemented" << std::endl;
       }
+
+      std::cout << "   weight: " << cp.rmps[rmp_name].weight() << std::endl;
+      std::cout << "   acc:    " << cp.rmps[rmp_name].acceleration().transpose() << std::endl;
+      std::cout << "   metric: " << cp.rmps[rmp_name].metric().diagonal().transpose() << std::endl;
     }
   }
 
@@ -200,6 +207,8 @@ void Rmp::computeOptimalAcceleration() {
   // ------------------------------------------------------------------------------------
   // Integrate acceleration
   // ------------------------------------------------------------------------------------
+  std::cout << "Optimal acceleration: " << optimal_acc_.transpose() << std::endl;
+  std::cout << "Optimal metric:       " << optimal_metric_.diagonal().transpose() << std::endl;
   optimal_velocity_ = optimal_acc_ * parameters_.integration_time;
 }
 
@@ -235,6 +244,9 @@ rmp::Rmp3 Rmp::makeGeodesicGoalPolicy(ControlPoint& cp) {
   Vector3 acc = rmp::MotionPolicy::makeGradientPositionPolicy(grad_in_base, params.gain);
   Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_);
 
+  // Hack: decrease contribution of angular component in metric
+  metric(2,2) = 1e-3;
+
   // Return Riemannian Motion Policy
   return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);
 }
@@ -251,6 +263,10 @@ rmp::Rmp3 Rmp::makeGeodesicHeadingPolicy(ControlPoint& cp) {
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGradientOrientationPolicy(grad_in_base, params.gain);
   Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_);
+
+  // Hack: decrease contribution of translational component in metric
+  metric(0,0) = 1e-3;
+  metric(1,1) = 1e-3;
 
   // Return Riemannian Motion Policy
   return rmp::Rmp3(acc, metric, params.weight, rmp_name, params.color);

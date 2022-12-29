@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
-
-  <!-- Load local planner parameters -->
-  <rosparam ns="field_local_planner" file="$(find field_local_planner_falco_plugin)/config/falco.yaml"/>
-  
   <!-- Debugging flags -->
-  <arg name="debug"          default="false"/>
-  <arg name="real_carrot"    default="false"/>
+  <arg name="rviz_config"          default="$(find field_local_planner_ros)/config/rviz/view.rviz"/>
 
   <!-- Include common launch -->
   <include file="$(find field_local_planner_ros)/launch/local_planner.launch.xml">

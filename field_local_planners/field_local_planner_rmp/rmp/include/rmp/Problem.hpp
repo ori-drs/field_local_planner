@@ -35,7 +35,7 @@ class Problem : public ExpressionFactorGraph {
                                  // Iterative (Experimental), CHOLMOD (Experimental)
     std::string algorithm_;      // GAUSS_NEWTON, LM, DOGLEG
 
-    Parameters() : ordering_("COLAMD"), verbosity_("SILENT"), linear_solver_("MULTIFRONTAL_CHOLESKY"), algorithm_("LM"){};
+    Parameters() : ordering_("COLAMD"), verbosity_("SILENT"), linear_solver_("MULTIFRONTAL_CHOLESKY"), algorithm_("GAUSS_NEWTON"){};
   };
 
  private:
