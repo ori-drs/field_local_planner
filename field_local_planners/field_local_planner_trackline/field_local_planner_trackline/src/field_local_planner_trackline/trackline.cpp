@@ -18,14 +18,19 @@ Twist Trackline::computeTwist() {
   // Check states
   if (BaseLocalPlanner::distance_to_goal_ > parameters_.distance_to_goal_thr) {
     // If the robot is far from the goal, check heading towards goal
-    if (BaseLocalPlanner::heading_towards_goal_ > parameters_.orientation_to_goal_thr) {
+    if (std::fabs(BaseLocalPlanner::heading_towards_goal_) > parameters_.orientation_to_goal_thr) {
       // If it's not pointing towards the goal, correct heading
+      std::cout << "Trackline: TURN_TO_GOAL" << std::endl;
       stateTurnToGoal();
+
     } else {
       // If it's pointing towards the goal, move forward tracking the line
+      std::cout << "Trackline: FORWARD" << std::endl;
       stateForward();
+
     }
   } else {
+    std::cout << "Trackline: TURN_TO_DESTINATION" << std::endl;
     // If it's close to the goal, match the final orientation
     stateTurnToDestination();
   }
@@ -78,22 +83,16 @@ Path Trackline::computePath() {
 
 void Trackline::stateTurnToGoal() {
   goal_angvel_z_ = utils::clipValue(heading_towards_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
-  goal_linvel_x_ = std::cos(orientation_to_start_) * parameters_.max_linear_velocity_x;  // m/s
-  goal_linvel_y_ = std::sin(orientation_to_start_) * parameters_.max_linear_velocity_x;  // m/s
+  goal_linvel_x_ = 0.0; //std::cos(orientation_to_start_) * parameters_.max_linear_velocity_x;  // m/s
+  goal_linvel_y_ = 0.0; //std::sin(orientation_to_start_) * parameters_.max_linear_velocity_y;  // m/s
   trackline_linvel_x_ = 0;
   trackline_linvel_y_ = 0;
 }
+
 void Trackline::stateForward() {
   goal_angvel_z_ = utils::clipValue(heading_towards_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
   goal_linvel_x_ = cos(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
   goal_linvel_y_ = sin(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
-
-  // // if the goal is BEHIND, then walk BACKWARDS towards the goal (if enabled)
-  // if ((dT_b_g_.translation().x() < 0.0  ) && (params_.goal_behind_mode_ == 1 ))
-  // {
-  //   goal_linvel_x_ = -goal_linvel_x_;
-  //   goal_linvel_y_ = -goal_linvel_y_;
-  // }
 
   // How far is the robot from the trackline?
   // Create an x/y base velocity term proportional to that distance
@@ -114,8 +113,7 @@ void Trackline::stateForward() {
   double trackline_distance_error = numer / denom;
   double slope = std::atan2((y2 - y1), (x2 - x1));
 
-  Vector3 current_rpy = dT_b_start_.rotation().rpy();
-  double current_yaw = current_rpy(2);
+  double current_yaw = dT_b_start_.rotation().yaw();
 
   // This is the angle between the trackline and the direction the robot is facing
   // this is zero if the robot is on trackline and facing goal
@@ -132,20 +130,10 @@ void Trackline::stateForward() {
 }
 
 void Trackline::stateTurnToDestination() {
-  goal_angvel_z_ = utils::clipValue(-orientation_to_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
+  goal_angvel_z_ = utils::clipValue(orientation_to_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
 
-  goal_linvel_x_ = cos(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
-  goal_linvel_y_ = sin(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
-
-  // // if the goal is BEHIND, then walk BACKWARDS towards the goal (if enabled)
-  // if ((dT_base_goal_.translation().x()<0) && (parameters_.goal_behind_mode_ == 1 )){
-  //   goal_linvel_x_ = -goal_linvel_x_;
-  //   goal_linvel_y_ = -goal_linvel_y_;
-  // }
-  // if (parameters_.yaw_exclusive_turns_) {
-  //   goal_linvel_x_ = 0;
-  //   goal_linvel_y_ = 0;
-  // }
+  goal_linvel_x_ = 0.0; //cos(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
+  goal_linvel_y_ = 0.0; //sin(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
 
   trackline_linvel_x_ = 0;
   trackline_linvel_y_ = 0;

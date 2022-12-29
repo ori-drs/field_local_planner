@@ -131,14 +131,13 @@ void LocalPlannerRos::poseCallback(const geometry_msgs::PoseWithCovarianceStampe
   geometry_msgs::Twist twist;
   nav_msgs::Path path;
   field_local_planner_msgs::Status status;
-  bool valid = local_planner_plugin_->execute(pose_msg->header.stamp, twist, path, status);
+  bool new_output = local_planner_plugin_->execute(pose_msg->header.stamp, twist, path, status);
 
-  if(valid) {
+  if (new_output) {
     publishTwist(twist);
     publishPath(path);
     publishStatus(status);
   }
-
 }
 
 void LocalPlannerRos::twistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr& twist_msg) {

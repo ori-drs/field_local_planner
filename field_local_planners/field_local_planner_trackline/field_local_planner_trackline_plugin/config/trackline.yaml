@@ -24,7 +24,7 @@ grid_map_to_cloud_filter_size: 0.05 # meters
 
 # Thresholds
 distance_to_goal_thr: 0.1 # meters
-orientation_to_goal_thr: 0.1  # radians
+orientation_to_goal_thr: 0.2 # radians
 
 # Velocity limits
 max_linear_velocity_x: 1.0    # m/s
@@ -32,5 +32,5 @@ max_linear_velocity_y: 1.0    # m/s
 max_angular_velocity_z: 1.0   # rad/s
 
 trackline:
-  angular_gain_p: 1.0
-  linear_gain_p: 1.0
+  angular_gain_p: 0.5
+  linear_gain_p: 0.5

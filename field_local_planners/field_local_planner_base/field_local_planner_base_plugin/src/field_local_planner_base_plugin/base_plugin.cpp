@@ -32,9 +32,9 @@ bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg
 
   // Compute output
   BaseLocalPlanner::Output output;
-  bool valid = local_planner_->execute(ts, output);
+  bool new_output = local_planner_->execute(ts, output);
 
-  if (valid) {
+  if (new_output) {
     // Convert to ROS msgs
     twist_msg = utils::toTwistMsg(output.twist);
     status_msg = utils::toStatusMsg(output.status);
@@ -44,7 +44,7 @@ bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg
     publishVisualizations();
   }
 
-  return valid;
+  return new_output;
 }
 
 Pose3 BasePlugin::queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp) {

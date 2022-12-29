@@ -51,6 +51,8 @@ class BaseLocalPlanner {
   struct Status {
     State state;
     double progress;
+    double distance_to_goal;
+    double orientation_to_goal;
   };
 
   // This defines the output of the local planner
@@ -97,30 +99,35 @@ class BaseLocalPlanner {
   // Set single goal
   void setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, const Time& ts);
 
+ private:
+  std::string stateToStr(State state);
+
  public:
   // Parameters
   Parameters parameters_;
 
  protected:
+  State state_;
+
   // Timestamp
   Time last_ts_;
 
   // Possible sensor modalities and their sensor poses in the base frame
-  cv::Mat image_rgb_;                                 // RGB (color) image
-  cv::Mat image_rgbd_;                                // RGB-D image
-  cv::Mat image_depth_;                               // Depth image
+  cv::Mat image_rgb_;                            // RGB (color) image
+  cv::Mat image_rgbd_;                           // RGB-D image
+  cv::Mat image_depth_;                          // Depth image
   pcl::PointCloud<PointType>::Ptr point_cloud_;  // Point cloud
-  grid_map::GridMap grid_map_;                        // Grid map
-  Pose3 T_f_s_rgb_;                                   // Pose of RGB camera in fixed frame
-  Pose3 T_f_s_rgbd_;                                  // Pose of RGB-D camera in fixed frame
-  Pose3 T_f_s_depth_;                                 // Pose of Depth camera in fixed frame
-  Pose3 T_f_s_pc_;                                    // Pose of point cloud in fixed frame
-  Pose3 T_f_s_gm_;                                    // Pose of grid map in fixed frame
-  Time ts_rgb_;                                       // Timestamp of RGB
-  Time ts_rgbd_;                                      // Timestamp of RGB-D
-  Time ts_depth_;                                     // Timestamp of Depth
-  Time ts_pc_;                                        // Timestamp of point cloud
-  Time ts_gm_;                                        // Timestamp of grid map
+  grid_map::GridMap grid_map_;                   // Grid map
+  Pose3 T_f_s_rgb_;                              // Pose of RGB camera in fixed frame
+  Pose3 T_f_s_rgbd_;                             // Pose of RGB-D camera in fixed frame
+  Pose3 T_f_s_depth_;                            // Pose of Depth camera in fixed frame
+  Pose3 T_f_s_pc_;                               // Pose of point cloud in fixed frame
+  Pose3 T_f_s_gm_;                               // Pose of grid map in fixed frame
+  Time ts_rgb_;                                  // Timestamp of RGB
+  Time ts_rgbd_;                                 // Timestamp of RGB-D
+  Time ts_depth_;                                // Timestamp of Depth
+  Time ts_pc_;                                   // Timestamp of point cloud
+  Time ts_gm_;                                   // Timestamp of grid map
 
   // Robot state
   Pose3 T_f_b_;  // Pose of base in fixed frame

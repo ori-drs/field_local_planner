@@ -9,6 +9,8 @@ int32 state
 
 # Progress
 float32 progress
+float32 distance_to_goal
+float32 orientation_to_goal
 
 # 
 bool goal_reached
