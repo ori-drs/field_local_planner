@@ -25,7 +25,7 @@ void FalcoPlugin::loadParameters(ros::NodeHandle& nh) {
   p.max_linear_velocity_y = utils::getParameter<double>(nh, "max_linear_velocity_y");
   p.max_angular_velocity_z = utils::getParameter<double>(nh, "max_angular_velocity_z");
 
-  p.config_folder = utils::getParameterDefault(nh, "falco/config_folder", std::string("config/"));
+  p.config_folder = utils::getParameter<std::string>(nh, "falco/config_folder");
   p.goal_clearance = utils::getParameterDefault(nh, "falco/goal_clearance", 0.1);
   p.robot_clearance = utils::getParameterDefault(nh, "falco/robot_clearance", 0.1);
   p.sensor_range = utils::getParameterDefault(nh, "falco/sensor_range", 2.0);
@@ -41,11 +41,10 @@ void FalcoPlugin::loadParameters(ros::NodeHandle& nh) {
   p.differential_mode_cost = utils::getParameterDefault(nh, "falco/differential_mode_cost", 1.0);
   p.goal_cost = utils::getParameterDefault(nh, "falco/goal_cost", 1.0);
   p.traversability_cost = utils::getParameterDefault(nh, "falco/traversability_cost", 1.0);
-  p.traversable_thr = utils::getParameterDefault(nh, "falco/traversable_thr", 0.5);
+  p.traversability_thr = utils::getParameterDefault(nh, "falco/traversability_thr", 0.5);
   p.point_per_path_thr = utils::getParameterDefault(nh, "falco/point_per_path_thr", 2);
   p.check_rotational_collisions = utils::getParameterDefault(nh, "falco/check_rotational_collisions", true);
   p.use_path_crop_by_goal = utils::getParameterDefault(nh, "falco/use_path_crop_by_goal", false);
-  
 
   // Initialize local planner
   std::dynamic_pointer_cast<Falco>(local_planner_)->setParameters(p);
@@ -54,6 +53,10 @@ void FalcoPlugin::loadParameters(ros::NodeHandle& nh) {
 void FalcoPlugin::setupRos(ros::NodeHandle& nh) {
   dynamic_reconfigure_callback_ = boost::bind(&FalcoPlugin::dynamicReconfigureCallback, this, _1, _2);
   dynamic_reconfigure_server_.setCallback(dynamic_reconfigure_callback_);
+
+  // Visualizations
+  free_paths_pub_ = nh.advertise<sensor_msgs::PointCloud2>(ros::this_node::getName() + "/falco/free_paths", 10);
+  collision_map_pub_ = nh.advertise<sensor_msgs::PointCloud2>(ros::this_node::getName() + "/falco/collision_map", 10);
 }
 
 void FalcoPlugin::dynamicReconfigureCallback(FalcoConfig& config, uint32_t level) {
@@ -68,10 +71,47 @@ void FalcoPlugin::dynamicReconfigureCallback(FalcoConfig& config, uint32_t level
   UPDATE_COMMON_PARAMS(max_linear_velocity_x)
   UPDATE_COMMON_PARAMS(max_linear_velocity_y)
   UPDATE_COMMON_PARAMS(max_angular_velocity_z)
+
+  UPDATE_COMMON_PARAMS(goal_clearance);
+  UPDATE_COMMON_PARAMS(robot_clearance);
+  UPDATE_COMMON_PARAMS(linear_gain_p);
+  UPDATE_COMMON_PARAMS(angular_gain_p);
+  UPDATE_COMMON_PARAMS(linear_acceleration);
+  // UPDATE_COMMON_PARAMS(path_scale);
+  // UPDATE_COMMON_PARAMS(path_scale_step);
+  // UPDATE_COMMON_PARAMS(min_path_scale);
+  // UPDATE_COMMON_PARAMS(path_range_step);
+  // UPDATE_COMMON_PARAMS(min_path_range);
+  UPDATE_COMMON_PARAMS(look_ahead_distance);
+  UPDATE_COMMON_PARAMS(differential_mode_cost);
+  UPDATE_COMMON_PARAMS(goal_cost);
+  UPDATE_COMMON_PARAMS(traversability_cost);
+  UPDATE_COMMON_PARAMS(traversability_thr);
+  UPDATE_COMMON_PARAMS(point_per_path_thr);
+  // UPDATE_COMMON_PARAMS(check_rotational_collisions);
+  // UPDATE_COMMON_PARAMS(use_path_crop_by_goal);
+
+  std::dynamic_pointer_cast<Falco>(local_planner_)->setParameters(p);
 }
 
 void FalcoPlugin::publishVisualizations() {
-  // TODO implement
+  ros::Time now = ros::Time::now();
+
+  // Publish collision map
+  pcl::PointCloud<pcl::PointXYZI>::Ptr collision_map = std::dynamic_pointer_cast<Falco>(local_planner_)->getCollisionMap();
+  sensor_msgs::PointCloud2 collision_map_cloud;
+  pcl::toROSMsg(*collision_map, collision_map_cloud);
+  collision_map_cloud.header.stamp = now;
+  collision_map_cloud.header.frame_id = base_frame_;
+  collision_map_pub_.publish(collision_map_cloud);
+
+  // Publish free paths
+  pcl::PointCloud<pcl::PointXYZI>::Ptr free_paths = std::dynamic_pointer_cast<Falco>(local_planner_)->getFreePaths();
+  sensor_msgs::PointCloud2 free_paths_cloud;
+  pcl::toROSMsg(*free_paths, free_paths_cloud);
+  free_paths_cloud.header.stamp = now;
+  free_paths_cloud.header.frame_id = base_frame_;
+  free_paths_pub_.publish(free_paths_cloud);
 }
 
 }  // namespace field_local_planner

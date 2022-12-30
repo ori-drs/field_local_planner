@@ -2,7 +2,7 @@
 local_planner: field_local_planner::FalcoPlugin
 
 # Base settings
-requires_sensing: false # it should be true for all the local planners
+requires_sensing: true # it should be true for all the local planners
 control_rate: 10 # in Hz, rate at which the control command is computed
 base_inverted: false # to flip the orientation of the robot 180 deg
 differential_mode: false # If the robot moves with a differential model
@@ -32,8 +32,11 @@ max_linear_velocity_y: 1.0    # m/s
 max_angular_velocity_z: 1.0   # rad/s
 
 falco:
+  config_folder: "$(find field_local_planner_falco)/config/"
+
   # Safety distance to try to reach a goal
   goal_clearance: 0.1 # meters
+  robot_clearance: 0.1 # meters
 
   # Gains when computing the velocity commands (not used)
   forward_linear_gain_p: 1.0
@@ -79,6 +82,12 @@ falco:
   # The interpretation of the cost is the same as above
   # (larger -> more concentrated)
   goal_cost: 10.0
+
+  # Assigns a cost depending on the traversability of the voxel
+  traversability_cost: 1.0
+
+  # Threshold on the traversability
+  traversability_thr: 0.5
 
   # Thresholds with the number of collisions expected
   # from a path before discarding it

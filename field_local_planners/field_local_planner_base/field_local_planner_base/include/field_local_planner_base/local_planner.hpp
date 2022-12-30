@@ -45,7 +45,7 @@ class BaseLocalPlanner {
     NOT_READY = 0,  // Initial state
     FINISHED = 1,   // Robot at goal. Do nothing
     EXECUTING = 2,  // Robot trying to reach the goal
-    FAILURE = 5,    // Robot cannot make any progress, potentially a failure
+    FAILURE = 3,    // Robot cannot make any progress, potentially a failure
   };
 
   struct Status {
@@ -82,7 +82,6 @@ class BaseLocalPlanner {
 
   // Other steps
   State checkState();
-
   void computeDistanceAndOrientationToGoal();
 
   // Interfaces for external data
@@ -99,7 +98,6 @@ class BaseLocalPlanner {
   // Set single goal
   void setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, const Time& ts);
 
- private:
   std::string stateToStr(State state);
 
  public:

@@ -21,6 +21,14 @@ Falco::Parameters Falco::getParameters() const {
   return parameters_;
 }
 
+pcl::PointCloud<pcl::PointXYZI>::Ptr Falco::getFreePaths() const {
+  return free_paths_;
+}
+
+pcl::PointCloud<pcl::PointXYZI>::Ptr Falco::getCollisionMap() const {
+  return point_cloud_;
+}
+
 Twist Falco::computeTwist() {
   // check collisions and compute free path
   computeFreePath();
@@ -29,39 +37,45 @@ Twist Falco::computeTwist() {
   computeIntermediateCarrot();
 
   // Compute command from carrot
-  double error_heading_to_carrot = atan2(intermediate_carrot_(1), intermediate_carrot_(0));
-  double error_distance_to_carrot = hypot(intermediate_carrot_(1), intermediate_carrot_(0));
-  double velocity_direction = 1.0;
+  double heading_to_carrot = atan2(intermediate_carrot_(1), intermediate_carrot_(0));
+  double distance_to_carrot = hypot(intermediate_carrot_(1), intermediate_carrot_(0));
 
-  // if(parameters_.goal_behind_mode_ == 1 ) {
-  //   if (intermediate_carrot_(0) <=0 && (dT_base_goal_.translation().x() <0)){
-  //     error_heading_to_carrot = utils::mod2pi(error_heading_to_carrot + M_PI);
-  //     velocity_direction = -1.0;
-  //   // } else if((dT_base_goal_.translation().x() <0)) {
-  //   //   error_heading_to_carrot = utils::mod2pi(error_heading_to_carrot + M_PI);
-  //   //   velocity_direction = -1.0;
-  //   }
-  // }
-
-  Twist twist;
-  twist(0) = 0.0;  // Angular x
-  twist(1) = 0.0;  // Angular y
-  if (error_distance_to_carrot >= parameters_.look_ahead_distance)
-    twist(2) = error_heading_to_carrot * parameters_.angular_gain_p;
-  else
-    twist(2) = heading_towards_goal_ * parameters_.angular_gain_p;
-
-  // Linear
-  twist(3) = velocity_direction * parameters_.max_linear_velocity_x * distance_to_goal_;
-  twist(4) = 0.0;  // Linear y
-  twist(5) = 0.0;  // Linear z
+  Twist twist = Twist::Zero();
+  if (parameters_.look_ahead_distance < distance_to_goal_) {
+    // Track the carrot
+    // Angular
+    twist(2) = utils::clipValue(heading_to_carrot * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
+    // Linear X
+    twist(3) = cos(heading_to_carrot) * parameters_.max_linear_velocity_x;
+    // Linear Y
+    twist(4) = sin(heading_to_carrot) * parameters_.max_linear_velocity_x;
+  } else {
+    // Get close to goal
+    // Angular
+    twist(2) = utils::clipValue(orientation_to_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
+    // Linear X
+    twist(3) = cos(heading_towards_goal_) * parameters_.max_linear_velocity_x * distance_to_goal_;
+    // Linear Y
+    twist(4) = sin(heading_towards_goal_) * parameters_.max_linear_velocity_x * distance_to_goal_;
+  }
 
   return twist;
 }
 
 Path Falco::computePath() {
-  // TODO
-  return Path();
+  Path path;
+  double distance = 0.0;
+  Vector3 last_added_point(0.0, 0.0, 0.0);
+
+  for (auto point : best_path_) {
+    double distance = (point - last_added_point).norm();
+    if (distance > 0.1) {
+      path.push_back(Pose3(Rot3(), last_added_point));
+      last_added_point = point;
+    }
+  }
+
+  return path;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -119,10 +133,10 @@ void Falco::computeMapCollisions() {
 
     // Get traversability
     // Defined in the intensity channel
-    const float traversability = point_cloud_->points[i].intensity;
+    const float traversability = std::min(std::max(point_cloud_->points[i].intensity, 0.f), 1.f);
 
     // Check the score
-    bool is_traversable = traversability > parameters_.traversable_thr;
+    bool is_traversable = traversability > parameters_.traversability_thr;
 
     // Compute distance and angle to obstacle
     float distance_to_obstacle = std::sqrt(x * x + y * y);
@@ -163,7 +177,7 @@ void Falco::computeMapCollisions() {
             path_traversability_score_[NUM_PATHS * rot_dir + correspondences_[idx][j]] += traversability;
             path_traversability_crossed_voxels_[NUM_PATHS * rot_dir + correspondences_[idx][j]]++;
             // Original previous criterion used the largest height to compute a "penalty"
-            // TODO: check the previous approach works
+            // TODO: check if the previous approach works
           }
         }
       }
@@ -202,14 +216,14 @@ void Falco::computePathScores() {
       // Differential drive probability
       // If the vehicle is a differential drive, the most probable paths should be in front or the back of the robot
       // Modeled as a mixture of Von Mises
-      float differential_drive_probability = 1.0;
-      // if(parameters_.differential_drive){
-      //   differential_drive_probability = 0.5*(utils::vonMises(rot_ang, 0, parameters_.differential_mode_cost) + utils::vonMises(rot_ang,
+      float differential_mode_probability = 1.0;
+      // if(parameters_.differential_mode){
+      //   differential_mode_probability = 0.5*(utils::vonMises(rot_ang, 0, parameters_.differential_mode_cost) + utils::vonMises(rot_ang,
       //   M_PI, parameters_.differential_mode_cost));
       // }
 
       // Compute score as the likelihood of all the previous factors
-      float score_likelihood = goal_probability * traversability_probability * differential_drive_probability;
+      float score_likelihood = goal_probability * traversability_probability * differential_mode_probability;
 
       // Compute group index
       int group = NUM_GROUPS * rot_dir + path_list_[i % NUM_PATHS];
@@ -546,385 +560,3 @@ void Falco::loadCorrespondences(std::string folder) {
 }
 
 }  // namespace field_local_planner
-
-// //-------------------------------------------------------------------------------------------------
-// // Constructor and parameters
-// //-------------------------------------------------------------------------------------------------
-// FalcoController::FalcoController(const ControllerParameters& params) :
-//   ControllerBase(params),
-//   last_linear_velocity_(0.0) {
-
-//   node_handle_ = ros::NodeHandle("~falco");
-
-//   // Update parameters
-//   ROS_WARN("[ControllerBase] Setting up Controller Parameters");
-//   updateControllerParameters(node_handle_);
-
-//   // Setup Dynamic reconfigure
-//   ROS_WARN("[ControllerBase] Setting up Dynamic reconfigure");
-//   setupDynamicReconfigureServer(node_handle_);
-
-//   // Setup visualizations
-//   ROS_WARN("[ControllerBase] Setting up Visualizations");
-//   setupVisualizations(node_handle_);
-
-//   collision_map_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZINormal>>();
-//   collision_map_in_base_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZINormal>>();
-//   collision_map_wnormals_in_base_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZINormal>>();
-
-//   // load paths
-//   loadPathsFromFile(parameters_.config_folder_);
-
-//   // voxel filter
-//   voxel_filter_.setLeafSize(parameters_.voxel_size_filter_, parameters_.voxel_size_filter_, parameters_.voxel_size_filter_);
-// };
-
-// void FalcoController::updateControllerParameters(ros::NodeHandle& node_handle) {
-//   // Perceptive controller params
-//   parameters_.config_folder_   = ros::package::getPath("field_local_planner") + "/config/controllers/falco/";
-//   // falco params
-//   parameters_.goal_clearance_              = utils::getParameterDefault<double>(node_handle, "goal_clearance", 0.1);
-//   parameters_.forward_linear_gain_p_       = utils::getParameterDefault<double>(node_handle, "forward_linear_gain_p", 0.1);
-//   parameters_.forward_angular_gain_p_      = utils::getParameterDefault<double>(node_handle, "forward_angular_gain_p", 0.1);
-//   parameters_.linear_acceleration_         = utils::getParameterDefault<double>(node_handle, "linear_acceleration", 0.2);
-//   parameters_.path_scale_                  = utils::getParameterDefault<double>(node_handle, "path_scale", 1.25);
-//   parameters_.path_scale_step_             = utils::getParameterDefault<double>(node_handle, "path_scale_step", 0.25);
-//   parameters_.min_path_scale_              = utils::getParameterDefault<double>(node_handle, "min_path_scale", 0.75);
-//   parameters_.path_range_step_             = utils::getParameterDefault<double>(node_handle, "path_range_step", 0.5);
-//   parameters_.min_path_range_              = utils::getParameterDefault<double>(node_handle, "min_path_range", 1.0);
-//   parameters_.look_ahead_distance_         = utils::getParameterDefault<double>(node_handle, "look_ahead_distance", 0.5);
-//   parameters_.differential_mode_cost_      = utils::getParameterDefault<double>(node_handle, "differential_mode_cost", 1.0);
-//   parameters_.goal_cost_                   = utils::getParameterDefault<double>(node_handle, "goal_cost", 1.0);
-//   parameters_.traversability_cost_         = utils::getParameterDefault<double>(node_handle, "traversability_cost", 1.0);
-//   parameters_.point_per_path_thr_          = utils::getParameterDefault<int>(node_handle,  "point_per_path_thr", 2);
-//   parameters_.check_rotational_collisions_ = utils::getParameterDefault<bool>(node_handle, "check_rotational_collisions", true);
-//   parameters_.use_path_crop_by_goal_       = utils::getParameterDefault<bool>(node_handle, "crop_path_by_goal", true);
-
-//   path_scale_ = parameters_.path_scale_;
-
-//   // voxel filter
-//   voxel_filter_.setLeafSize(parameters_.voxel_size_filter_, parameters_.voxel_size_filter_, parameters_.voxel_size_filter_);
-// }
-
-// void FalcoController::setupDynamicReconfigureServer(ros::NodeHandle& node_handle)
-// {
-//   // Create Dynamic Reconfigure server passing correct node handle
-//   dynamic_reconfigure_server_ = std::make_shared<dynamic_reconfigure::Server<field_local_planner::FalcoControllerConfig>>(node_handle);
-
-//   dynamic_reconfigure_callback_ = boost::bind(&FalcoController::dynamicReconfigureCallback, this, _1, _2);
-//   dynamic_reconfigure_server_->setCallback(dynamic_reconfigure_callback_);
-// }
-
-// // void FalcoController::dynamicReconfigureCallback(field_local_planner::FalcoControllerConfig &config, uint32_t level)
-// // {
-// //   // Falco parameters
-// //   utils::assignAndPrintDiff("goal_clearance", parameters_.goal_clearance_, config.goal_clearance);
-// //   utils::assignAndPrintDiff("forward_linear_gain_p", parameters_.forward_linear_gain_p_, config.forward_linear_gain_p);
-// //   utils::assignAndPrintDiff("forward_angular_gain_p", parameters_.forward_angular_gain_p_, config.forward_angular_gain_p);
-// //   utils::assignAndPrintDiff("linear_acceleration", parameters_.linear_acceleration_, config.linear_acceleration);
-// //   utils::assignAndPrintDiff("path_scale", parameters_.path_scale_, config.path_scale);
-// //   utils::assignAndPrintDiff("path_scale_step", parameters_.path_scale_step_, config.path_scale_step);
-// //   utils::assignAndPrintDiff("min_path_scale", parameters_.min_path_scale_, config.min_path_scale);
-// //   utils::assignAndPrintDiff("path_range_step", parameters_.path_range_step_, config.path_range_step);
-// //   utils::assignAndPrintDiff("min_path_range", parameters_.min_path_range_, config.min_path_range);
-// //   utils::assignAndPrintDiff("look_ahead_distance", parameters_.look_ahead_distance_, config.look_ahead_distance);
-// //   utils::assignAndPrintDiff("differential_mode_cost", parameters_.differential_mode_cost_, config.differential_mode_cost);
-// //   utils::assignAndPrintDiff("goal_cost", parameters_.goal_cost_, config.goal_cost);
-// //   utils::assignAndPrintDiff("traversability_cost", parameters_.traversability_cost_, config.traversability_cost);
-// //   utils::assignAndPrintDiff("point_per_path_thr", parameters_.point_per_path_thr_, config.point_per_path_thr);
-// //   utils::assignAndPrintDiff("check_rotational_collisions", parameters_.check_rotational_collisions_,
-// config.check_rotational_collisions);
-// //   utils::assignAndPrintDiff("use_path_crop_by_goal", parameters_.use_path_crop_by_goal_, config.use_path_crop_by_goal);
-
-// //   path_scale_ = parameters_.path_scale_;
-// // }
-
-// // //-------------------------------------------------------------------------------------------------
-// // // Controller methods
-// // //-------------------------------------------------------------------------------------------------
-// // void FalcoController::customPreProcessLocalMap() {
-// //   if(new_elevation_map_){
-// //     profiler_ptr_->startEvent("0.1.convert_map_to_cloud");
-// //     // If we receive a new elevation map, we must convert it to base frame
-// //     convertElevationMapToCloud();
-// //     profiler_ptr_->endEvent("0.1.convert_map_to_cloud");
-// //   }
-
-// //   // Otherwise, we must update the map accordingly with the new pose updates
-// //   profiler_ptr_->startEvent("0.2.update_elevation_map_frame");
-// //   updateElevationMapFrame();
-// //   profiler_ptr_->endEvent("0.2.update_elevation_map_frame");
-
-// // }
-
-// // void FalcoController::customPreProcessController() {
-
-// //   // Check path collisions
-// //   // ROS_INFO("Computing free path");
-// //   profiler_ptr_->startEvent("1.3.compute_free_path");
-// //   computeFreePath();
-// //   profiler_ptr_->endEvent("1.3.compute_free_path");
-
-// //   // Compute velocity command
-// //   // ROS_INFO("Computing intermediate carrot");
-// //   profiler_ptr_->startEvent("1.4.compute_carrot");
-// //   computeIntermediateCarrot();
-// //   profiler_ptr_->endEvent("1.4.compute_carrot");
-// // }
-
-// // ControllerBase::OutputAction FalcoController::computeCommandGoalBehind(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d&
-// output_angular_velocity){
-
-// //   // Compute angular velocity command
-// //   output_linear_velocity(0) = 0.0;
-// //   output_linear_velocity(1) = 0.0;
-// //   output_linear_velocity(2) = 0.0;
-
-// //   // compute angular velocity only command
-// //   output_angular_velocity(0) = 0.0;
-// //   output_angular_velocity(1) = 0.0;
-// //   output_angular_velocity(2) = 0.0;
-
-// //   last_linear_velocity_ = 0.0;
-
-// //   return ControllerBase::OutputAction::SEND_COMMAND;
-
-// //   // return computeCommandForward(output_linear_velocity, output_angular_velocity);
-// // }
-
-// // ControllerBase::OutputAction FalcoController::computeCommandTurnToGoal(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d&
-// output_angular_velocity){
-
-// //   // TODO define a flag "initial_turn_to_goal" to allow the robot to rotate only the first time and use move forward aftwerwards
-
-// //   double velocity_direction = 1.0;
-// //   // // double error_heading_to_carrot = atan2(intermediate_carrot_(1), intermediate_carrot_(0));
-
-// //   if ((dT_base_goal_.translation().x() <0) && (parameters_.goal_behind_mode_ == 1 )){
-// //     velocity_direction = -1.0;
-// //   }
-
-// //   if (parameters_.yaw_exclusive_turns_) {
-// //     velocity_direction = 0.0;
-// //   }
-// //   // output_linear_velocity(0)  = velocity_direction * cos(error_orientation_to_starting_pose_)*
-// parameters_.max_forward_linear_velocity_;
-// //   // output_linear_velocity(1)  = velocity_direction * sin(error_orientation_to_starting_pose_)*
-// parameters_.max_forward_linear_velocity_;
-// //   // output_linear_velocity(0)  = velocity_direction * cos(error_heading_to_carrot)* parameters_.max_forward_linear_velocity_;
-// //   // output_linear_velocity(1)  = velocity_direction * sin(error_heading_to_carrot)* parameters_.max_forward_linear_velocity_;
-
-// //   // compute angular velocity only command
-// //   output_angular_velocity(0) = 0.0;
-// //   output_angular_velocity(1) = 0.0;
-// //   output_angular_velocity(2) = error_heading_to_goal_ * parameters_.angular_gain_p_;
-// //   // output_angular_velocity(2) = error_heading_to_carrot * parameters_.angular_gain_p_;
-
-// //   last_linear_velocity_ = 0.0;
-
-// //   // return ControllerBase::OutputAction::SEND_COMMAND;
-
-// //   return computeCommandForward(output_linear_velocity, output_angular_velocity);
-// // }
-
-// // ControllerBase::OutputAction FalcoController::computeCommandForward(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d&
-// output_angular_velocity){
-
-// //   double error_heading_to_carrot = atan2(intermediate_carrot_(1), intermediate_carrot_(0));
-// //   double error_distance_to_carrot = hypot(intermediate_carrot_(1), intermediate_carrot_(0));
-// //   double velocity_direction = 1.0;
-
-// //   ROS_INFO_STREAM_THROTTLE(1, "x to carrot: " << intermediate_carrot_(0) << ", y to carrot: " << intermediate_carrot_(1)<< ", distance
-// to carrot: " << error_distance_to_carrot);
-
-// //   if(parameters_.goal_behind_mode_ == 1 ) {
-// //     if (intermediate_carrot_(0) <=0 && (dT_base_goal_.translation().x() <0)){
-// //       error_heading_to_carrot = utils::mod2pi(error_heading_to_carrot + M_PI);
-// //       velocity_direction = -1.0;
-// //     // } else if((dT_base_goal_.translation().x() <0)) {
-// //     //   error_heading_to_carrot = utils::mod2pi(error_heading_to_carrot + M_PI);
-// //     //   velocity_direction = -1.0;
-// //     }
-// //   }
-
-// //   // // Update velocity
-// //   // if(error_distance_to_carrot >= parameters_.look_ahead_distance_){
-// //   //   last_linear_velocity_+=parameters_.linear_acceleration_;
-// //   // } else{
-// //   //   last_linear_velocity_-=parameters_.linear_acceleration_;
-// //   // }
-
-// //   // // saturate by max velocity
-// //   // last_linear_velocity_ = std::min(last_linear_velocity_, parameters_.max_forward_linear_velocity_);
-
-// //   // output_linear_velocity(0)  = velocity_direction * parameters_.max_forward_linear_velocity_;
-// //   output_linear_velocity(0)  = velocity_direction * parameters_.max_forward_linear_velocity_ * error_distance_to_goal_;
-// //   // output_linear_velocity(0)  = velocity_direction * last_linear_velocity_;
-
-// //   if(error_distance_to_carrot >= parameters_.look_ahead_distance_)
-// //     output_angular_velocity(2) = error_heading_to_carrot * parameters_.forward_angular_gain_p_;
-// //   else
-// //     output_angular_velocity(2) = error_heading_to_goal_ * parameters_.forward_angular_gain_p_;
-
-// //   return ControllerBase::OutputAction::SEND_COMMAND;
-// // }
-
-// // ControllerBase::OutputAction FalcoController::computeCommandTurnToDestination(Eigen::Vector3d& output_linear_velocity,
-// Eigen::Vector3d& output_angular_velocity){
-// //   double velocity_direction = 1.0;
-
-// //   if ((dT_base_goal_.translation().x() <0) && (parameters_.goal_behind_mode_ == 1 )){
-// //     velocity_direction = -1.0;
-// //   }
-
-// //   if (parameters_.yaw_exclusive_turns_) {
-// //     velocity_direction = 0.0;
-// //   }
-
-// //   output_linear_velocity(0)  = velocity_direction * cos(error_heading_to_goal_)* parameters_.max_forward_linear_velocity_;
-// //   output_linear_velocity(1)  = velocity_direction * sin(error_heading_to_goal_)* parameters_.max_forward_linear_velocity_;
-
-// //   output_angular_velocity(2) = -error_orientation_to_goal_ * parameters_.angular_gain_p_;
-
-// //   last_linear_velocity_ = 0.0;
-
-// //   return ControllerBase::OutputAction::SEND_COMMAND;
-// //   // return computeCommandForward(output_linear_velocity, output_angular_velocity);
-// // }
-
-// // ControllerBase::OutputAction FalcoController::computeCommandFinished(Eigen::Vector3d& output_linear_velocity, Eigen::Vector3d&
-// output_angular_velocity){
-// //   ControllerBase::OutputAction action = ControllerBase::OutputAction::SEND_COMMAND;
-
-// //   if (goals_.size() >0) {
-// //     // ROS_INFO("Continuing to walk without stopping");
-// //     action = SEND_NOTHING;
-// //   }
-
-// //   return action;
-// // }
-
-// // void FalcoController::computeCommandPostProcess(ControllerBase::OutputAction& action,
-// //                                           Eigen::Vector3d& output_linear_velocity,
-// //                                           Eigen::Vector3d& output_angular_velocity,
-// //                                           std::vector<Eigen::Vector3d>& path_to_goal) {
-// //   path_to_goal = best_path_;
-
-// // }
-
-// // //-------------------------------------------------------------------------------------------------
-// // // Elevation map utils
-// // //-------------------------------------------------------------------------------------------------
-// // void FalcoController::convertElevationMapToCloud() {
-
-// //   // Crop elevation map to sensor range (for path collision computation)
-// //   grid_map::GridMap cropped_grid_map;
-// //   grid_map::Position position( grid_map_.getPosition().x(),
-// //                                grid_map_.getPosition().y());
-// //   grid_map::Length length(2.0*parameters_.sensor_range_, 2.0*parameters_.sensor_range_);
-
-// //   bool success;
-// //   cropped_grid_map = grid_map_.getSubmap(position, length, success);
-
-// //   // Convert to point_cloud and filter using voxel_filter
-// //   collision_map_->clear();
-// //   pcl::PointCloud<pcl::PointXYZINormal>::Ptr tmp_cloud (new pcl::PointCloud<pcl::PointXYZINormal> ());
-
-// //   sensor_msgs::PointCloud2 point_cloud;
-// //   grid_map::GridMapRosConverter::toPointCloud(cropped_grid_map,
-// //                                               {"normal_x",
-// //                                                "normal_y",
-// //                                                "normal_z",
-// //                                                "elevation",
-// //                                                "traversability",
-// //                                                "slope"},
-// //                                               "elevation", point_cloud);
-// //   pcl::fromROSMsg(point_cloud, *tmp_cloud);
-// //   voxel_filter_.setInputCloud(tmp_cloud);
-// //   voxel_filter_.filter(*collision_map_);
-
-// //   // Reset new elevation map flag
-// //   new_elevation_map_ = false;
-
-// //   // std::cout << "Terrain map has " << collision_map_->points.size() << " points");
-// // }
-
-// // void FalcoController::updateElevationMapFrame() {
-// //   // std::lock_guard<std::mutex> lock(mutex_);
-
-// //   if(grid_map_.getFrameId().size() == 0)
-// //   {
-// //     // no elevation map set
-// //     return;
-// //   }
-
-// //   Eigen::Isometry3d map_to_base = Eigen::Isometry3d::Identity();
-// //   tf::StampedTransform map_to_base_transform;
-// //   tf_listener_.waitForTransform(parameters_.base_frame_, grid_map_.getFrameId(), ros::Time(0), ros::Duration(2.0));
-// //   try {
-// //     tf_listener_.lookupTransform(parameters_.base_frame_, grid_map_.getFrameId(), ros::Time(0), map_to_base_transform);
-
-// //     tf::transformTFToEigen (map_to_base_transform, map_to_base);
-// //   }
-// //   catch (tf::TransformException& ex){
-// //     std::cout << "%s",ex.what());
-// //   }
-
-// //   // ROS_INFO("Transforming frame");
-// //   pcl::transformPointCloudWithNormals(*collision_map_, *collision_map_in_base_, map_to_base.matrix());
-
-// //   // Compute traversability and as as intensity channel
-// //   for(size_t i = 0; i<collision_map_in_base_->points.size(); i++) {
-// //     collision_map_in_base_->points[i].intensity = computeTraversability(collision_map_in_base_->points[i]);
-// //   }
-// // }
-
-// // //-------------------------------------------------------------------------------------------------
-// // // Traversability computation
-// // //-------------------------------------------------------------------------------------------------
-// // float FalcoController::computeTraversability(const FalcoController::CollisionPoint& point){
-// //   // traversability will be defined as a [0,1] score (0-untraversable, 1-traversable)
-
-// //   const float& height = point.z;
-// //   const float& normal_z = point.normal_z;
-
-// //   // Slope
-// //   float slope_score = 1.0 - std::fabs(std::acos(normal_z) / M_PI); // Normalized by pi/2 so the value lies [0-1]
-// //   if(slope_score < 0){
-// //     ROS_ERROR_STREAM_THROTTLE(1, "Slope score computation not valid: normal_z: " << normal_z << ", score: " << slope_score );
-// //   }
-
-// //   // Height penalty (valid in base frame)
-// //   float height_penalty = 1.0;
-
-// //   // Compute traversability
-// //   float traversability = slope_score * height_penalty;
-
-// //   return traversability;
-// // }
-
-// // //-------------------------------------------------------------------------------------------------
-// // // Visualizations
-// // //-------------------------------------------------------------------------------------------------
-// // void FalcoController::setupVisualizations(ros::NodeHandle& node_handle)
-// // {
-// //   free_paths_pub_         = node_handle.advertise<sensor_msgs::PointCloud2>("/field_local_planner/falco/free_paths", 10);
-// //   collision_map_pub_      = node_handle.advertise<sensor_msgs::PointCloud2>("/field_local_planner/falco/collision_map", 10);
-// // }
-
-// // void FalcoController::publishVisualizations(const std_msgs::Header& header)
-// // {
-// //   // Publish collision map
-// //   sensor_msgs::PointCloud2 collision_map_cloud;
-// //   pcl::toROSMsg(*collision_map_in_base_, collision_map_cloud);
-// //   collision_map_cloud.header = header;
-// //   collision_map_cloud.header.frame_id = parameters_.base_frame_;
-// //   collision_map_pub_.publish(collision_map_cloud);
-
-// //   // Publish free paths
-// //   sensor_msgs::PointCloud2 free_paths_cloud;
-// //   pcl::toROSMsg(*free_paths_, free_paths_cloud);
-// //   free_paths_cloud.header = header;
-// //   free_paths_cloud.header.frame_id = parameters_.base_frame_;
-// //   free_paths_pub_.publish(free_paths_cloud);
-// // }

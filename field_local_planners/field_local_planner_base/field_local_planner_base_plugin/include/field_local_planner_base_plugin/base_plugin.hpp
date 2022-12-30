@@ -92,6 +92,7 @@ class BasePlugin {
   Pose3 queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp = ros::Time::now());
   bool isValidFrame(const std::string& frame) const;
   void getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl::PointCloud<PointType>::Ptr& cloud, Pose3& T_f_s);
+  void printStateInfo(const BaseLocalPlanner::State& new_state);
 
  protected:
   std::shared_ptr<BaseLocalPlanner> local_planner_;  // The actual local planner
@@ -136,6 +137,9 @@ class BasePlugin {
   bool grid_map_to_cloud_;
   double grid_map_to_cloud_range_;
   double grid_map_to_cloud_filter_size_;
+
+  // Output
+  BaseLocalPlanner::State last_state_;
 };
 
 }  // namespace field_local_planner

@@ -124,19 +124,25 @@ bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg
 
   // Compute output
   BaseLocalPlanner::Output output;
-  bool new_output = local_planner_->execute(ts, output);
+  bool valid_output = local_planner_->execute(ts, output);
 
-  if (new_output) {
-    // Convert to ROS msgs
-    twist_msg = utils::toTwistMsg(output.twist);
-    status_msg = utils::toStatusMsg(output.status);
-    path_msg = utils::toPathMsg(output.path, base_frame_);
+  // Print useful info to terminal
+  printStateInfo(output.status.state);
 
-    // Publish visualizations
-    publishVisualizations();
+  // Convert to ROS msgs
+  twist_msg = utils::toTwistMsg(output.twist);
+  status_msg = utils::toStatusMsg(output.status);
+  path_msg = utils::toPathMsg(output.path, base_frame_);
+
+  publishVisualizations();
+  publishStatus(status_msg);
+
+  if (valid_output) {
+    publishTwist(twist_msg);
+    publishPath(path_msg);
   }
 
-  return new_output;
+  return valid_output;
 }
 
 void BasePlugin::setPose(const geometry_msgs::Pose& pose_msg, const std_msgs::Header& header) {
@@ -189,7 +195,8 @@ void BasePlugin::setGoal(const geometry_msgs::Pose& goal_msg, const std_msgs::He
   Pose3 T_f_b = queryTransform(fixed_frame_, base_frame_, header.stamp);
 
   // Set data
-  ROS_INFO_STREAM("Setting new goal in frame [" << fixed_frame_ << "] : \n" << T_f_g);
+  ROS_INFO_STREAM("Setting new goal in frame [" << fixed_frame_ << "] : \n  position: " << T_f_g.translation().transpose()
+                                                << "\n  orientation (Euler): " << T_f_g.rotation().rpy().transpose());
   local_planner_->setGoalInFixed(T_f_g, T_f_b, ts);
 }
 
@@ -200,13 +207,7 @@ void BasePlugin::poseCallback(const geometry_msgs::PoseWithCovarianceStampedCons
   geometry_msgs::Twist twist;
   nav_msgs::Path path;
   field_local_planner_msgs::Status status;
-  bool new_output = execute(pose_msg->header.stamp, twist, path, status);
-
-  if (new_output) {
-    publishTwist(twist);
-    publishPath(path);
-    publishStatus(status);
-  }
+  execute(pose_msg->header.stamp, twist, path, status);
 }
 
 void BasePlugin::twistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr& twist_msg) {
@@ -269,7 +270,7 @@ void BasePlugin::gridMapCallback(const grid_map_msgs::GridMap& grid_map_msg) {
   local_planner_->setGridMap(grid_map, T_f_m, ts);
 
   if (grid_map_to_cloud_) {
-    pcl::PointCloud<PointType>::Ptr cloud;
+    pcl::PointCloud<PointType>::Ptr cloud(new pcl::PointCloud<PointType>());
     Pose3 T_f_s;
     getPointCloudFromGridMap(grid_map, cloud, T_f_s);
 
@@ -377,7 +378,7 @@ void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl
   pcl::PointCloud<PointType>::Ptr tmp_cloud(new pcl::PointCloud<PointType>());
 
   sensor_msgs::PointCloud2 point_cloud;
-  grid_map::GridMapRosConverter::toPointCloud(cropped_grid_map, {"elevation", "traversability"}, "elevation", point_cloud);
+  grid_map::GridMapRosConverter::toPointCloud(cropped_grid_map, {"elevation", "intensity"}, "elevation", point_cloud);
   pcl::fromROSMsg(point_cloud, *tmp_cloud);
 
   // Filter using voxel_filter
@@ -388,6 +389,25 @@ void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl
   Pose3 T_b_m = queryTransform(base_frame_, grid_map.getFrameId());
   pcl::transformPointCloud(*tmp_cloud, *cloud, T_b_m.matrix());
   T_f_s = queryTransform(fixed_frame_, base_frame_);
+}
+
+void BasePlugin::printStateInfo(const BaseLocalPlanner::State& new_state) {
+  if (new_state != last_state_) {
+    if (new_state == BaseLocalPlanner::State::NOT_READY) {
+      ROS_INFO("Change to state: NOT_READY (%d)", new_state);
+
+    } else if (new_state == BaseLocalPlanner::State::FINISHED) {
+      ROS_INFO("Change to state: FINISHED (%d)", new_state);
+
+    } else if (new_state == BaseLocalPlanner::State::EXECUTING) {
+      ROS_INFO("Change to state: EXECUTING (%d)", new_state);
+
+    } else if (new_state == BaseLocalPlanner::State::FAILURE) {
+      ROS_WARN("Change to state: FAILURE (%d)", new_state);
+    }
+  }
+
+  last_state_ = new_state;
 }
 
 }  // namespace field_local_planner

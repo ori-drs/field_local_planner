@@ -5,23 +5,28 @@ namespace field_local_planner {
 BaseLocalPlanner::BaseLocalPlanner() : state_(State::FINISHED), sensing_ready_(false), point_cloud_(new pcl::PointCloud<PointType>()) {}
 
 bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output) {
-  if ((ts - last_ts_) < utils::fromSeconds(1 / parameters_.control_rate)) {
-    return false;
-  }
-
-  // Save current timestamp
-  last_ts_ = ts;
-
   // Check distance and orientation to goal
   computeDistanceAndOrientationToGoal();
 
   // Check status of the controller
   state_ = checkState();
 
-  Twist twist;
+  // Fill state
+  output.status.state = state_;
+  output.status.distance_to_goal = distance_to_goal_;
+  output.status.orientation_to_goal = orientation_to_goal_;
+
+  Twist twist = Twist::Zero();
   Path path;
 
   if (state_ == State::EXECUTING) {
+    if ((ts - last_ts_) < utils::fromSeconds(1 / parameters_.control_rate)) {
+      return false;
+    }
+
+    // Save current timestamp
+    last_ts_ = ts;
+
     // Compute twist - planner specific
     twist = computeTwist();
 
@@ -32,11 +37,8 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   // Make output
   output.twist = twist;
   output.path = path;
-  output.status.state = state_;
-  output.status.distance_to_goal = distance_to_goal_;
-  output.status.orientation_to_goal = orientation_to_goal_;
 
-  return true;
+  return state_ == State::EXECUTING;
 }
 
 // Other steps
@@ -48,52 +50,52 @@ void BaseLocalPlanner::computeDistanceAndOrientationToGoal() {
 
   // Distance
   distance_to_goal_ = std::hypot(dT_b_g_.translation().y(), dT_b_g_.translation().x());
-  printf("BaseLocalPlanner: distance_to_goal_: %f\n", distance_to_goal_);
+  // printf("BaseLocalPlanner: distance_to_goal_: %f\n", distance_to_goal_);
 
   // Orientation to goal
   Vector3 rpy_goal = dT_b_g_.rotation().rpy();
   orientation_to_goal_ = rpy_goal.z();
-  printf("BaseLocalPlanner: orientation_to_goal_: %f \n", orientation_to_goal_);
+  // printf("BaseLocalPlanner: orientation_to_goal_: %f \n", orientation_to_goal_);
 
   // Heading to point towards goal
   heading_towards_goal_ = std::atan2(dT_b_g_.translation().y(), dT_b_g_.translation().x());
-  printf("BaseLocalPlanner: heading_towards_goal_: %f \n", heading_towards_goal_);
+  // printf("BaseLocalPlanner: heading_towards_goal_: %f \n", heading_towards_goal_);
 
   // Starting pose to current
   dT_b_start_ = T_f_b_.inverse() * T_f_b_start_;
 
   // Distance
   distance_to_start_ = std::hypot(dT_b_start_.translation().y(), dT_b_start_.translation().x());
-  printf("BaseLocalPlanner: distance_to_start_: %f \n", distance_to_start_);
+  // printf("BaseLocalPlanner: distance_to_start_: %f \n", distance_to_start_);
 
   // Orientation to start pose
   Vector3 rpy_start = dT_b_start_.rotation().rpy();
   orientation_to_start_ = rpy_start.z();
-  printf("BaseLocalPlanner: orientation_to_start_: %f \n", orientation_to_start_);
+  // printf("BaseLocalPlanner: orientation_to_start_: %f \n", orientation_to_start_);
 }
 
 BaseLocalPlanner::State BaseLocalPlanner::checkState() {
   if (parameters_.requires_sensing && !sensing_ready_) {
-    std::cout << "BaseLocalPlanner: NOT_READY" << std::endl;
+    // std::cout << "BaseLocalPlanner: NOT_READY" << std::endl;
     return State::NOT_READY;
   }
 
-  printf("BaseLocalPlanner: distance_to_goal_ (%f) < parameters_.distance_to_goal_thr (%f)\n", distance_to_goal_,
-         parameters_.distance_to_goal_thr);
-  printf("BaseLocalPlanner: orientation_to_goal_ (%f) < parameters_.orientation_to_goal_thr (%f)\n", orientation_to_goal_,
-         parameters_.orientation_to_goal_thr);
+  // printf("BaseLocalPlanner: distance_to_goal_ (%f) < parameters_.distance_to_goal_thr (%f)\n", distance_to_goal_,
+  //  parameters_.distance_to_goal_thr);
+  // printf("BaseLocalPlanner: orientation_to_goal_ (%f) < parameters_.orientation_to_goal_thr (%f)\n", orientation_to_goal_,
+  //  parameters_.orientation_to_goal_thr);
 
   if (distance_to_goal_ < parameters_.distance_to_goal_thr && std::fabs(orientation_to_goal_) < parameters_.orientation_to_goal_thr) {
-    std::cout << "BaseLocalPlanner: FINISHED" << std::endl;
+    // std::cout << "BaseLocalPlanner: FINISHED" << std::endl;
     return State::FINISHED;
 
   } else if (checkFailure()) {
-    std::cout << "BaseLocalPlanner: FAILURE" << std::endl;
+    // std::cout << "BaseLocalPlanner: FAILURE" << std::endl;
     return State::FAILURE;
 
   } else {
     // All good, it must be working
-    std::cout << "BaseLocalPlanner: same state (" << stateToStr(state_) << ")" << std::endl;
+    // std::cout << "BaseLocalPlanner: same state (" << stateToStr(state_) << ")" << std::endl;
     return state_;
   }
 }

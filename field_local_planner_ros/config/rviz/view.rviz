@@ -4,9 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Status1
-        - /RMP Control Points1
         - /RMP Control Points1/Namespaces1
       Splitter Ratio: 0.6735293865203857
     Tree Height: 787
@@ -28,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Falco Collision Map
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -1031,7 +1028,7 @@ Visualization Manager:
       Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
-      Length: 0.20000000298023224
+      Length: 0.10000000149011612
       Line Style: Billboards
       Line Width: 0.029999999329447746
       Name: Local Planner Path
@@ -1084,11 +1081,122 @@ Visualization Manager:
       Max Intensity: 5
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: GridMap
+      Name: RMP Geodesic Field
       Show Grid Lines: true
       Topic: /elevation_mapping/elevation_map_filtered
       Unreliable: false
       Use ColorMap: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 40; 87; 244
+      Min Color: 239; 41; 41
+      Name: Falco Collision Map
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.03999999910593033
+      Style: Boxes
+      Topic: /field_local_planner/falco/collision_map
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: false
+      Value: true
+    - Alpha: 0.30000001192092896
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: Falco Free Paths
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.019999999552965164
+      Style: Spheres
+      Topic: /field_local_planner/falco/free_paths
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Class: grid_map_rviz_plugin/GridMap
+      Color: 200; 200; 200
+      Color Layer: intensity
+      Color Transformer: GridMapLayer
+      ColorMap: coolwarm
+      Enabled: true
+      Grid Cell Decimation: 1
+      Grid Line Thickness: 0.10000000149011612
+      Height Layer: elevation
+      Height Transformer: GridMapLayer
+      History Length: 1
+      Invert ColorMap: true
+      Max Color: 255; 255; 255
+      Max Intensity: 1
+      Min Color: 0; 0; 0
+      Min Intensity: -1
+      Name: Traversability
+      Show Grid Lines: true
+      Topic: /elevation_mapping/elevation_map_filtered
+      Unreliable: false
+      Use ColorMap: true
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/PoseWithCovariance
+      Color: 191; 64; 185
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Head Length: 0.15000000596046448
+      Head Radius: 0.10000000149011612
+      Name: Robot Pose
+      Queue Size: 10
+      Shaft Length: 0.20000000298023224
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic: /state_estimator/pose_in_odom
+      Unreliable: false
       Value: true
   Enabled: true
   Global Options:
@@ -1118,7 +1226,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 9.826924324035645
+      Distance: 5.567670822143555
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1126,17 +1234,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.30970287322998047
-        Y: -0.26881134510040283
+        X: -0.8495727777481079
+        Y: 0.8595011234283447
         Z: 0
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.33979636430740356
+      Pitch: 0.7297960519790649
       Target Frame: base
-      Yaw: 2.8104031085968018
+      Yaw: 2.5504119396209717
     Saved: ~
 Window Geometry:
   Displays:

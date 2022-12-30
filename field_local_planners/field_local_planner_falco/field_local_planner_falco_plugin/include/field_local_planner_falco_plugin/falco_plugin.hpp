@@ -19,6 +19,10 @@ class FalcoPlugin : public BasePlugin {
   // Dynamic reconfigure
   dynamic_reconfigure::Server<FalcoConfig> dynamic_reconfigure_server_;
   dynamic_reconfigure::Server<FalcoConfig>::CallbackType dynamic_reconfigure_callback_;
+
+  // Visualization publisher
+  ros::Publisher free_paths_pub_;
+  ros::Publisher collision_map_pub_;
 };
 
 }  // namespace field_local_planner

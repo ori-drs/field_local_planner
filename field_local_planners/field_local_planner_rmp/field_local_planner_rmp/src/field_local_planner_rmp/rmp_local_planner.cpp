@@ -46,7 +46,7 @@ Twist Rmp::computeTwist() {
 }
 
 Path Rmp::computePath() {
-  double time_horizon = 2;  // seconds
+  double time_horizon = 1.0;  // seconds
   double dt = 0.1;          // seconds
 
   Path path;
