@@ -103,7 +103,7 @@ void Rmp::computeOptimalAcceleration() {
     ControlPoint& cp = control_points_.at(i);
     rmp::ControlPoint2_ cp_(ControlPoint2(cp.position));
 
-    std::cout << "Adding rmps to [" << cp.id.c_str() << "]" << std::endl;
+    // std::cout << "Adding rmps to [" << cp.id.c_str() << "]" << std::endl;
 
     for (auto rmp_name : cp.affected_by) {
       if (rmp_name == "geodesic_goal") {
@@ -150,7 +150,7 @@ void Rmp::computeOptimalAcceleration() {
         std::cout << "WARNING: motion policy [" << rmp_name << "] not implemented" << std::endl;
       }
 
-      std::cout << cp.rmps[rmp_name] << std::endl;
+      // std::cout << cp.rmps[rmp_name] << std::endl;
     }
   }
 
@@ -204,8 +204,8 @@ void Rmp::computeOptimalAcceleration() {
   // ------------------------------------------------------------------------------------
   // Integrate acceleration
   // ------------------------------------------------------------------------------------
-  std::cout << "Optimal acceleration: " << optimal_acc_.transpose() << std::endl;
-  std::cout << "Optimal metric:       " << optimal_metric_.diagonal().transpose() << std::endl;
+  // std::cout << "Optimal acceleration: " << optimal_acc_.transpose() << std::endl;
+  // std::cout << "Optimal metric:       " << optimal_metric_.diagonal().transpose() << std::endl;
   optimal_velocity_ = optimal_acc_ * parameters_.integration_time;
 }
 

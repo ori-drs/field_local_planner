@@ -14,19 +14,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 set(CATKIN_PACKAGE_LIST 
-  actionlib
-  eigen_conversions
-  geometry_msgs
-  field_local_planner_base
   field_local_planner_base_plugin
-  nav_msgs
   pluginlib
-  pcl_conversions
-  pcl_ros
   roscpp
-  std_msgs
-  std_msgs
-  tf_conversions
 )
 
 find_package(catkin REQUIRED
@@ -37,8 +27,6 @@ find_package(catkin REQUIRED
 # Libraries dependencies
 # configure catkin package
 catkin_package(
-  INCLUDE_DIRS
-    include
   CATKIN_DEPENDS
     ${CATKIN_PACKAGE_LIST}
 )
@@ -47,15 +35,12 @@ catkin_package(
 ## Build ##
 ###########
 include_directories(
-  include
   SYSTEM
     ${catkin_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIRS}
 )
 
 # Declare node
 add_executable(field_local_planner_node
-               src/field_local_planner_ros/local_planner_ros.cpp
                src/local_planner_node.cpp)
 
 target_link_libraries(field_local_planner_node

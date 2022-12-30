@@ -139,7 +139,7 @@ rmp:
       metric:
         type: ortho_projector
         offset: 0.2
-        steepness: 10.0
+        steepness: 1.0
     regularization:
       weight: 0.0 # 1.0
       gain: 1.0e-6

@@ -12,18 +12,8 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- Catkin packages -->
-  <depend>actionlib</depend>
-  <depend>eigen_conversions</depend>
-  <depend>geometry_msgs</depend>
-  <depend>field_local_planner_base</depend>
   <depend>field_local_planner_base_plugin</depend>
-  <depend>field_local_planner_msgs</depend>
-  <depend>nav_msgs</depend>
   <depend>pluginlib</depend>
-  <depend>pcl_conversions</depend>
-  <depend>pcl_ros</depend>
   <depend>roscpp</depend>
-  <depend>std_msgs</depend>
-  <depend>tf_conversions</depend>
-
+  
 </package>

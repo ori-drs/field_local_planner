@@ -12,6 +12,9 @@ void BasePlugin::initialize(ros::NodeHandle& nh) {
   // Setup ROS publishers and subscribers
   setupBaseRos(nh);
   setupRos(nh);
+
+  // Spin
+  ros::spin();
 }
 
 void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
@@ -27,8 +30,91 @@ void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
 }
 
 void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
+  // Setup subscribers
+  std::string pose_topic = utils::getParameterDefault(nh, "pose_topic", std::string(""));
+  if (!pose_topic.empty()) {
+    pose_sub_ = nh.subscribe(pose_topic, 1, &BasePlugin::poseCallback, this);
+  }
+
+  std::string twist_topic = utils::getParameterDefault(nh, "twist_topic", std::string(""));
+  if (!twist_topic.empty()) {
+    twist_sub_ = nh.subscribe(twist_topic, 1, &BasePlugin::twistCallback, this);
+  }
+
+  std::string odometry_topic = utils::getParameterDefault(nh, "odometry_topic", std::string(""));
+  if (!odometry_topic.empty()) {
+    odometry_sub_ = nh.subscribe(odometry_topic, 1, &BasePlugin::odometryCallback, this);
+  }
+
+  // Sensing
+  std::string point_cloud_topic = utils::getParameterDefault(nh, "point_cloud_topic", std::string(""));
+  if (!point_cloud_topic.empty()) {
+    point_cloud_sub_ = nh.subscribe(std::string(point_cloud_topic), 1, &BasePlugin::pointCloudCallback, this);
+  }
+
+  std::string grid_map_topic = utils::getParameterDefault(nh, "grid_map_topic", std::string(""));
+  if (!grid_map_topic.empty()) {
+    grid_map_sub_ = nh.subscribe(std::string(grid_map_topic), 1, &BasePlugin::gridMapCallback, this);
+  }
+
+  std::string rgb_image_topic = utils::getParameterDefault(nh, "rgb_image_topic", std::string(""));
+  if (!rgb_image_topic.empty()) {
+    // TODO add synchronized subscriber
+    // rgb_image_sub_ =
+    //     nh.subscribe(std::string(rgb_image_topic), 1, &BasePlugin::imageRgbCallback, this);
+  }
+
+  std::string rgbd_image_topic = utils::getParameterDefault(nh, "rgbd_image_topic", std::string(""));
+  if (!rgbd_image_topic.empty()) {
+    // TODO add synchronized subscriber
+    // rgbd_image_sub_ =
+    //     nh.subscribe(std::string(rgbd_image_topic), 1, &BasePlugin::imageRgbdCallback, this);
+  }
+
+  std::string depth_image_topic = utils::getParameterDefault(nh, "depth_image_topic", std::string(""));
+  if (!depth_image_topic.empty()) {
+    // TODO add synchronized subscriber
+    // depth_image_sub_ =
+    //     nh.subscribe(std::string(depth_image_topic), 1, &BasePlugin::imageDepthCallback, this);
+  }
+
+  // Goal
+  std::string goal_topic = utils::getParameterDefault(nh, "goal_topic", std::string("/goal"));
+  goal_sub_ = nh.subscribe(std::string(goal_topic), 1, &BasePlugin::goalCallback, this);
+
+  // Joystick command
+  std::string joy_twist_topic = utils::getParameterDefault(nh, "joy_twist_topic", std::string("/goal"));
+  joy_twist_sub_ = nh.subscribe(std::string(joy_twist_topic), 1, &BasePlugin::joyTwistCallback, this);
+
+  // Setup publishers
+  // Status
+  status_pub_ = nh.advertise<field_local_planner_msgs::Status>("/field_local_planner/status", 10);
+  // Path
+  path_pub_ = nh.advertise<nav_msgs::Path>("/field_local_planner/path", 10);
   // Current goal
   current_goal_pub_ = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>(ros::this_node::getName() + "/current_goal", 10);
+
+  // Output twist type type
+  output_twist_type_ = utils::getParameterDefault(nh, "output_twist_type", std::string("twist"));
+  std::string output_twist_topic = utils::getParameterDefault(nh, "output_twist_topic", std::string("/field_local_planner/twist"));
+  if (output_twist_type_ == "twist") {
+    output_twist_pub_ = nh.advertise<geometry_msgs::Twist>(output_twist_topic, 10);
+
+  } else if (output_twist_type_ == "twist_stamped") {
+    output_twist_pub_ = nh.advertise<geometry_msgs::TwistStamped>(output_twist_topic, 10);
+
+  } else {
+    ROS_ERROR_STREAM("Invalid twist type [" << output_twist_type_ << "], valid options are 'twist' or 'twist_stamped'");
+    exit(1);
+  }
+
+  // Setup services
+
+  // Setup action server
+  action_server_ = std::make_shared<ActionServer>(nh, "action_server", false);
+  action_server_->registerGoalCallback(boost::bind(&BasePlugin::newGoalRequestActionHandler, this));
+  action_server_->registerPreemptCallback(boost::bind(&BasePlugin::preemptActionHandler, this));
+  action_server_->start();
 }
 
 bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg, nav_msgs::Path& path_msg,
@@ -53,72 +139,11 @@ bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg
   return new_output;
 }
 
-Pose3 BasePlugin::queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp) {
-  tf::StampedTransform T_parent_child;
-  Eigen::Isometry3d eigen_T_parent_child = Eigen::Isometry3d::Identity();
-
-  tf_listener_.waitForTransform(parent, child, stamp, ros::Duration(1.0));
-  try {
-    tf_listener_.lookupTransform(parent, child, stamp, T_parent_child);
-    tf::transformTFToEigen(T_parent_child, eigen_T_parent_child);
-
-  } catch (tf::TransformException& ex) {
-    ROS_ERROR("%s", ex.what());
-  }
-
-  // Return in Pose3 format
-  return Pose3(eigen_T_parent_child.matrix());
-}
-
-void BasePlugin::publishTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
-                                  const ros::Time& stamp) {
-  tf::Transform tf_parent_child = utils::toTfTransform(T_parent_child);
-  tf_broadcaster_.sendTransform(tf::StampedTransform(tf_parent_child, stamp, parent, child));
-}
-
-void BasePlugin::publishCurrentGoal(const Pose3& T_fixed_goal, const std::string& fixed_frame, const ros::Time& stamp) {
-  geometry_msgs::PoseWithCovarianceStamped pose_msg;
-  pose_msg.pose.pose = utils::toPoseMsg(T_fixed_goal);
-  pose_msg.header.frame_id = fixed_frame;
-  pose_msg.header.stamp = stamp;
-  current_goal_pub_.publish(pose_msg);
-}
-
-bool BasePlugin::isValidFrame(const std::string& frame) const {
-  return std::find(valid_goal_frames_.begin(), valid_goal_frames_.end(), frame) != valid_goal_frames_.end();
-}
-
-void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl::PointCloud<PointType>::Ptr& cloud, Pose3& T_f_s) {
-  grid_map::GridMap cropped_grid_map;
-  grid_map::Position position(grid_map.getPosition().x(), grid_map.getPosition().y());
-  grid_map::Length length(2.0 * grid_map_to_cloud_range_, 2.0 * grid_map_to_cloud_range_);
-
-  bool success;
-  cropped_grid_map = grid_map.getSubmap(position, length, success);
-
-  // Convert to point_cloud
-  pcl::PointCloud<PointType>::Ptr tmp_cloud(new pcl::PointCloud<PointType>());
-
-  sensor_msgs::PointCloud2 point_cloud;
-  grid_map::GridMapRosConverter::toPointCloud(cropped_grid_map, {"elevation", "traversability"}, "elevation", point_cloud);
-  pcl::fromROSMsg(point_cloud, *tmp_cloud);
-
-  // Filter using voxel_filter
-  voxel_filter_.setInputCloud(tmp_cloud);
-  voxel_filter_.filter(*tmp_cloud);
-
-  // Transform to base frame
-  Pose3 T_b_m = queryTransform(base_frame_, grid_map.getFrameId());
-  pcl::transformPointCloud(*tmp_cloud, *cloud, T_b_m.matrix());
-  T_f_s = queryTransform(fixed_frame_, base_frame_);
-}
-
 void BasePlugin::setPose(const geometry_msgs::Pose& pose_msg, const std_msgs::Header& header) {
   // Convert stamp
   Time ts = utils::toTimeStamp(header.stamp);
 
-  // Get transformation if frames do not match
-  // frame_id (auxiliary) in fixed_frame f
+  // Get transformation if frames do not match: frame_id (auxiliary) in fixed_frame f
   Pose3 T_f_a = queryTransform(fixed_frame_, header.frame_id, header.stamp);
 
   // Transform message
@@ -154,6 +179,8 @@ void BasePlugin::setGoal(const geometry_msgs::Pose& goal_msg, const std_msgs::He
   // Transform message
   Pose3 T_a_g = utils::toPose3(goal_msg);  // Transformation of base b in auxiliary frame
   Pose3 T_f_g = T_f_a * T_a_g;             // Base in fixed frame
+
+  // Publish goal pose as message and TF
   ros::Time now = ros::Time::now();
   publishTransform(T_f_g, fixed_frame_, "goal_local_planner", now);
   publishCurrentGoal(T_f_g, fixed_frame_, now);
@@ -166,37 +193,67 @@ void BasePlugin::setGoal(const geometry_msgs::Pose& goal_msg, const std_msgs::He
   local_planner_->setGoalInFixed(T_f_g, T_f_b, ts);
 }
 
-void BasePlugin::setImageRgb(const sensor_msgs::ImageConstPtr& rgb_msg, const sensor_msgs::CameraInfoConstPtr& info_msg) {
-  // Convert stamp
-  Time ts = utils::toTimeStamp(info_msg->header.stamp);
+void BasePlugin::poseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& pose_msg) {
+  setPose(pose_msg->pose.pose, pose_msg->header);
 
-  // local_planner_->setImageRgb(img, T_b_s);
-  ROS_FATAL("BasePlugin::setImageRgb: Not implemented");
+  // Execute local planner
+  geometry_msgs::Twist twist;
+  nav_msgs::Path path;
+  field_local_planner_msgs::Status status;
+  bool new_output = execute(pose_msg->header.stamp, twist, path, status);
+
+  if (new_output) {
+    publishTwist(twist);
+    publishPath(path);
+    publishStatus(status);
+  }
 }
 
-void BasePlugin::setImageRgbd(const sensor_msgs::ImageConstPtr& rgb_msg, const sensor_msgs::ImageConstPtr& depth_msg,
-                              const sensor_msgs::CameraInfoConstPtr& info_msg) {
-  // Convert stamp
-  Time ts = utils::toTimeStamp(info_msg->header.stamp);
-  // local_planner_->setImageRgbd(img, T_b_s);
-  ROS_FATAL("BasePlugin::setImageRgbd: Not implemented");
+void BasePlugin::twistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr& twist_msg) {
+  setVelocity(twist_msg->twist.twist, twist_msg->header);
 }
 
-void BasePlugin::setImageDepth(const sensor_msgs::ImageConstPtr& depth_msg, const sensor_msgs::CameraInfoConstPtr& info_msg) {
-  // Convert stamp
-  Time ts = utils::toTimeStamp(info_msg->header.stamp);
-  // local_planner_->setImageDepth(img, T_b_s);
-  ROS_FATAL("BasePlugin::setImageDepth: Not implemented");
+void BasePlugin::odometryCallback(const nav_msgs::OdometryConstPtr& odo_msg) {
+  setPose(odo_msg->pose.pose, odo_msg->header);
+  setVelocity(odo_msg->twist.twist, odo_msg->header);
 }
 
-void BasePlugin::setPointCloud(const sensor_msgs::PointCloud2ConstPtr& cloud_msg) {
+// Goal callback
+void BasePlugin::goalCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& goal_msg) {
+  setGoal(goal_msg->pose.pose, goal_msg->header);
+}
+
+// Joystick callback
+void BasePlugin::joyTwistCallback(const geometry_msgs::TwistConstPtr& twist_msg) {
+  ROS_FATAL("BasePlugin::joyTwistCallback: Not implemented");
+}
+
+// Action server
+void BasePlugin::newGoalRequestActionHandler() {
+  ROS_INFO_STREAM("[BasePlugin] Action Server - New goal");
+
+  // Get goal from server
+  geometry_msgs::PoseStamped goal_msg = action_server_->acceptNewGoal()->goal;
+
+  // Pass goal to the local planner
+  setGoal(goal_msg.pose, goal_msg.header);
+}
+
+void BasePlugin::preemptActionHandler() {
+  ROS_INFO_STREAM("[BasePlugin] Action Server - Stop");
+  action_server_->setPreempted();
+
+  publishZeroTwist();
+}
+
+void BasePlugin::pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg) {
   // Convert stamp
   Time ts = utils::toTimeStamp(cloud_msg->header.stamp);
   // local_planner_->setPointCloud(cloud, T_b_s);
-  ROS_FATAL("BasePlugin::setPointCloud: Not implemented");
+  ROS_FATAL("BasePlugin::pointCloudCallback: Not implemented");
 }
 
-void BasePlugin::setGridMap(const grid_map_msgs::GridMap& grid_map_msg) {
+void BasePlugin::gridMapCallback(const grid_map_msgs::GridMap& grid_map_msg) {
   // Convert stamp
   Time ts = utils::toTimeStamp(grid_map_msg.info.header.stamp);
 
@@ -220,9 +277,117 @@ void BasePlugin::setGridMap(const grid_map_msgs::GridMap& grid_map_msg) {
   }
 }
 
-void BasePlugin::setJoyCommand(const geometry_msgs::Twist& twist_msg) {
-  //
-  ROS_FATAL("BasePlugin::setJoyCommand: Not implemented");
+// Sensor callbacks
+void BasePlugin::imageRgbCallback(const sensor_msgs::ImageConstPtr& rgb_msg, const sensor_msgs::CameraInfoConstPtr& info_msg) {
+  // Time ts = utils::toTimeStamp(info_msg->header.stamp);
+  // local_planner_->setImageRgb(img, T_b_s);
+  ROS_FATAL("BasePlugin::setImageRgb: Not implemented");
+}
+
+void BasePlugin::imageRgbdCallback(const sensor_msgs::ImageConstPtr& rgb_msg, const sensor_msgs::ImageConstPtr& depth_msg,
+                                   const sensor_msgs::CameraInfoConstPtr& info_msg) {
+  // Time ts = utils::toTimeStamp(info_msg->header.stamp);
+  // local_planner_->setImageRgbd(img, T_b_s);
+  ROS_FATAL("BasePlugin::setImageRgbd: Not implemented");
+}
+
+void BasePlugin::imageDepthCallback(const sensor_msgs::ImageConstPtr& depth_msg, const sensor_msgs::CameraInfoConstPtr& info_msg) {
+  // Time ts = utils::toTimeStamp(info_msg->header.stamp);
+  // local_planner_->setImageDepth(img, T_b_s);
+  ROS_FATAL("BasePlugin::setImageDepth: Not implemented");
+}
+
+void BasePlugin::publishTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
+                                  const ros::Time& stamp) {
+  tf::Transform tf_parent_child = utils::toTfTransform(T_parent_child);
+  tf_broadcaster_.sendTransform(tf::StampedTransform(tf_parent_child, stamp, parent, child));
+}
+
+void BasePlugin::publishCurrentGoal(const Pose3& T_fixed_goal, const std::string& fixed_frame, const ros::Time& stamp) {
+  geometry_msgs::PoseWithCovarianceStamped pose_msg;
+  pose_msg.pose.pose = utils::toPoseMsg(T_fixed_goal);
+  pose_msg.header.frame_id = fixed_frame;
+  pose_msg.header.stamp = stamp;
+  current_goal_pub_.publish(pose_msg);
+}
+
+void BasePlugin::publishPath(const nav_msgs::Path& path) {
+  path_pub_.publish(path);
+}
+
+void BasePlugin::publishStatus(const field_local_planner_msgs::Status& status) {
+  status_pub_.publish(status);
+}
+
+void BasePlugin::publishTwist(const geometry_msgs::Twist& twist) {
+  if (output_twist_type_ == "twist") {
+    output_twist_pub_.publish(twist);
+
+  } else if (output_twist_type_ == "twist_stamped") {
+    geometry_msgs::TwistStamped twist_stamped;
+    twist_stamped.twist = twist;
+    twist_stamped.header.seq = 0;
+    twist_stamped.header.stamp = ros::Time::now();  // Check if this is correct
+    twist_stamped.header.frame_id = base_frame_;
+    output_twist_pub_.publish(twist_stamped);
+  }
+}
+
+void BasePlugin::publishZeroTwist() {
+  geometry_msgs::Twist zero_twist;
+  zero_twist.angular.x = 0.0;
+  zero_twist.angular.y = 0.0;
+  zero_twist.angular.z = 0.0;
+  zero_twist.linear.x = 0.0;
+  zero_twist.linear.y = 0.0;
+  zero_twist.linear.z = 0.0;
+  publishTwist(zero_twist);
+}
+
+Pose3 BasePlugin::queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp) {
+  tf::StampedTransform T_parent_child;
+  Eigen::Isometry3d eigen_T_parent_child = Eigen::Isometry3d::Identity();
+
+  tf_listener_.waitForTransform(parent, child, stamp, ros::Duration(1.0));
+  try {
+    tf_listener_.lookupTransform(parent, child, stamp, T_parent_child);
+    tf::transformTFToEigen(T_parent_child, eigen_T_parent_child);
+
+  } catch (tf::TransformException& ex) {
+    ROS_ERROR("%s", ex.what());
+  }
+
+  // Return in Pose3 format
+  return Pose3(eigen_T_parent_child.matrix());
+}
+
+bool BasePlugin::isValidFrame(const std::string& frame) const {
+  return std::find(valid_goal_frames_.begin(), valid_goal_frames_.end(), frame) != valid_goal_frames_.end();
+}
+
+void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl::PointCloud<PointType>::Ptr& cloud, Pose3& T_f_s) {
+  grid_map::GridMap cropped_grid_map;
+  grid_map::Position position(grid_map.getPosition().x(), grid_map.getPosition().y());
+  grid_map::Length length(2.0 * grid_map_to_cloud_range_, 2.0 * grid_map_to_cloud_range_);
+
+  bool success;
+  cropped_grid_map = grid_map.getSubmap(position, length, success);
+
+  // Convert to point_cloud
+  pcl::PointCloud<PointType>::Ptr tmp_cloud(new pcl::PointCloud<PointType>());
+
+  sensor_msgs::PointCloud2 point_cloud;
+  grid_map::GridMapRosConverter::toPointCloud(cropped_grid_map, {"elevation", "traversability"}, "elevation", point_cloud);
+  pcl::fromROSMsg(point_cloud, *tmp_cloud);
+
+  // Filter using voxel_filter
+  voxel_filter_.setInputCloud(tmp_cloud);
+  voxel_filter_.filter(*tmp_cloud);
+
+  // Transform to base frame
+  Pose3 T_b_m = queryTransform(base_frame_, grid_map.getFrameId());
+  pcl::transformPointCloud(*tmp_cloud, *cloud, T_b_m.matrix());
+  T_f_s = queryTransform(fixed_frame_, base_frame_);
 }
 
 }  // namespace field_local_planner
