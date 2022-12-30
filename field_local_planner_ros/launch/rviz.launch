@@ -4,17 +4,6 @@
   <arg name="rviz_config"          default="$(find field_local_planner_ros)/config/rviz/view.rviz"/>
 
   <!-- Include common launch -->
-  <include file="$(find field_local_planner_ros)/launch/local_planner.launch.xml">
-    <arg name="debug"              value="$(arg debug)"/>
-    <arg name="real_carrot"        value="$(arg real_carrot)"/>
-    <arg name="pose_topic"         value="/state_estimator/pose_in_odom"/>
-    <arg name="twist_topic"        value="/state_estimator/twist"/>
-    <arg name="grid_map_topic"     value="/elevation_mapping/elevation_map"/>
-    <arg name="goal_topic"         value="/initialpose"/>
-    <arg name="joy_twist_topic"    value="/cmd_vel"/>
-    <arg name="output_twist_type"  value="twist_stamped"/>
-    <!-- <arg name="output_twist_topic" value="/local_guidance_path_follower/twist"/> -->
-    <arg name="output_twist_topic" value="/motion_reference/command_twist"/>
-  </include>
+  <node pkg="rviz" type="rviz" name="field_local_planner_rviz" output="screen" args="-d $(arg rviz_config)"/>
 
 </launch>

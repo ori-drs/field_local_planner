@@ -29,13 +29,13 @@ class Problem : public ExpressionFactorGraph {
    * RMP problem parameters
    */
   struct Parameters {
-    std::string ordering_;       // COLAMD, METIS, NATURAL, CUSTOM
-    std::string verbosity_;      // SILENT, TERMINATION, ERROR, VALUES, DELTA, LINEAR
-    std::string linear_solver_;  // MULTIFRONTAL_CHOLESKY, MULTIFRONTAL_QR, SEQUENTIAL_CHOLESKY, SEQUENTIAL_QR,
-                                 // Iterative (Experimental), CHOLMOD (Experimental)
-    std::string algorithm_;      // GAUSS_NEWTON, LM, DOGLEG
+    std::string ordering;       // COLAMD, METIS, NATURAL, CUSTOM
+    std::string verbosity;      // SILENT, TERMINATION, ERROR, VALUES, DELTA, LINEAR
+    std::string linear_solver;  // MULTIFRONTAL_CHOLESKY, MULTIFRONTAL_QR, SEQUENTIAL_CHOLESKY, SEQUENTIAL_QR,
+                                // Iterative (Experimental), CHOLMOD (Experimental)
+    std::string algorithm;      // GAUSS_NEWTON, LM, DOGLEG
 
-    Parameters() : ordering_("COLAMD"), verbosity_("SILENT"), linear_solver_("MULTIFRONTAL_CHOLESKY"), algorithm_("GAUSS_NEWTON"){};
+    Parameters() : ordering("COLAMD"), verbosity("SILENT"), linear_solver("MULTIFRONTAL_CHOLESKY"), algorithm("GAUSS_NEWTON"){};
   };
 
  private:
@@ -69,28 +69,28 @@ class Problem : public ExpressionFactorGraph {
     // Create optimizer
     std::shared_ptr<NonlinearOptimizer> optimizer;
 
-    if (params.algorithm_ == "GAUSS_NEWTON") {
+    if (params.algorithm == "GAUSS_NEWTON") {
       GaussNewtonParams parameters;
-      parameters.setOrderingType(params.ordering_);
-      parameters.setVerbosity(params.verbosity_);
-      parameters.setLinearSolverType(params.linear_solver_);
+      parameters.setOrderingType(params.ordering);
+      parameters.setVerbosity(params.verbosity);
+      parameters.setLinearSolverType(params.linear_solver);
       optimizer = std::make_shared<GaussNewtonOptimizer>(*this, initial_values, parameters);
 
-    } else if (params.algorithm_ == "LM") {
+    } else if (params.algorithm == "LM") {
       LevenbergMarquardtParams parameters;
-      parameters.setOrderingType(params.ordering_);
-      parameters.setVerbosity(params.verbosity_);
-      parameters.setLinearSolverType(params.linear_solver_);
+      parameters.setOrderingType(params.ordering);
+      parameters.setVerbosity(params.verbosity);
+      parameters.setLinearSolverType(params.linear_solver);
       optimizer = std::make_shared<LevenbergMarquardtOptimizer>(*this, initial_values, parameters);
 
-    } else if (params.algorithm_ == "DOGLEG") {
+    } else if (params.algorithm == "DOGLEG") {
       DoglegParams parameters;
-      parameters.setOrderingType(params.ordering_);
-      parameters.setVerbosity(params.verbosity_);
-      parameters.setLinearSolverType(params.linear_solver_);
+      parameters.setOrderingType(params.ordering);
+      parameters.setVerbosity(params.verbosity);
+      parameters.setLinearSolverType(params.linear_solver);
       optimizer = std::make_shared<DoglegOptimizer>(*this, initial_values, parameters);
     } else {
-      throw std::invalid_argument("Invalid optimization algorithm [" + params.algorithm_ + "]");
+      throw std::invalid_argument("Invalid optimization algorithm [" + params.algorithm + "]");
     }
 
     // Solve

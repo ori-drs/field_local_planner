@@ -52,7 +52,6 @@ rmp:
         - geodesic_goal
         - geodesic_heading
         - goal_orientation
-        # - regularization
         - damping
     -
       id: front_left
@@ -94,7 +93,7 @@ rmp:
         offset: 0.5
         steepness: 10.0
     geodesic_heading:
-      weight: 0.0 # 1.0
+      weight: 1.0 # 1.0
       gain: 10.0
       color: [1.0, 1.0, 0.0] # yellow
       metric:
@@ -110,7 +109,7 @@ rmp:
         offset: 0.5
         steepness: 10.0
     goal_orientation:
-      weight: 0.0 # 1.0
+      weight: 1.0 # 1.0
       gain: 10.0
       color: [1.0, 0.5, 0.0] # orange
       metric:
@@ -126,7 +125,7 @@ rmp:
         offset: 1.0
         steepness: 10.0
     damping:
-      weight: 0.0 # 1.0
+      weight: 1.0 # 1.0
       gain: 0.1
       color: [0.0, 0.0, 1.0] # blue
       metric:
@@ -134,12 +133,12 @@ rmp:
         offset: 1.0
         steepness: 1.0
     sdf_obstacle:
-      weight: 0.0 # 1.0
+      weight: 1.0 # 1.0
       gain: 1.0
       color: [1.0, 0.0, 0.0] # red
       metric:
-        type: velocity
-        offset: 0.3
+        type: ortho_projector
+        offset: 0.2
         steepness: 10.0
     regularization:
       weight: 0.0 # 1.0

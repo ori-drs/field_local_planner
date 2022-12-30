@@ -14,7 +14,7 @@
 namespace gtsam {
 namespace rmp {
 
-template <typename TM = Vector2, typename METRIC = Matrix22>
+template <typename ACC = Vector2, typename METRIC = Matrix22>
 class Metric {
  public:
   // Interface to make metrics
@@ -22,7 +22,7 @@ class Metric {
                      const double& offset = 0.0,     // offset used for logistic-like metrics
                      const double& steepness = 0.0,  // stepness for logistic-like metrics
                      const double& state = 0.0,      // 'state' - a value to evaluate the metric
-                     const TM& twist = TM::Zero()   // velocity (if required)
+                     const ACC& acc = ACC::Zero()    // RMP acceleration (if required)
   ) {
     // Check different types of metric
     if (type == "logistic") {
@@ -31,8 +31,8 @@ class Metric {
     } else if (type == "inv_logistic") {
       return makeInverseLogisticMetric(state, offset, steepness);
 
-    } else if (type == "velocity") {
-      return makeVelocityMetric(state, offset, steepness, twist);
+    } else if (type == "ortho_projector") {
+      return makeOrthoProjectorMetric(state, offset, steepness, acc);
 
     } else {
       // Constant metric
@@ -49,8 +49,8 @@ class Metric {
     return inverseLogistic(state, offset, steepness) * METRIC::Identity();
   }
 
-  static METRIC makeVelocityMetric(const double& state, const double& offset, const double& steepness, const TM& twist) {
-    return inverseLogistic(state, offset, steepness) * METRIC(twist * twist.transpose());
+  static METRIC makeOrthoProjectorMetric(const double& state, const double& offset, const double& steepness, const ACC& acc) {
+    return inverseLogistic(state, offset, steepness) * METRIC(acc * acc.transpose());
   }
 
   static METRIC makeConstantMetric() { return METRIC::Identity(); }

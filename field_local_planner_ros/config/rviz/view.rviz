@@ -6,10 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /TF1
-        - /Local Planner Path1
-        - /GridMap1
-      Splitter Ratio: 0.5
+        - /RMP Control Points1
+        - /RMP Control Points1/Namespaces1
+      Splitter Ratio: 0.6735293865203857
     Tree Height: 787
   - Class: rviz/Selection
     Name: Selection
@@ -59,187 +58,527 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         LF_FOOT:
-          Value: true
+          Value: false
         LF_HAA:
-          Value: true
+          Value: false
         LF_HFE:
-          Value: true
+          Value: false
         LF_HIP:
-          Value: true
+          Value: false
         LF_KFE:
-          Value: true
+          Value: false
         LF_SHANK:
-          Value: true
+          Value: false
         LF_THIGH:
-          Value: true
+          Value: false
         LF_hip_fixed:
-          Value: true
+          Value: false
         LF_shank_fixed:
-          Value: true
+          Value: false
         LF_thigh_fixed:
-          Value: true
+          Value: false
         LH_FOOT:
-          Value: true
+          Value: false
         LH_HAA:
-          Value: true
+          Value: false
         LH_HFE:
-          Value: true
+          Value: false
         LH_HIP:
-          Value: true
+          Value: false
         LH_KFE:
-          Value: true
+          Value: false
         LH_SHANK:
-          Value: true
+          Value: false
         LH_THIGH:
-          Value: true
+          Value: false
         LH_hip_fixed:
-          Value: true
+          Value: false
         LH_shank_fixed:
-          Value: true
+          Value: false
         LH_thigh_fixed:
-          Value: true
+          Value: false
         RF_FOOT:
-          Value: true
+          Value: false
         RF_HAA:
-          Value: true
+          Value: false
         RF_HFE:
-          Value: true
+          Value: false
         RF_HIP:
-          Value: true
+          Value: false
         RF_KFE:
-          Value: true
+          Value: false
         RF_SHANK:
-          Value: true
+          Value: false
         RF_THIGH:
-          Value: true
+          Value: false
         RF_hip_fixed:
-          Value: true
+          Value: false
         RF_shank_fixed:
-          Value: true
+          Value: false
         RF_thigh_fixed:
-          Value: true
+          Value: false
         RH_FOOT:
-          Value: true
+          Value: false
         RH_HAA:
-          Value: true
+          Value: false
         RH_HFE:
-          Value: true
+          Value: false
         RH_HIP:
-          Value: true
+          Value: false
         RH_KFE:
-          Value: true
+          Value: false
         RH_SHANK:
-          Value: true
+          Value: false
         RH_THIGH:
-          Value: true
+          Value: false
         RH_hip_fixed:
-          Value: true
+          Value: false
         RH_shank_fixed:
-          Value: true
+          Value: false
         RH_thigh_fixed:
-          Value: true
+          Value: false
         base:
           Value: true
         base_inertia:
-          Value: true
+          Value: false
         battery:
-          Value: true
+          Value: false
         body_top:
-          Value: true
+          Value: false
         bottom_shell:
-          Value: true
+          Value: false
         control:
-          Value: true
+          Value: false
         depth_camera_front_camera:
-          Value: true
+          Value: false
         depth_camera_front_camera_parent:
-          Value: true
+          Value: false
         depth_camera_front_color_frame:
-          Value: true
+          Value: false
         depth_camera_front_color_optical_frame:
-          Value: true
+          Value: false
         depth_camera_front_depth_optical_frame:
-          Value: true
+          Value: false
         depth_camera_left_camera:
-          Value: true
+          Value: false
         depth_camera_left_camera_parent:
-          Value: true
+          Value: false
         depth_camera_left_color_frame:
-          Value: true
+          Value: false
         depth_camera_left_color_optical_frame:
-          Value: true
+          Value: false
         depth_camera_left_depth_optical_frame:
-          Value: true
+          Value: false
         depth_camera_rear_camera:
-          Value: true
+          Value: false
         depth_camera_rear_camera_parent:
-          Value: true
+          Value: false
         depth_camera_rear_color_frame:
-          Value: true
+          Value: false
         depth_camera_rear_color_optical_frame:
-          Value: true
+          Value: false
         depth_camera_rear_depth_optical_frame:
-          Value: true
+          Value: false
         depth_camera_right_camera:
-          Value: true
+          Value: false
         depth_camera_right_camera_parent:
-          Value: true
+          Value: false
         depth_camera_right_color_frame:
-          Value: true
+          Value: false
         depth_camera_right_color_optical_frame:
-          Value: true
+          Value: false
         depth_camera_right_depth_optical_frame:
-          Value: true
+          Value: false
         docking_hatch_cover:
-          Value: true
+          Value: false
         face_front:
-          Value: true
+          Value: false
         face_rear:
-          Value: true
+          Value: false
         feetcenter:
-          Value: true
+          Value: false
         floorplan_tf:
-          Value: true
+          Value: false
         footprint:
-          Value: true
+          Value: false
         front_handle:
-          Value: true
+          Value: false
         goal_local_planner:
           Value: true
+        ground_plane:
+          Value: false
+        ground_plane__link:
+          Value: false
+        ground_plane__link__collision__collision:
+          Value: false
+        ground_plane__link__visual__visual:
+          Value: false
         handle:
-          Value: true
+          Value: false
         hatch:
-          Value: true
+          Value: false
         imu_link:
-          Value: true
+          Value: false
         interface_hatch:
-          Value: true
+          Value: false
         lidar:
-          Value: true
+          Value: false
         lidar_cage:
-          Value: true
+          Value: false
         loco_footprint:
-          Value: true
+          Value: false
         map:
-          Value: true
+          Value: false
+        model:
+          Value: false
+        model__block_1:
+          Value: false
+        model__block_10:
+          Value: false
+        model__block_10__collision__collision:
+          Value: false
+        model__block_10__visual__visual:
+          Value: false
+        model__block_11:
+          Value: false
+        model__block_11__collision__collision:
+          Value: false
+        model__block_11__visual__visual:
+          Value: false
+        model__block_12:
+          Value: false
+        model__block_12__collision__collision:
+          Value: false
+        model__block_12__visual__visual:
+          Value: false
+        model__block_13:
+          Value: false
+        model__block_13__collision__collision:
+          Value: false
+        model__block_13__visual__visual:
+          Value: false
+        model__block_14:
+          Value: false
+        model__block_14__collision__collision:
+          Value: false
+        model__block_14__visual__visual:
+          Value: false
+        model__block_15:
+          Value: false
+        model__block_15__collision__collision:
+          Value: false
+        model__block_15__visual__visual:
+          Value: false
+        model__block_16:
+          Value: false
+        model__block_16__collision__collision:
+          Value: false
+        model__block_16__visual__visual:
+          Value: false
+        model__block_17:
+          Value: false
+        model__block_17__collision__collision:
+          Value: false
+        model__block_17__visual__visual:
+          Value: false
+        model__block_18:
+          Value: false
+        model__block_18__collision__collision:
+          Value: false
+        model__block_18__visual__visual:
+          Value: false
+        model__block_19:
+          Value: false
+        model__block_19__collision__collision:
+          Value: false
+        model__block_19__visual__visual:
+          Value: false
+        model__block_1__collision__collision:
+          Value: false
+        model__block_1__visual__visual:
+          Value: false
+        model__block_2:
+          Value: false
+        model__block_20:
+          Value: false
+        model__block_20__collision__collision:
+          Value: false
+        model__block_20__visual__visual:
+          Value: false
+        model__block_21:
+          Value: false
+        model__block_21__collision__collision:
+          Value: false
+        model__block_21__visual__visual:
+          Value: false
+        model__block_22:
+          Value: false
+        model__block_22__collision__collision:
+          Value: false
+        model__block_22__visual__visual:
+          Value: false
+        model__block_23:
+          Value: false
+        model__block_23__collision__collision:
+          Value: false
+        model__block_23__visual__visual:
+          Value: false
+        model__block_24:
+          Value: false
+        model__block_24__collision__collision:
+          Value: false
+        model__block_24__visual__visual:
+          Value: false
+        model__block_25:
+          Value: false
+        model__block_25__collision__collision:
+          Value: false
+        model__block_25__visual__visual:
+          Value: false
+        model__block_26:
+          Value: false
+        model__block_26__collision__collision:
+          Value: false
+        model__block_26__visual__visual:
+          Value: false
+        model__block_27:
+          Value: false
+        model__block_27__collision__collision:
+          Value: false
+        model__block_27__visual__visual:
+          Value: false
+        model__block_28:
+          Value: false
+        model__block_28__collision__collision:
+          Value: false
+        model__block_28__visual__visual:
+          Value: false
+        model__block_29:
+          Value: false
+        model__block_29__collision__collision:
+          Value: false
+        model__block_29__visual__visual:
+          Value: false
+        model__block_2__collision__collision:
+          Value: false
+        model__block_2__visual__visual:
+          Value: false
+        model__block_3:
+          Value: false
+        model__block_30:
+          Value: false
+        model__block_30__collision__collision:
+          Value: false
+        model__block_30__visual__visual:
+          Value: false
+        model__block_31:
+          Value: false
+        model__block_31__collision__collision:
+          Value: false
+        model__block_31__visual__visual:
+          Value: false
+        model__block_32:
+          Value: false
+        model__block_32__collision__collision:
+          Value: false
+        model__block_32__visual__visual:
+          Value: false
+        model__block_33:
+          Value: false
+        model__block_33__collision__collision:
+          Value: false
+        model__block_33__visual__visual:
+          Value: false
+        model__block_34:
+          Value: false
+        model__block_34__collision__collision:
+          Value: false
+        model__block_34__visual__visual:
+          Value: false
+        model__block_35:
+          Value: false
+        model__block_35__collision__collision:
+          Value: false
+        model__block_35__visual__visual:
+          Value: false
+        model__block_36:
+          Value: false
+        model__block_36__collision__collision:
+          Value: false
+        model__block_36__visual__visual:
+          Value: false
+        model__block_37:
+          Value: false
+        model__block_37__collision__collision:
+          Value: false
+        model__block_37__visual__visual:
+          Value: false
+        model__block_38:
+          Value: false
+        model__block_38__collision__collision:
+          Value: false
+        model__block_38__visual__visual:
+          Value: false
+        model__block_39:
+          Value: false
+        model__block_39__collision__collision:
+          Value: false
+        model__block_39__visual__visual:
+          Value: false
+        model__block_3__collision__collision:
+          Value: false
+        model__block_3__visual__visual:
+          Value: false
+        model__block_4:
+          Value: false
+        model__block_40:
+          Value: false
+        model__block_40__collision__collision:
+          Value: false
+        model__block_40__visual__visual:
+          Value: false
+        model__block_41:
+          Value: false
+        model__block_41__collision__collision:
+          Value: false
+        model__block_41__visual__visual:
+          Value: false
+        model__block_42:
+          Value: false
+        model__block_42__collision__collision:
+          Value: false
+        model__block_42__visual__visual:
+          Value: false
+        model__block_43:
+          Value: false
+        model__block_43__collision__collision:
+          Value: false
+        model__block_43__visual__visual:
+          Value: false
+        model__block_44:
+          Value: false
+        model__block_44__collision__collision:
+          Value: false
+        model__block_44__visual__visual:
+          Value: false
+        model__block_45:
+          Value: false
+        model__block_45__collision__collision:
+          Value: false
+        model__block_45__visual__visual:
+          Value: false
+        model__block_46:
+          Value: false
+        model__block_46__collision__collision:
+          Value: false
+        model__block_46__visual__visual:
+          Value: false
+        model__block_47:
+          Value: false
+        model__block_47__collision__collision:
+          Value: false
+        model__block_47__visual__visual:
+          Value: false
+        model__block_48:
+          Value: false
+        model__block_48__collision__collision:
+          Value: false
+        model__block_48__visual__visual:
+          Value: false
+        model__block_49:
+          Value: false
+        model__block_49__collision__collision:
+          Value: false
+        model__block_49__visual__visual:
+          Value: false
+        model__block_4__collision__collision:
+          Value: false
+        model__block_4__visual__visual:
+          Value: false
+        model__block_5:
+          Value: false
+        model__block_50:
+          Value: false
+        model__block_50__collision__collision:
+          Value: false
+        model__block_50__visual__visual:
+          Value: false
+        model__block_51:
+          Value: false
+        model__block_51__collision__collision:
+          Value: false
+        model__block_51__visual__visual:
+          Value: false
+        model__block_52:
+          Value: false
+        model__block_52__collision__collision:
+          Value: false
+        model__block_52__visual__visual:
+          Value: false
+        model__block_53:
+          Value: false
+        model__block_53__collision__collision:
+          Value: false
+        model__block_53__visual__visual:
+          Value: false
+        model__block_54:
+          Value: false
+        model__block_54__collision__collision:
+          Value: false
+        model__block_54__visual__visual:
+          Value: false
+        model__block_55:
+          Value: false
+        model__block_55__collision__collision:
+          Value: false
+        model__block_55__visual__visual:
+          Value: false
+        model__block_5__collision__collision:
+          Value: false
+        model__block_5__visual__visual:
+          Value: false
+        model__block_6:
+          Value: false
+        model__block_6__collision__collision:
+          Value: false
+        model__block_6__visual__visual:
+          Value: false
+        model__block_7:
+          Value: false
+        model__block_7__collision__collision:
+          Value: false
+        model__block_7__visual__visual:
+          Value: false
+        model__block_8:
+          Value: false
+        model__block_8__collision__collision:
+          Value: false
+        model__block_8__visual__visual:
+          Value: false
+        model__block_9:
+          Value: false
+        model__block_9__collision__collision:
+          Value: false
+        model__block_9__visual__visual:
+          Value: false
         odom:
-          Value: true
+          Value: false
         point_cloud_odom:
-          Value: true
+          Value: false
         remote:
-          Value: true
+          Value: false
         top_shell:
-          Value: true
+          Value: false
         wide_angle_camera_front_camera:
-          Value: true
+          Value: false
         wide_angle_camera_front_camera_parent:
-          Value: true
+          Value: false
         wide_angle_camera_rear_camera:
-          Value: true
+          Value: false
         wide_angle_camera_rear_camera_parent:
-          Value: true
+          Value: false
       Marker Alpha: 1
       Marker Scale: 0.25
       Name: TF
@@ -368,6 +707,288 @@ Visualization Manager:
           map:
             floorplan_tf:
               {}
+            ground_plane:
+              ground_plane__link:
+                ground_plane__link__collision__collision:
+                  {}
+                ground_plane__link__visual__visual:
+                  {}
+            model:
+              model__block_1:
+                model__block_1__collision__collision:
+                  {}
+                model__block_1__visual__visual:
+                  {}
+              model__block_10:
+                model__block_10__collision__collision:
+                  {}
+                model__block_10__visual__visual:
+                  {}
+              model__block_11:
+                model__block_11__collision__collision:
+                  {}
+                model__block_11__visual__visual:
+                  {}
+              model__block_12:
+                model__block_12__collision__collision:
+                  {}
+                model__block_12__visual__visual:
+                  {}
+              model__block_13:
+                model__block_13__collision__collision:
+                  {}
+                model__block_13__visual__visual:
+                  {}
+              model__block_14:
+                model__block_14__collision__collision:
+                  {}
+                model__block_14__visual__visual:
+                  {}
+              model__block_15:
+                model__block_15__collision__collision:
+                  {}
+                model__block_15__visual__visual:
+                  {}
+              model__block_16:
+                model__block_16__collision__collision:
+                  {}
+                model__block_16__visual__visual:
+                  {}
+              model__block_17:
+                model__block_17__collision__collision:
+                  {}
+                model__block_17__visual__visual:
+                  {}
+              model__block_18:
+                model__block_18__collision__collision:
+                  {}
+                model__block_18__visual__visual:
+                  {}
+              model__block_19:
+                model__block_19__collision__collision:
+                  {}
+                model__block_19__visual__visual:
+                  {}
+              model__block_2:
+                model__block_2__collision__collision:
+                  {}
+                model__block_2__visual__visual:
+                  {}
+              model__block_20:
+                model__block_20__collision__collision:
+                  {}
+                model__block_20__visual__visual:
+                  {}
+              model__block_21:
+                model__block_21__collision__collision:
+                  {}
+                model__block_21__visual__visual:
+                  {}
+              model__block_22:
+                model__block_22__collision__collision:
+                  {}
+                model__block_22__visual__visual:
+                  {}
+              model__block_23:
+                model__block_23__collision__collision:
+                  {}
+                model__block_23__visual__visual:
+                  {}
+              model__block_24:
+                model__block_24__collision__collision:
+                  {}
+                model__block_24__visual__visual:
+                  {}
+              model__block_25:
+                model__block_25__collision__collision:
+                  {}
+                model__block_25__visual__visual:
+                  {}
+              model__block_26:
+                model__block_26__collision__collision:
+                  {}
+                model__block_26__visual__visual:
+                  {}
+              model__block_27:
+                model__block_27__collision__collision:
+                  {}
+                model__block_27__visual__visual:
+                  {}
+              model__block_28:
+                model__block_28__collision__collision:
+                  {}
+                model__block_28__visual__visual:
+                  {}
+              model__block_29:
+                model__block_29__collision__collision:
+                  {}
+                model__block_29__visual__visual:
+                  {}
+              model__block_3:
+                model__block_3__collision__collision:
+                  {}
+                model__block_3__visual__visual:
+                  {}
+              model__block_30:
+                model__block_30__collision__collision:
+                  {}
+                model__block_30__visual__visual:
+                  {}
+              model__block_31:
+                model__block_31__collision__collision:
+                  {}
+                model__block_31__visual__visual:
+                  {}
+              model__block_32:
+                model__block_32__collision__collision:
+                  {}
+                model__block_32__visual__visual:
+                  {}
+              model__block_33:
+                model__block_33__collision__collision:
+                  {}
+                model__block_33__visual__visual:
+                  {}
+              model__block_34:
+                model__block_34__collision__collision:
+                  {}
+                model__block_34__visual__visual:
+                  {}
+              model__block_35:
+                model__block_35__collision__collision:
+                  {}
+                model__block_35__visual__visual:
+                  {}
+              model__block_36:
+                model__block_36__collision__collision:
+                  {}
+                model__block_36__visual__visual:
+                  {}
+              model__block_37:
+                model__block_37__collision__collision:
+                  {}
+                model__block_37__visual__visual:
+                  {}
+              model__block_38:
+                model__block_38__collision__collision:
+                  {}
+                model__block_38__visual__visual:
+                  {}
+              model__block_39:
+                model__block_39__collision__collision:
+                  {}
+                model__block_39__visual__visual:
+                  {}
+              model__block_4:
+                model__block_4__collision__collision:
+                  {}
+                model__block_4__visual__visual:
+                  {}
+              model__block_40:
+                model__block_40__collision__collision:
+                  {}
+                model__block_40__visual__visual:
+                  {}
+              model__block_41:
+                model__block_41__collision__collision:
+                  {}
+                model__block_41__visual__visual:
+                  {}
+              model__block_42:
+                model__block_42__collision__collision:
+                  {}
+                model__block_42__visual__visual:
+                  {}
+              model__block_43:
+                model__block_43__collision__collision:
+                  {}
+                model__block_43__visual__visual:
+                  {}
+              model__block_44:
+                model__block_44__collision__collision:
+                  {}
+                model__block_44__visual__visual:
+                  {}
+              model__block_45:
+                model__block_45__collision__collision:
+                  {}
+                model__block_45__visual__visual:
+                  {}
+              model__block_46:
+                model__block_46__collision__collision:
+                  {}
+                model__block_46__visual__visual:
+                  {}
+              model__block_47:
+                model__block_47__collision__collision:
+                  {}
+                model__block_47__visual__visual:
+                  {}
+              model__block_48:
+                model__block_48__collision__collision:
+                  {}
+                model__block_48__visual__visual:
+                  {}
+              model__block_49:
+                model__block_49__collision__collision:
+                  {}
+                model__block_49__visual__visual:
+                  {}
+              model__block_5:
+                model__block_5__collision__collision:
+                  {}
+                model__block_5__visual__visual:
+                  {}
+              model__block_50:
+                model__block_50__collision__collision:
+                  {}
+                model__block_50__visual__visual:
+                  {}
+              model__block_51:
+                model__block_51__collision__collision:
+                  {}
+                model__block_51__visual__visual:
+                  {}
+              model__block_52:
+                model__block_52__collision__collision:
+                  {}
+                model__block_52__visual__visual:
+                  {}
+              model__block_53:
+                model__block_53__collision__collision:
+                  {}
+                model__block_53__visual__visual:
+                  {}
+              model__block_54:
+                model__block_54__collision__collision:
+                  {}
+                model__block_54__visual__visual:
+                  {}
+              model__block_55:
+                model__block_55__collision__collision:
+                  {}
+                model__block_55__visual__visual:
+                  {}
+              model__block_6:
+                model__block_6__collision__collision:
+                  {}
+                model__block_6__visual__visual:
+                  {}
+              model__block_7:
+                model__block_7__collision__collision:
+                  {}
+                model__block_7__visual__visual:
+                  {}
+              model__block_8:
+                model__block_8__collision__collision:
+                  {}
+                model__block_8__visual__visual:
+                  {}
+              model__block_9:
+                model__block_9__collision__collision:
+                  {}
+                model__block_9__visual__visual:
+                  {}
           point_cloud_odom:
             {}
       Update Interval: 0
@@ -432,21 +1053,21 @@ Visualization Manager:
       Marker Topic: /field_local_planner/rmp/control_points
       Name: RMP Control Points
       Namespaces:
-        acc_damping: true
+        acc_damping: false
         acc_geodesic_goal: true
-        acc_geodesic_heading: true
-        acc_goal_orientation: true
+        acc_geodesic_heading: false
+        acc_goal_orientation: false
         acc_sdf_obstacle: true
-        control_point: true
-        metric_damping: true
-        metric_geodesic_goal: true
-        metric_geodesic_heading: true
-        metric_goal_orientation: true
+        control_point: false
+        metric_damping: false
+        metric_geodesic_goal: false
+        metric_geodesic_heading: false
+        metric_goal_orientation: false
         metric_sdf_obstacle: true
       Queue Size: 100
       Value: true
     - Alpha: 1
-      Autocompute Intensity Bounds: true
+      Autocompute Intensity Bounds: false
       Class: grid_map_rviz_plugin/GridMap
       Color: 200; 200; 200
       Color Layer: geodesic
@@ -460,7 +1081,7 @@ Visualization Manager:
       History Length: 1
       Invert ColorMap: true
       Max Color: 255; 255; 255
-      Max Intensity: 10
+      Max Intensity: 5
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: GridMap
@@ -497,7 +1118,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 6.192608833312988
+      Distance: 9.826924324035645
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -513,9 +1134,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8603980541229248
+      Pitch: 0.33979636430740356
       Target Frame: base
-      Yaw: 2.755399227142334
+      Yaw: 2.8104031085968018
     Saved: ~
 Window Geometry:
   Displays:
@@ -523,7 +1144,7 @@ Window Geometry:
   Height: 1016
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001560000039efc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000039e000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000039efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000039e000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007380000003efc0100000002fb0000000800540069006d0065000000000000000738000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004c70000039e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001560000039efc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000039e000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000039efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000039e000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007380000003efc0100000002fb0000000800540069006d0065000000000000000738000004f300fffffffb0000000800540069006d00650100000000000004500000000000000000000004c70000039e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
