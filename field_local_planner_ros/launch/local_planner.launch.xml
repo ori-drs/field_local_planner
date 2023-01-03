@@ -21,7 +21,7 @@
   <arg     if="$(arg debug)" name="launch_prefix" value="gdb -ex run --args" />
 
   <!-- Carrot -->
-  <arg name="real_carrot"          default="false"/>
+  <arg name="real_carrot"          default="true"/>
   
   <!-- Launch nodes -->
   <!-- Local planner -->

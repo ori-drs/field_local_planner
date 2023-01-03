@@ -1,79 +1,102 @@
-# Locally Reactive Controller
+# Field Local Planner
 
-This package implements 2D position controllers, some of them aware of the environment.
-It currently has 3 implementations:
+This package implements SE(2) local planners (i.e, planar motion) for environment-aware navigation.
+The implementation follows a similar approach to the [ROS navigation stack](https://github.com/ros-planning/navigation), implementing different algorithms as plugins.
 
-- `trackline`: Implements a *blind* controller similar to the original position controller. **Not aware of the environment**
-- `falco`: Implements a *perceptive* controller based on the [FALCO system from CMU](https://github.com/HongbiaoZ/autonomous_exploration_development_environment/tree/noetic/src/local_planner)
-- `rmp`: Implements a *perceptive* controller using Riemannian Motion Policies (RMP) based on [this paper](https://arxiv.org/abs/1904.01762) from the University of Washington and NVIDIA.
-
-Both `falco` and `rmp` require access to an elevation map as a local representation of the environment.
+## Repository structure
+- [`field_local_planner`](field_local_planner/) is a meta package to build everything.
+- [`field_local_planner_base`](field_local_planner_base/) is a ROS-independent package that implements the basic functionalities common to all the local planners. Any derived local planner must inherit from this package.
+- [`field_local_planner_msgs`](field_local_planner_msgs/) implements the core ROS messages and actions.
+- [`field_local_planner_ros`](field_local_planner_ros/) implements the ROS base plugin from which the other plugins inherit. It implements all the ROS interfaces that provide the data to the local planner.
+- [`field_local_planners`](field_local_planners/) stores all the specific implementations of local planners:
+  - [`field_local_planner_apf`](field_local_planners/field_local_planner_apf/) implements an Artificial Potential Field local planner based on the RMP implementation (see below).
+  - [`field_local_planner_falco`](field_local_planners/field_local_planner_falco/) implements a local planner based on the [CMU SubT team's](https://github.com/HongbiaoZ/autonomous_exploration_development_environment/tree/noetic/src/local_planner) implementation of Zhang, Gu, Gupta & Singh, JFR 2020, [_Falco: Fast likelihood-based collision avoidance with extension to human-guided navigation_](https://onlinelibrary.wiley.com/doi/abs/10.1002/rob.21952)
+  - [`field_local_planner_rmp`](field_local_planners/field_local_planner_rmp/) implements a [Riemannian Motion Policies](https://arxiv.org/abs/1801.02854)-based local planner, as described in Mattamala, Chebrolu & Fallon, RA-L 2022, [An Efficient Locally Reactive Controller for Safe Navigation in Visual Teach and Repeat Missions](https://ieeexplore.ieee.org/document/9682571).
+  - [`field_local_planner_trackline`](field_local_planners/field_local_planner_trackline/) **is not a local planner**. It implements a pure pursuit controller that tracks a line between the starting position of the robot and the goal, not considering any information of the environment.
 
 ## Dependencies
-
-The package should work with the usual DRS setup. Additionally, you need:
-
-- [`rmp` package](https://github.com/ori-drs/rmp): Implements the basic accelerations used to define the optimization problem
-- [`grid_map_filters_drs` package](https://github.com/ori-drs/grid_map_filters_drs)
+- [`grid_map_filters_drs`](https://github.com/ori-drs/grid_map_filters_drs): required by `field_local_planner_rmp` to generate the grid map fields.
 - ['teleop_twist_joy']: `sudo apt install ros-noetic-teleop-twist-joy`. Required if you want to use the controller using twists as input.
 
-## Running the controller
+## Running the planner
+The `field_local_planners_ros` package has all the interfaces to launch the nodes. Each `field_local_planner_<planner>_plugin` package has the parameters required for each planner.
 
-The controllers implement **the same interfaces as the original position controller**. All the input and output signals, including visualizations, preserve the same names, so as to make the integration easier.
+For example, to launch the RMP local planner:
+```sh
+roslaunch field_local_planner_ros <planner>.launch
+```
+This will 
 
-To run a controller, you only need to run:
+## Writing new planners
+Each new local planner must keep the following folder structure:
 
 ```sh
-roslaunch field_local_planner controller.launch controller:=<controller_name>
+field_local_planner
+├── field_local_planner_ros
+│   ├── launch
+│   │   ├── <your_planner>.launch # Launchfile for your local planner
+├── field_local_planners
+│   ├── ...
+│   ├── field_local_planner_<your_planner>
+│   │   ├── field_local_planner_<your_planner> # package implementing the local planner with the computeTwist() and computePath() methods
+│   │   │   ├── config         # any ROS-independent parameters/files used by the planner
+│   │   │   ├── include        # source code
+│   │   │   ├── src            # source code
+│   │   │   ├── CMakeLists.txt
+│   │   │   └── package.xml
+│   │   ├── field_local_planner_<your_planner>_plugin # ROS plugin interface that loads parameters from parameter server/dynamic reconfigure and publishes extra visualizations
+│   │   │   ├── config              # ROS parameters (loaded to the parameter server)
+│   │   │   ├── dynamic_reconfigure # Dynamic parameters
+│   │   │   ├── include
+│   │   │   ├── src
+│   │   │   ├── CMakeLists.txt
+│   │   │   ├── field_local_planner_plugin.xml # the XML to configure the plugin
+│   │   │   └── package.xml
 ```
 
-**The default controller is RMP**. This will launch the main node using the controller specified by `<controller_name>`. If the controller is not `trackline` it is assummed to be *perceptive*, so a *filter chain* (from `grid_map_filters_drs`) will be also launched to compute filtered layers on the elevation map.
+As a reference, please check:
+- For the launchfiles: 
+  - [`trackline.launch`](field_local_planner_ros/launch/trackline.launch) for an easy example
+  - [`trackline.launch`](field_local_planner_ros/launch/rmp.launch) for an example using grid map with extra filters
+- For the packages:
+  - [`field_local_planner_trackline`](field_local_planners/field_local_planner_trackline/field_local_planner_trackline) for an example of a simple planner that implements the `Twist computeTwist()` and `Path computePath()` methods required by any local planner.
+  - [`field_local_planner_trackline_plugin`](field_local_planners/field_local_planner_trackline/field_local_planner_trackline_plugin) for an example of ROS plugin that loads parameters from the parameter server and dynamic reconfigure.
 
-If you're running the ANYmal simulator, you can easily send position commands using the `2D Nav Goal` above.
 
-## Running the controller in twist mode
+## Citing
+If you use this repository in academic work, please cite:
 
-The controller also can be used to send velocity commands and correct them to be collision-free. This only requires to launch the controller and the following:
-
-```sh
-roslaunch field_local_planner joystick_teleop.launch
+```
+M. Mattamala, N. Chebrolu and M. Fallon, "An Efficient Locally Reactive Controller for Safe Navigation in Visual Teach and Repeat Missions," in IEEE Robotics and Automation Letters, vol. 7, no. 2, pp. 2353-2360, April 2022, doi: 10.1109/LRA.2022.3143196.
 ```
 
-By default it uses the configuration of a [Xbox controller](config/teleop_twist_joy/xbox.config.yaml). `RB` must be pressed to send commands and the left and right joysticks are used to move forward/backward or rotate in place, respectively.
+```bibtex
+@ARTICLE{Mattamala2022,
+  author={Mattamala, Matias and Chebrolu, Nived and Fallon, Maurice},
+  journal={IEEE Robotics and Automation Letters}, 
+  title={An Efficient Locally Reactive Controller for Safe Navigation in Visual Teach and Repeat Missions}, 
+  year={2022},
+  volume={7},
+  number={2},
+  pages={2353-2360},
+  doi={10.1109/LRA.2022.3143196}}
+```
 
-## Visualizations
+If additionally you also use the FALCO local planner, cite:
+```
+Zhang, J, Hu, C, Chadha, RG, Singh, S. Falco: Fast likelihood-based collision avoidance with extension to human-guided navigation. J Field Robotics. 2020; 37: 1300– 1313.
+```
 
-Depending on the controller, some extra visualizations will be available:
+```bibtex
+@article{Zhang2020,
+author = {Zhang, Ji and Hu, Chen and Chadha, Rushat Gupta and Singh, Sanjiv},
+title = {Falco: Fast likelihood-based collision avoidance with extension to human-guided navigation},
+journal = {Journal of Field Robotics},
+volume = {37},
+number = {8},
+pages = {1300-1313},
+doi = {https://doi.org/10.1002/rob.21952},
+year = {2020}
+}
 
-- `trackline` shares the same visualizations as the original position controller.
-- `falco` also has a visualization of the free paths using the precomputed trajectories
-- `rmp` shows the control spheres and computed accelerations for each control point.
-
-The `controller.rviz` file can be used as a reference.
-
-## Configuring controllers
-
-### Common parameters
-
-By default the launchfile is configured for ANYmal C. If you want to setup the main signals for other robot, you can check the [launchfile for extrm](/launch/field_local_planner_extrm.launch)
-
-The launchfile includes a description of the main common parameters required by the controller, such as the robot's specifications, as well as elevation map processing (voxel filters, maximum size of the elevation map, and traversability threshold).
-
-### Controller-specific parameters
-
-Since FALCO and RMP use way different approaches, their parameters are set in YAML files available in the [config/controllers](config/controllers/) folder. They are loaded to the parameter server when you run the launchfile, please refer to the files for further details.
-
-## Implementation aspects
-
-All the controllers share the structure implemented in [`controller_base.cpp`](src/field_local_planner/controllers/controller_base.cpp), which implements the interfaces to set goals, current pose, and elevation map data when required. It also implements the state machine of the controller, which has the following states:
-
-- `UNKNOWN`: Starting state
-- `FINISHED`: When the goal was reached according to the distance threshold
-- `TURN_TO_GOAL`: before moving forward, the robot will rotate to head towards the goal
-- `FORWARD`: Main method to make the robot approach the goal
-- `TURN_TO_DESTINATION`: Once the robot got close to the goal, it will adjust its heading to match the final pose.
-- `UNREACHABLE` (not fully implemented): When the robot is not able to do more progress for the current goal.
-
-Each controller inherits this class and is required to implement virtual methods for each state of the state machine. For now, if you don't want to use the state machine, is just a matter of implementing the `FORWARD` state and call that method in the other states.
-
-There are some slides explaining this [here](https://docs.google.com/presentation/d/1KO7pQUNO1Ck4Ubecnb5rPggUPdeabFRs3zTrNR90MZo/edit?usp=sharing) as well.
+```

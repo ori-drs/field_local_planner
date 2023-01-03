@@ -28,6 +28,6 @@ int main(int argc, char** argv) {
     ROS_FATAL_STREAM("The plugin [" << plugin_name << "] failed to load for some reason. Error: " << ex.what());
     exit(-1);
   }
-  
+
   return 0;
 }

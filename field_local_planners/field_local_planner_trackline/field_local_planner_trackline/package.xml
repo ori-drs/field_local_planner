@@ -15,7 +15,6 @@
   <!-- Catkin packages -->
   <depend>field_local_planner_base</depend>
   <depend>grid_map_core</depend>
-  <depend>trackline</depend>
 
   <!-- Non-catkin packages -->
   <depend>gtsam</depend>
