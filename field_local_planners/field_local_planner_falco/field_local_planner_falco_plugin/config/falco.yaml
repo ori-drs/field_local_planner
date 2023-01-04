@@ -42,9 +42,6 @@ falco:
   forward_linear_gain_p: 1.0
   forward_angular_gain_p: 1.0
 
-  # Acceleration used to change the actual velocity:
-  linear_acceleration: 0.1 # m / s^2
-
   # FALCO evaluates the precomputed trajectories at 
   # different scales to find a collision free path
   # It goes from `falco_path_scale` and decreases till

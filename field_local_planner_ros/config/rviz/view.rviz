@@ -1050,17 +1050,7 @@ Visualization Manager:
       Marker Topic: /field_local_planner/rmp/control_points
       Name: RMP Control Points
       Namespaces:
-        acc_damping: false
-        acc_geodesic_goal: true
-        acc_geodesic_heading: false
-        acc_goal_orientation: false
-        acc_sdf_obstacle: true
-        control_point: false
-        metric_damping: false
-        metric_geodesic_goal: false
-        metric_geodesic_heading: false
-        metric_goal_orientation: false
-        metric_sdf_obstacle: true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -1099,7 +1089,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 40; 87; 244
       Min Color: 239; 41; 41
@@ -1114,7 +1104,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: false
-      Value: true
+      Value: false
     - Alpha: 0.30000001192092896
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -1198,6 +1188,14 @@ Visualization Manager:
       Topic: /state_estimator/pose_in_odom
       Unreliable: false
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /field_local_planner/real_carrot
+      Name: Real carrot
+      Namespaces:
+        carrot: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -1226,7 +1224,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 5.567670822143555
+      Distance: 4.187560558319092
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1234,17 +1232,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.8495727777481079
-        Y: 0.8595011234283447
-        Z: 0
+        X: -0.4268549680709839
+        Y: 0.3553745746612549
+        Z: 1.4179204299580306e-06
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7297960519790649
+      Pitch: 1.3747963905334473
       Target Frame: base
-      Yaw: 2.5504119396209717
+      Yaw: 3.2354161739349365
     Saved: ~
 Window Geometry:
   Displays:

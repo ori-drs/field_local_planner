@@ -38,6 +38,6 @@
   </node>
 
   <!-- Real carrot -->
-  <node if="$(arg real_carrot)" pkg="field_local_planner" type="carrot_publisher.py" name="field_local_planner_carrot" output="screen"/>
+  <node if="$(arg real_carrot)" pkg="field_local_planner_ros" type="carrot_publisher.py" name="field_local_planner_carrot" output="screen"/>
 
 </launch>

@@ -6,7 +6,7 @@
   
   <!-- Debugging flags -->
   <arg name="debug"          default="false"/>
-  <arg name="real_carrot"    default="false"/>
+  <arg name="real_carrot"    default="true"/>
 
   <!-- Include common launch -->
   <include file="$(find field_local_planner_ros)/launch/local_planner.launch.xml">

@@ -1,5 +1,5 @@
 #pragma once
-#include <field_local_planner_msgs/NewGoalAction.h>
+#include <field_local_planner_msgs/MoveToAction.h>
 #include <field_local_planner_msgs/Status.h>
 #include <field_local_planner_base/basic_types.hpp>
 #include <field_local_planner_base/local_planner.hpp>
@@ -68,7 +68,7 @@ class BasePlugin {
   // Other callbacks
   void goalCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& goal_msg);
   void joyTwistCallback(const geometry_msgs::TwistConstPtr& twist_msg);
-  void newGoalRequestActionHandler();
+  void moveToRequestActionHandler();
   void preemptActionHandler();
 
   // Sensor callbacks
@@ -82,10 +82,11 @@ class BasePlugin {
   // Publishers
   void publishTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
                         const ros::Time& stamp = ros::Time::now());
-  void publishCurrentGoal(const Pose3& T_fixed_goal, const std::string& fixed_frame, const ros::Time& stamp = ros::Time::now());
-  void publishPath(const nav_msgs::Path& path);
-  void publishStatus(const field_local_planner_msgs::Status& status);
-  void publishTwist(const geometry_msgs::Twist& twist);
+
+  void publishCurrentGoal(const Pose3& T_fixed_goal, const ros::Time& stamp = ros::Time::now());
+  void publishPath(const Path& path);
+  void publishStatus(const BaseLocalPlanner::Status& status);
+  void publishTwist(const Twist& twist, const ros::Time& stamp = ros::Time::now());
   void publishZeroTwist();
 
   // Utils
@@ -122,10 +123,10 @@ class BasePlugin {
   std::string output_twist_type_;
 
   // Action server
-  using ActionServer = actionlib::SimpleActionServer<field_local_planner_msgs::NewGoalAction>;
+  using ActionServer = actionlib::SimpleActionServer<field_local_planner_msgs::MoveToAction>;
   std::shared_ptr<ActionServer> action_server_;
-  field_local_planner_msgs::NewGoalResult result_;
-  field_local_planner_msgs::NewGoalFeedback feedback_;
+  field_local_planner_msgs::MoveToResult result_;
+  field_local_planner_msgs::MoveToFeedback feedback_;
 
   // Frames
   std::string fixed_frame_;  // usually 'odom' frame
@@ -140,6 +141,7 @@ class BasePlugin {
 
   // Output
   BaseLocalPlanner::State last_state_;
+  Pose3 T_f_g_;  // Goal in fixed frame
 };
 
 }  // namespace field_local_planner

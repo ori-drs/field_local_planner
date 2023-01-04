@@ -112,7 +112,7 @@ void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
 
   // Setup action server
   action_server_ = std::make_shared<ActionServer>(nh, "action_server", false);
-  action_server_->registerGoalCallback(boost::bind(&BasePlugin::newGoalRequestActionHandler, this));
+  action_server_->registerGoalCallback(boost::bind(&BasePlugin::moveToRequestActionHandler, this));
   action_server_->registerPreemptCallback(boost::bind(&BasePlugin::preemptActionHandler, this));
   action_server_->start();
 }
@@ -129,17 +129,15 @@ bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg
   // Print useful info to terminal
   printStateInfo(output.status.state);
 
-  // Convert to ROS msgs
-  twist_msg = utils::toTwistMsg(output.twist);
-  status_msg = utils::toStatusMsg(output.status);
-  path_msg = utils::toPathMsg(output.path, base_frame_);
-
+  // Publish custom visualizations of the local planner
   publishVisualizations();
-  publishStatus(status_msg);
 
+  // Publish common stuff
+  publishStatus(output.status);
   if (valid_output) {
-    publishTwist(twist_msg);
-    publishPath(path_msg);
+    publishTwist(output.twist);
+    publishPath(output.path);
+    publishCurrentGoal(T_f_g_);
   }
 
   return valid_output;
@@ -184,20 +182,18 @@ void BasePlugin::setGoal(const geometry_msgs::Pose& goal_msg, const std_msgs::He
 
   // Transform message
   Pose3 T_a_g = utils::toPose3(goal_msg);  // Transformation of base b in auxiliary frame
-  Pose3 T_f_g = T_f_a * T_a_g;             // Base in fixed frame
+  T_f_g_ = T_f_a * T_a_g;             // Base in fixed frame
 
   // Publish goal pose as message and TF
-  ros::Time now = ros::Time::now();
-  publishTransform(T_f_g, fixed_frame_, "goal_local_planner", now);
-  publishCurrentGoal(T_f_g, fixed_frame_, now);
+  publishCurrentGoal(T_f_g_);
 
   // Query base in fixed frame
   Pose3 T_f_b = queryTransform(fixed_frame_, base_frame_, header.stamp);
 
   // Set data
-  ROS_INFO_STREAM("Setting new goal in frame [" << fixed_frame_ << "] : \n  position: " << T_f_g.translation().transpose()
-                                                << "\n  orientation (Euler): " << T_f_g.rotation().rpy().transpose());
-  local_planner_->setGoalInFixed(T_f_g, T_f_b, ts);
+  ROS_INFO_STREAM("Setting new goal in frame [" << fixed_frame_ << "] : \n  position: " << T_f_g_.translation().transpose()
+                                                << "\n  orientation (Euler): " << T_f_g_.rotation().rpy().transpose());
+  local_planner_->setGoalInFixed(T_f_g_, T_f_b, ts);
 }
 
 void BasePlugin::poseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& pose_msg) {
@@ -230,14 +226,14 @@ void BasePlugin::joyTwistCallback(const geometry_msgs::TwistConstPtr& twist_msg)
 }
 
 // Action server
-void BasePlugin::newGoalRequestActionHandler() {
+void BasePlugin::moveToRequestActionHandler() {
   ROS_INFO_STREAM("[BasePlugin] Action Server - New goal");
 
   // Get goal from server
-  geometry_msgs::PoseStamped goal_msg = action_server_->acceptNewGoal()->goal;
+  geometry_msgs::PoseWithCovarianceStamped goal_msg = action_server_->acceptNewGoal()->goal;
 
   // Pass goal to the local planner
-  setGoal(goal_msg.pose, goal_msg.header);
+  setGoal(goal_msg.pose.pose, goal_msg.header);
 }
 
 void BasePlugin::preemptActionHandler() {
@@ -304,45 +300,46 @@ void BasePlugin::publishTransform(const Pose3& T_parent_child, const std::string
   tf_broadcaster_.sendTransform(tf::StampedTransform(tf_parent_child, stamp, parent, child));
 }
 
-void BasePlugin::publishCurrentGoal(const Pose3& T_fixed_goal, const std::string& fixed_frame, const ros::Time& stamp) {
+void BasePlugin::publishCurrentGoal(const Pose3& T_fixed_goal, const ros::Time& stamp) {
+  // Publish msg
   geometry_msgs::PoseWithCovarianceStamped pose_msg;
   pose_msg.pose.pose = utils::toPoseMsg(T_fixed_goal);
-  pose_msg.header.frame_id = fixed_frame;
+  pose_msg.header.frame_id = fixed_frame_;
   pose_msg.header.stamp = stamp;
   current_goal_pub_.publish(pose_msg);
+
+  // Publish TF
+  publishTransform(T_f_g_, fixed_frame_, "goal_local_planner");
 }
 
-void BasePlugin::publishPath(const nav_msgs::Path& path) {
-  path_pub_.publish(path);
+void BasePlugin::publishPath(const Path& path) {
+  nav_msgs::Path path_msg = utils::toPathMsg(path, base_frame_);
+  path_pub_.publish(path_msg);
 }
 
-void BasePlugin::publishStatus(const field_local_planner_msgs::Status& status) {
-  status_pub_.publish(status);
+void BasePlugin::publishStatus(const BaseLocalPlanner::Status& status) {
+  field_local_planner_msgs::Status status_msg = utils::toStatusMsg(status);
+  status_pub_.publish(status_msg);
 }
 
-void BasePlugin::publishTwist(const geometry_msgs::Twist& twist) {
+void BasePlugin::publishTwist(const Twist& twist, const ros::Time& stamp) {
+  geometry_msgs::Twist twist_msg = utils::toTwistMsg(twist);
+
   if (output_twist_type_ == "twist") {
-    output_twist_pub_.publish(twist);
+    output_twist_pub_.publish(twist_msg);
 
   } else if (output_twist_type_ == "twist_stamped") {
     geometry_msgs::TwistStamped twist_stamped;
-    twist_stamped.twist = twist;
+    twist_stamped.twist = twist_msg;
     twist_stamped.header.seq = 0;
-    twist_stamped.header.stamp = ros::Time::now();  // Check if this is correct
+    twist_stamped.header.stamp = stamp;  // Check if this is correct
     twist_stamped.header.frame_id = base_frame_;
     output_twist_pub_.publish(twist_stamped);
   }
 }
 
 void BasePlugin::publishZeroTwist() {
-  geometry_msgs::Twist zero_twist;
-  zero_twist.angular.x = 0.0;
-  zero_twist.angular.y = 0.0;
-  zero_twist.angular.z = 0.0;
-  zero_twist.linear.x = 0.0;
-  zero_twist.linear.y = 0.0;
-  zero_twist.linear.z = 0.0;
-  publishTwist(zero_twist);
+  publishTwist(Twist::Zero());
 }
 
 Pose3 BasePlugin::queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp) {

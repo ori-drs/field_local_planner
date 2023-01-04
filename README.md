@@ -25,7 +25,6 @@ For example, to launch the RMP local planner:
 ```sh
 roslaunch field_local_planner_ros <planner>.launch
 ```
-This will 
 
 ## Writing new planners
 Each new local planner must keep the following folder structure:
@@ -57,7 +56,7 @@ field_local_planner
 As a reference, please check:
 - For the launchfiles: 
   - [`trackline.launch`](field_local_planner_ros/launch/trackline.launch) for an easy example
-  - [`trackline.launch`](field_local_planner_ros/launch/rmp.launch) for an example using grid map with extra filters
+  - [`rmp.launch`](field_local_planner_ros/launch/rmp.launch) for an example using grid map with extra filters
 - For the packages:
   - [`field_local_planner_trackline`](field_local_planners/field_local_planner_trackline/field_local_planner_trackline) for an example of a simple planner that implements the `Twist computeTwist()` and `Path computePath()` methods required by any local planner.
   - [`field_local_planner_trackline_plugin`](field_local_planners/field_local_planner_trackline/field_local_planner_trackline_plugin) for an example of ROS plugin that loads parameters from the parameter server and dynamic reconfigure.
@@ -98,5 +97,4 @@ pages = {1300-1313},
 doi = {https://doi.org/10.1002/rob.21952},
 year = {2020}
 }
-
 ```

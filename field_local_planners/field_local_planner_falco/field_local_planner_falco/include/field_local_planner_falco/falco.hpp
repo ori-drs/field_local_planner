@@ -21,8 +21,6 @@ class Falco : public BaseLocalPlanner {
     // gains
     double linear_gain_p = 1.0;
     double angular_gain_p = 1.0;
-    // linear acceleration
-    double linear_acceleration = 0.0001;
 
     // Path scale
     double path_scale = 1.25;  // pathScale

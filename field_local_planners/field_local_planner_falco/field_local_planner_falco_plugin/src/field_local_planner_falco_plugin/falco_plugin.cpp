@@ -31,7 +31,6 @@ void FalcoPlugin::loadParameters(ros::NodeHandle& nh) {
   p.sensor_range = utils::getParameterDefault(nh, "falco/sensor_range", 2.0);
   p.linear_gain_p = utils::getParameterDefault(nh, "falco/linear_gain_p", 1.0);
   p.angular_gain_p = utils::getParameterDefault(nh, "falco/angular_gain_p", 1.0);
-  p.linear_acceleration = utils::getParameterDefault(nh, "falco/linear_acceleration", 0.0001);
   p.path_scale = utils::getParameterDefault(nh, "falco/path_scale", 1.25);
   p.path_scale_step = utils::getParameterDefault(nh, "falco/path_scale_step", 0.25);
   p.min_path_scale = utils::getParameterDefault(nh, "falco/min_path_scale", 0.75);
@@ -76,7 +75,6 @@ void FalcoPlugin::dynamicReconfigureCallback(FalcoConfig& config, uint32_t level
   UPDATE_COMMON_PARAMS(robot_clearance);
   UPDATE_COMMON_PARAMS(linear_gain_p);
   UPDATE_COMMON_PARAMS(angular_gain_p);
-  UPDATE_COMMON_PARAMS(linear_acceleration);
   // UPDATE_COMMON_PARAMS(path_scale);
   // UPDATE_COMMON_PARAMS(path_scale_step);
   // UPDATE_COMMON_PARAMS(min_path_scale);

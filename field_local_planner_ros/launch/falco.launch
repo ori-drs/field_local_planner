@@ -6,7 +6,7 @@
   
   <!-- Debugging flags -->
   <arg name="debug"          default="false"/>
-  <arg name="real_carrot"    default="false"/>
+  <arg name="real_carrot"    default="true"/>
 
   <arg name="elevation_map_topic"           default="/elevation_mapping/elevation_map_raw"/>
   <arg name="elevation_map_filtered_topic"  default="/elevation_mapping/elevation_map_filtered"/>

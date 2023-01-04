@@ -71,6 +71,8 @@ install(
 ############
 ## Python ##
 ############
-catkin_install_python(PROGRAMS scripts/carrot_publisher.py
+catkin_install_python(PROGRAMS
+    scripts/action_client.py
+    scripts/carrot_publisher.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

@@ -1,5 +1,5 @@
 ## Goal
-geometry_msgs/PoseStamped goal
+geometry_msgs/PoseWithCovarianceStamped goal
 
 ---
 
