@@ -20,17 +20,17 @@ Twist Trackline::computeTwist() {
     // If the robot is far from the goal, check heading towards goal
     if (std::fabs(BaseLocalPlanner::heading_towards_goal_) > parameters_.orientation_to_goal_thr) {
       // If it's not pointing towards the goal, correct heading
-      std::cout << "Trackline: TURN_TO_GOAL" << std::endl;
+      // std::cout << "Trackline: TURN_TO_GOAL" << std::endl;
       stateTurnToGoal();
 
     } else {
       // If it's pointing towards the goal, move forward tracking the line
-      std::cout << "Trackline: FORWARD" << std::endl;
+      // std::cout << "Trackline: FORWARD" << std::endl;
       stateForward();
 
     }
   } else {
-    std::cout << "Trackline: TURN_TO_DESTINATION" << std::endl;
+    // std::cout << "Trackline: TURN_TO_DESTINATION" << std::endl;
     // If it's close to the goal, match the final orientation
     stateTurnToDestination();
   }
@@ -60,7 +60,7 @@ Twist Trackline::computeTwist() {
   twist(1) = 0.0;              // Angular y
   twist(2) = goal_angvel_z_;   // Angular z
   twist(3) = output_linvel_x;  // Linear x
-  twist(4) = output_linvel_y;  // Linear y
+  twist(4) = parameters_.differential_mode? 0.0 : output_linvel_y;  // Linear y
   twist(5) = 0.0;              // Linear z
 
   return twist;

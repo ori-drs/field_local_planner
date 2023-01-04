@@ -59,6 +59,11 @@ Twist Falco::computeTwist() {
     twist(4) = sin(heading_towards_goal_) * parameters_.max_linear_velocity_x * distance_to_goal_;
   }
 
+  if (parameters_.differential_mode) {
+    // Remove twist in Y direction
+    twist(4) = 0.0;
+  }
+
   return twist;
 }
 

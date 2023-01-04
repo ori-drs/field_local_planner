@@ -62,6 +62,8 @@ void FalcoPlugin::dynamicReconfigureCallback(FalcoConfig& config, uint32_t level
   Falco::Parameters p = std::dynamic_pointer_cast<Falco>(local_planner_)->getParameters();
 
   // Falco parameters
+  UPDATE_COMMON_PARAMS(base_inverted)
+  UPDATE_COMMON_PARAMS(differential_mode)
   UPDATE_COMMON_PARAMS(robot_length)
   UPDATE_COMMON_PARAMS(robot_width)
   UPDATE_COMMON_PARAMS(robot_height)

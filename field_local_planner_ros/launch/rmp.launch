@@ -19,7 +19,7 @@
     <arg name="pose_topic"         value="/state_estimator/pose_in_odom"/>
     <arg name="twist_topic"        value="/state_estimator/twist"/>
     <arg name="grid_map_topic"     value="$(arg elevation_map_filtered_topic)"/>
-    <arg name="goal_topic"         value="/initialpose2"/>
+    <arg name="goal_topic"         value="/initialpose"/>
     <arg name="joy_twist_topic"    value="/cmd_vel"/>
     <arg name="output_twist_type"  value="twist_stamped"/>
     <!-- <arg name="output_twist_topic" value="/local_guidance_path_follower/twist"/> -->

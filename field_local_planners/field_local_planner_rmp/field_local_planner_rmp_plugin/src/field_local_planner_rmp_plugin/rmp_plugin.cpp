@@ -97,6 +97,8 @@ void RmpPlugin::dynamicReconfigureCallback(RmpConfig& config, uint32_t level) {
   Rmp::ControlPoints cps = std::dynamic_pointer_cast<Rmp>(local_planner_)->getControlPoints();
 
   // RMP parameters
+  UPDATE_COMMON_PARAMS(base_inverted)
+  UPDATE_COMMON_PARAMS(differential_mode)
   UPDATE_COMMON_PARAMS(robot_length)
   UPDATE_COMMON_PARAMS(robot_width)
   UPDATE_COMMON_PARAMS(robot_height)

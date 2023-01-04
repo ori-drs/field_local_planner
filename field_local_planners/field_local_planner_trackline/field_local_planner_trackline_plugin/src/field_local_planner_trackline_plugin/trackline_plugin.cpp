@@ -39,6 +39,8 @@ void TracklinePlugin::dynamicReconfigureCallback(TracklineConfig& config, uint32
   Trackline::Parameters p = std::dynamic_pointer_cast<Trackline>(local_planner_)->getParameters();
 
   // Trackline parameters
+  UPDATE_COMMON_PARAMS(base_inverted)
+  UPDATE_COMMON_PARAMS(differential_mode)
   UPDATE_COMMON_PARAMS(robot_length)
   UPDATE_COMMON_PARAMS(robot_width)
   UPDATE_COMMON_PARAMS(robot_height)
@@ -49,6 +51,8 @@ void TracklinePlugin::dynamicReconfigureCallback(TracklineConfig& config, uint32
   UPDATE_COMMON_PARAMS(max_angular_velocity_z)
   UPDATE_COMMON_PARAMS(angular_gain_p)
   UPDATE_COMMON_PARAMS(linear_gain_p)
+
+  std::dynamic_pointer_cast<Trackline>(local_planner_)->setParameters(p);
 }
 
 void TracklinePlugin::publishVisualizations() {
