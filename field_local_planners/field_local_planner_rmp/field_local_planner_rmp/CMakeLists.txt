@@ -33,9 +33,7 @@ find_package(OpenCV REQUIRED)
 # GTSAM
 find_package(GTSAMCMakeTools REQUIRED)
 set(GTSAM_BUILD_WITH_MARCH_NATIVE OFF CACHE BOOL "Enable/Disable building with all instructions supported by native architecture (binary may not be portable!)" FORCE)
-include(GtsamBuildTypes)
 find_package(GTSAM REQUIRED)
-find_package(GTSAM_UNSTABLE REQUIRED)
 
 # PCL
 set(PCL_FIND_QUIETLY ON)
@@ -82,7 +80,6 @@ target_link_libraries(${PROJECT_NAME}
   ${OpenCV_LIBS}
   ${PCL_LIBRARIES}
   gtsam
-  gtsam_unstable
   ${YAML_CPP_LIBRARIES}
 )
 

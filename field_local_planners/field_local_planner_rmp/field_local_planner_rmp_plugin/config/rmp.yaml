@@ -135,7 +135,7 @@ rmp:
         steepness: 1.0
     sdf_obstacle:
       weight: 1.0 # 1.0
-      gain: 0.05
+      gain: 0.025
       color: [1.0, 0.0, 0.0] # red
       metric:
         type: projector_invlogistic
