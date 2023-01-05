@@ -34,9 +34,6 @@ class CarrotPublisher:
 
         # Setup marker
         self.make_carrot_marker()
-
-        # Spin
-        rospy.spin()
     
     def make_carrot_marker(self):
         self.marker = Marker()
@@ -58,7 +55,10 @@ class CarrotPublisher:
 
         # Publish
         self.marker.header.stamp = rospy.Time.now()
-        self.carrot_pub.publish(self.marker)
+        try:
+            self.carrot_pub.publish(self.marker)
+        except rospy.exceptions.ROSException:
+            pass
 
     def goal_callback(self, msg: PoseWithCovarianceStamped):
         t = msg.header.stamp.to_sec()
@@ -86,3 +86,4 @@ class CarrotPublisher:
 if __name__ == "__main__":
     rospy.init_node("field_local_planner_carrot_publisher")
     carrot = CarrotPublisher()
+    rospy.spin()

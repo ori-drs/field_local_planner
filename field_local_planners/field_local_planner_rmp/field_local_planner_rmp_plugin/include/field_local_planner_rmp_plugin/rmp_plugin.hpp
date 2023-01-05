@@ -4,6 +4,7 @@
 #include <field_local_planner_rmp/rmp_local_planner.hpp>
 
 #include <ros/ros.h>
+#include <tf2_eigen/tf2_eigen.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 

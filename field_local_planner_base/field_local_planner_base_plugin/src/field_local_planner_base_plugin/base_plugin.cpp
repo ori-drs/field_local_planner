@@ -18,15 +18,31 @@ void BasePlugin::initialize(ros::NodeHandle& nh) {
 }
 
 void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
+  // Initialize tf listener
+  tf_listener_ = std::make_shared<tf2_ros::TransformListener>(tf_buffer_);
+
+  // Read common parameters
   fixed_frame_ = utils::getParameter<std::string>(nh, "fixed_frame");
-  base_frame_ = utils::getParameter<std::string>(nh, "base_frame");
   valid_goal_frames_ = utils::getParameterVector<std::string>(nh, "valid_goal_frames");
 
   grid_map_to_cloud_ = utils::getParameter<bool>(nh, "grid_map_to_cloud");
   grid_map_to_cloud_range_ = utils::getParameter<double>(nh, "grid_map_to_cloud_range");
   grid_map_to_cloud_filter_size_ = utils::getParameter<double>(nh, "grid_map_to_cloud_filter_size");
 
+  // Set voxel filter
   voxel_filter_.setLeafSize(grid_map_to_cloud_filter_size_, grid_map_to_cloud_filter_size_, grid_map_to_cloud_filter_size_);
+
+  // If base inverted
+  std::string base_frame = utils::getParameter<std::string>(nh, "base_frame");
+  base_inverted_ = utils::getParameter<bool>(nh, "base_inverted");
+
+  if (base_inverted_) {
+    base_frame_ = base_frame + "_inverted_field_local_planner";
+    publishStaticTransform(getBaseInversionTransform(), base_frame, base_frame_);
+
+  } else {
+    base_frame_ = base_frame;
+  }
 }
 
 void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
@@ -93,6 +109,8 @@ void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
   path_pub_ = nh.advertise<nav_msgs::Path>("/field_local_planner/path", 10);
   // Current goal
   current_goal_pub_ = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>(ros::this_node::getName() + "/current_goal", 10);
+  // Current goal
+  current_base_pub_ = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>(ros::this_node::getName() + "/current_base", 10);
 
   // Output twist type type
   output_twist_type_ = utils::getParameterDefault(nh, "output_twist_type", std::string("twist"));
@@ -151,11 +169,14 @@ void BasePlugin::setPose(const geometry_msgs::Pose& pose_msg, const std_msgs::He
   Pose3 T_f_a = queryTransform(fixed_frame_, header.frame_id, header.stamp);
 
   // Transform message
-  Pose3 T_a_b = utils::toPose3(pose_msg);  // Transformation of base b in auxiliary frame
-  Pose3 T_f_b = T_f_a * T_a_b;             // Base in fixed frame
+  Pose3 T_a_b = utils::toPose3(pose_msg);                       // Transformation of base b in auxiliary frame
+  Pose3 T_f_b = fixBaseInversion(T_f_a * T_a_b, fixed_frame_);  // Base in fixed frame
 
   // Set data
   local_planner_->setPoseInFixed(T_f_b, ts);
+
+  // Publish
+  publishCurrentBase(T_f_b);
 }
 
 void BasePlugin::setVelocity(const geometry_msgs::Twist& twist_msg, const std_msgs::Header& header) {
@@ -182,7 +203,7 @@ void BasePlugin::setGoal(const geometry_msgs::Pose& goal_msg, const std_msgs::He
 
   // Transform message
   Pose3 T_a_g = utils::toPose3(goal_msg);  // Transformation of base b in auxiliary frame
-  T_f_g_ = T_f_a * T_a_g;             // Base in fixed frame
+  T_f_g_ = T_f_a * T_a_g;                  // Base in fixed frame
 
   // Publish goal pose as message and TF
   publishCurrentGoal(T_f_g_);
@@ -268,7 +289,7 @@ void BasePlugin::gridMapCallback(const grid_map_msgs::GridMap& grid_map_msg) {
   if (grid_map_to_cloud_) {
     pcl::PointCloud<PointType>::Ptr cloud(new pcl::PointCloud<PointType>());
     Pose3 T_f_s;
-    getPointCloudFromGridMap(grid_map, cloud, T_f_s);
+    getPointCloudFromGridMap(grid_map, grid_map_msg.info.header.stamp, cloud, T_f_s);
 
     local_planner_->setPointCloud(cloud, T_f_s, ts);
   }
@@ -296,8 +317,14 @@ void BasePlugin::imageDepthCallback(const sensor_msgs::ImageConstPtr& depth_msg,
 
 void BasePlugin::publishTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
                                   const ros::Time& stamp) {
-  tf::Transform tf_parent_child = utils::toTfTransform(T_parent_child);
-  tf_broadcaster_.sendTransform(tf::StampedTransform(tf_parent_child, stamp, parent, child));
+  geometry_msgs::TransformStamped transform_parent_child = utils::toTransformStamped(T_parent_child, parent, child, stamp);
+  tf_broadcaster_.sendTransform(transform_parent_child);
+}
+
+void BasePlugin::publishStaticTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
+                                        const ros::Time& stamp) {
+  geometry_msgs::TransformStamped transform_parent_child = utils::toTransformStamped(T_parent_child, parent, child, stamp);
+  tf_static_broadcaster_.sendTransform(transform_parent_child);
 }
 
 void BasePlugin::publishCurrentGoal(const Pose3& T_fixed_goal, const ros::Time& stamp) {
@@ -309,7 +336,19 @@ void BasePlugin::publishCurrentGoal(const Pose3& T_fixed_goal, const ros::Time& 
   current_goal_pub_.publish(pose_msg);
 
   // Publish TF
-  publishTransform(T_f_g_, fixed_frame_, "goal_local_planner");
+  publishTransform(T_fixed_goal, fixed_frame_, "goal_field_local_planner");
+}
+
+void BasePlugin::publishCurrentBase(const Pose3& T_fixed_base, const ros::Time& stamp) {
+  // Publish msg
+  geometry_msgs::PoseWithCovarianceStamped pose_msg;
+  pose_msg.pose.pose = utils::toPoseMsg(T_fixed_base);
+  pose_msg.header.frame_id = fixed_frame_;
+  pose_msg.header.stamp = stamp;
+  current_base_pub_.publish(pose_msg);
+
+  // Publish TF
+  // publishTransform(T_fixed_base, fixed_frame_, "base_local_planner");
 }
 
 void BasePlugin::publishPath(const Path& path) {
@@ -323,7 +362,8 @@ void BasePlugin::publishStatus(const BaseLocalPlanner::Status& status) {
 }
 
 void BasePlugin::publishTwist(const Twist& twist, const ros::Time& stamp) {
-  geometry_msgs::Twist twist_msg = utils::toTwistMsg(twist);
+  Twist corrected_twist = fixBaseInversion(twist);
+  geometry_msgs::Twist twist_msg = utils::toTwistMsg(corrected_twist);
 
   if (output_twist_type_ == "twist") {
     output_twist_pub_.publish(twist_msg);
@@ -343,15 +383,12 @@ void BasePlugin::publishZeroTwist() {
 }
 
 Pose3 BasePlugin::queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp) {
-  tf::StampedTransform T_parent_child;
   Eigen::Isometry3d eigen_T_parent_child = Eigen::Isometry3d::Identity();
-
-  tf_listener_.waitForTransform(parent, child, stamp, ros::Duration(1.0));
   try {
-    tf_listener_.lookupTransform(parent, child, stamp, T_parent_child);
-    tf::transformTFToEigen(T_parent_child, eigen_T_parent_child);
+    geometry_msgs::TransformStamped T_parent_child = tf_buffer_.lookupTransform(parent, child, stamp);
+    eigen_T_parent_child = tf2::transformToEigen(T_parent_child);
 
-  } catch (tf::TransformException& ex) {
+  } catch (tf2::TransformException& ex) {
     ROS_ERROR("%s", ex.what());
   }
 
@@ -363,7 +400,8 @@ bool BasePlugin::isValidFrame(const std::string& frame) const {
   return std::find(valid_goal_frames_.begin(), valid_goal_frames_.end(), frame) != valid_goal_frames_.end();
 }
 
-void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl::PointCloud<PointType>::Ptr& cloud, Pose3& T_f_s) {
+void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, const ros::Time& stamp, pcl::PointCloud<PointType>::Ptr& cloud,
+                                          Pose3& T_f_s) {
   grid_map::GridMap cropped_grid_map;
   grid_map::Position position(grid_map.getPosition().x(), grid_map.getPosition().y());
   grid_map::Length length(2.0 * grid_map_to_cloud_range_, 2.0 * grid_map_to_cloud_range_);
@@ -383,9 +421,9 @@ void BasePlugin::getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl
   voxel_filter_.filter(*tmp_cloud);
 
   // Transform to base frame
-  Pose3 T_b_m = queryTransform(base_frame_, grid_map.getFrameId());
+  Pose3 T_b_m = queryTransform(base_frame_, grid_map.getFrameId(), stamp);
   pcl::transformPointCloud(*tmp_cloud, *cloud, T_b_m.matrix());
-  T_f_s = queryTransform(fixed_frame_, base_frame_);
+  T_f_s = queryTransform(fixed_frame_, base_frame_, stamp);
 }
 
 void BasePlugin::printStateInfo(const BaseLocalPlanner::State& new_state) {
@@ -405,6 +443,38 @@ void BasePlugin::printStateInfo(const BaseLocalPlanner::State& new_state) {
   }
 
   last_state_ = new_state;
+}
+
+Pose3 BasePlugin::getBaseInversionTransform() const {
+  return Pose3(Rot3::Yaw(M_PI), Vector3::Zero());
+}
+
+Pose3 BasePlugin::fixBaseInversion(const Pose3& T, const std::string& frame) const {
+  if (base_inverted_) {
+    if (frame == base_frame_) {
+      return getBaseInversionTransform() * T;
+
+    } else if (frame == fixed_frame_) {
+      return T * getBaseInversionTransform();
+
+    } else {
+      return T;
+    }
+  } else {
+    return T;
+  }
+}
+
+Twist BasePlugin::fixBaseInversion(const Twist& b_v) const {
+  if (base_inverted_) {
+    Twist corrected_twist = b_v;
+    corrected_twist(3) *= base_inverted_ ? -1.0 : 1.0;
+    corrected_twist(4) *= base_inverted_ ? -1.0 : 1.0;
+    return corrected_twist;
+
+  } else {
+    return b_v;
+  }
 }
 
 }  // namespace field_local_planner

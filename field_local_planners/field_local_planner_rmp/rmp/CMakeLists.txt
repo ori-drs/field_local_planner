@@ -22,7 +22,6 @@ endif()
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  #DEPENDS gtsam
 )
 
 ###########

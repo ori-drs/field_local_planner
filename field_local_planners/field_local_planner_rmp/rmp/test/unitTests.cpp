@@ -19,6 +19,15 @@ using namespace std;
 using namespace gtsam;
 using namespace rmp;
 
+TEST(UnitTests, MetricTest) {
+  Matrix3 m1 = Metric3::make("constant");
+  ASSERT_EQ(m1, Metric3::makeConstantMetric());
+
+  Matrix3 m2 = Metric3::make("orthoprojector", 0.0, 0.0, 0.0, Vector3(1, 0, 0));
+  Matrix3 m3 = Metric3::make("projector", 0.0, 0.0, 0.0, Vector3(1, 0, 0));
+  ASSERT_EQ(m2, Matrix3::Identity() - m3);
+}
+
 TEST(UnitTests, RmpConstructorTest) {
   Rmp2 rmp(Vector2(1, 2), Matrix2::Identity() * 2.0, 0.5, "test_rmp", Vector3(1.0, 0.5, 0.1));
   const double tol = 1e-10;

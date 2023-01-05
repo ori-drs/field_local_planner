@@ -51,6 +51,7 @@ rmp:
       affected_by:
         - geodesic_goal
         - geodesic_heading
+        - goal_position
         - goal_orientation
         - damping
     -
@@ -86,7 +87,7 @@ rmp:
   policies:
     geodesic_goal:
       weight: 1.0
-      gain: 10.0
+      gain: 2.0
       color: [1.0, 1.0, 0.0] # yellow
       metric:
         type: logistic
@@ -94,26 +95,26 @@ rmp:
         steepness: 10.0
     geodesic_heading:
       weight: 1.0 # 1.0
-      gain: 10.0
+      gain: 2.0
       color: [1.0, 1.0, 0.0] # yellow
       metric:
         type: logistic
         offset: 0.5
         steepness: 10.0
     goal_position:
-      weight: 0.0
-      gain: 10.0
+      weight: 1.0
+      gain: 2.0
       color: [1.0, 0.5, 0.0] # orange
       metric:
-        type: inv_logistic
+        type: invlogistic
         offset: 0.5
         steepness: 10.0
     goal_orientation:
       weight: 1.0 # 1.0
-      gain: 10.0
+      gain: 2.0
       color: [1.0, 0.5, 0.0] # orange
       metric:
-        type: inv_logistic
+        type: invlogistic
         offset: 0.5
         steepness: 10.0
     velocity_heading:
@@ -126,7 +127,7 @@ rmp:
         steepness: 10.0
     damping:
       weight: 1.0 # 1.0
-      gain: 0.1
+      gain: 0.01
       color: [0.0, 0.0, 1.0] # blue
       metric:
         type: constant
@@ -134,15 +135,15 @@ rmp:
         steepness: 1.0
     sdf_obstacle:
       weight: 1.0 # 1.0
-      gain: 1.0
+      gain: 0.05
       color: [1.0, 0.0, 0.0] # red
       metric:
-        type: ortho_projector
+        type: projector_invlogistic
         offset: 0.2
         steepness: 1.0
     regularization:
       weight: 0.0 # 1.0
-      gain: 1.0e-6
+      gain: 0.001
       color: [0.0, 0.0, 0.0] # black
       metric:
         type: constant

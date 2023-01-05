@@ -1,16 +1,16 @@
 #pragma once
 #include <ros/console.h>
 #include <ros/ros.h>
-#include <tf/tf.h>
 
 #include <eigen_conversions/eigen_msg.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <nav_msgs/Path.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <tf_conversions/tf_eigen.h>
+#include <tf2_eigen/tf2_eigen.h>
 
 #include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Pose2.h>
@@ -83,7 +83,7 @@ static void assignAndPrintDiff(std::string var_name, T& var, const T& new_val) {
 // To GTSAM types
 static inline Pose3 toPose3(const geometry_msgs::Pose& pose_msg) {
   Eigen::Isometry3d eigen_pose;
-  tf::poseMsgToEigen(pose_msg, eigen_pose);
+  tf2::fromMsg(pose_msg, eigen_pose);
   return Pose3(eigen_pose.matrix());
 }
 
@@ -129,8 +129,7 @@ static inline geometry_msgs::Twist toTwistMsg(const Twist& twist) {
 static inline geometry_msgs::Pose toPoseMsg(const Pose3& pose) {
   geometry_msgs::Pose pose_msg;
   Eigen::Isometry3d eigen_pose(pose.matrix());
-  tf::poseEigenToMsg(eigen_pose, pose_msg);
-  return pose_msg;
+  return tf2::toMsg(eigen_pose);
 }
 
 static inline field_local_planner_msgs::Status toStatusMsg(const BaseLocalPlanner::Status& status) {
@@ -160,12 +159,14 @@ static inline nav_msgs::Path toPathMsg(const Path& path, const std::string& fram
   return path_msg;
 }
 
-static inline tf::Transform toTfTransform(const Pose3& pose) {
-  tf::Transform tf_pose;
+static inline geometry_msgs::TransformStamped toTransformStamped(const Pose3& pose, const std::string& parent, const std::string& child,
+                                                                 const ros::Time& stamp) {
   Eigen::Isometry3d eigen_pose(pose.matrix());
-  tf::transformEigenToTF(eigen_pose, tf_pose);
-  tf_pose.setRotation(tf_pose.getRotation().normalize());
-  return tf_pose;
+  geometry_msgs::TransformStamped transform = tf2::eigenToTransform(eigen_pose);
+  transform.header.stamp = stamp;
+  transform.header.frame_id = parent;
+  transform.child_frame_id = child;
+  return transform;
 }
 
 //-------------------------------------------------------------------------------------------------

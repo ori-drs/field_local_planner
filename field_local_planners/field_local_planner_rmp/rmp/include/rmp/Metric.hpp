@@ -14,8 +14,10 @@
 namespace gtsam {
 namespace rmp {
 
-template <typename ACC = Vector2, typename METRIC = Matrix22>
+template <typename METRIC = Matrix22, typename ACC = Vector2>
 class Metric {
+  static constexpr double TOL = 0.01;
+
  public:
   // Interface to make metrics
   static METRIC make(const std::string& type,        // Type of the metric
@@ -24,45 +26,68 @@ class Metric {
                      const double& state = 0.0,      // 'state' - a value to evaluate the metric
                      const ACC& acc = ACC::Zero()    // RMP acceleration (if required)
   ) {
-    // Check different types of metric
-    if (type == "logistic") {
-      return makeLogisticMetric(state, offset, steepness);
+    std::string metric_type, activation_type;
+    parseType(type, metric_type, activation_type);
+    return activation(activation_type, state, offset, steepness) * metric(metric_type, acc);
+  }
 
-    } else if (type == "inv_logistic") {
-      return makeInverseLogisticMetric(state, offset, steepness);
-
-    } else if (type == "ortho_projector") {
-      return makeOrthoProjectorMetric(state, offset, steepness, acc);
-
+  // Base metrics
+  static METRIC metric(const std::string& type, const ACC& dir) {
+    METRIC m;
+    if (type == "projector") {
+      m = makeProjectorMetric(dir);
+    } else if (type == "orthoprojector") {
+      m = makeOrthogonalProjectorMetric(dir);
     } else {
-      // Constant metric
-      return makeConstantMetric();
+      m = makeConstantMetric();
     }
+    return m;
   }
 
-  // Explicit methods for each metric
-  static METRIC makeLogisticMetric(const double& state, const double& offset, const double& steepness) {
-    return logistic(state, offset, steepness) * METRIC::Identity();
+  static METRIC makeProjectorMetric(const ACC& dir) {
+    return METRIC(dir * dir.transpose());
   }
 
-  static METRIC makeInverseLogisticMetric(const double& state, const double& offset, const double& steepness) {
-    return inverseLogistic(state, offset, steepness) * METRIC::Identity();
-  }
-
-  static METRIC makeOrthoProjectorMetric(const double& state, const double& offset, const double& steepness, const ACC& acc) {
-    return inverseLogistic(state, offset, steepness) * METRIC(acc * acc.transpose());
+  static METRIC makeOrthogonalProjectorMetric(const ACC& dir) {
+    return (METRIC::Identity() - METRIC(dir * dir.transpose()));
   }
 
   static METRIC makeConstantMetric() { return METRIC::Identity(); }
 
-  // helpers
+  // Activations
+  static double activation(std::string& type, double x, double x0, double k) {
+    double a;
+
+    if (type == "logistic") {
+      a = logistic(x, x0, k);
+    } else if (type == "invlogistic") {
+      a = inverseLogistic(x, x0, k);
+    } else {
+      return 1.0;
+    }
+    return a < TOL ? TOL : a;
+  }
+
   static double logistic(double x, double x0, double k) { return 1.0 / (1 + exp(-k * (x - x0))); }
   static double inverseLogistic(double x, double x0, double k) { return 1.0 / (1 + exp(k * (x - x0))); }
+
+  // Helpers
+  static void parseType(const std::string& type, std::string& base, std::string& activation) {
+    size_t delimiter_pos = type.find(std::string("_"));
+
+    if (delimiter_pos != std::string::npos) {
+      base = type.substr(0, delimiter_pos);
+      activation = type.substr(delimiter_pos + 1, type.length());
+    } else {
+      base = type;
+      activation = type;
+    }
+  }
 };
 
 // Forward
-using Metric2 = Metric<Vector2, Matrix22>;
-using Metric3 = Metric<Vector3, Matrix33>;
+using Metric2 = Metric<Matrix22, Vector2>;
+using Metric3 = Metric<Matrix33, Vector3>;
 
 }  // namespace rmp
 }  // namespace gtsam

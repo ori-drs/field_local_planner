@@ -12,7 +12,6 @@ RmpPlugin::RmpPlugin() : BasePlugin() {
 void RmpPlugin::loadParameters(ros::NodeHandle& nh) {
   Rmp::Parameters p;
   p.requires_sensing = utils::getParameter<bool>(nh, "requires_sensing");
-  p.base_inverted = utils::getParameter<bool>(nh, "base_inverted");
   p.differential_mode = utils::getParameter<bool>(nh, "differential_mode");
   p.control_rate = utils::getParameter<double>(nh, "control_rate");
   p.robot_length = utils::getParameter<double>(nh, "robot_length");
@@ -86,9 +85,9 @@ void RmpPlugin::setupRos(ros::NodeHandle& nh) {
 void RmpPlugin::dynamicReconfigureCallback(RmpConfig& config, uint32_t level) {
 #define UPDATE_RMP_PARAMS(RMP, VAR) utils::assignAndPrintDiff(#RMP "_" #VAR, p.rmp_parameters[#RMP].VAR, config.RMP##_##VAR);
 
-#define UPDATE_RMP(RMP)                 \
-  UPDATE_RMP_PARAMS(RMP, weight)        \
-  UPDATE_RMP_PARAMS(RMP, gain)          \
+#define UPDATE_RMP(RMP)          \
+  UPDATE_RMP_PARAMS(RMP, weight) \
+  UPDATE_RMP_PARAMS(RMP, gain)   \
   // UPDATE_RMP_PARAMS(RMP, metric_type)   \
   // UPDATE_RMP_PARAMS(RMP, metric_offset) \
   // UPDATE_RMP_PARAMS(RMP, metric_steepness)
@@ -97,7 +96,6 @@ void RmpPlugin::dynamicReconfigureCallback(RmpConfig& config, uint32_t level) {
   Rmp::ControlPoints cps = std::dynamic_pointer_cast<Rmp>(local_planner_)->getControlPoints();
 
   // RMP parameters
-  UPDATE_COMMON_PARAMS(base_inverted)
   UPDATE_COMMON_PARAMS(differential_mode)
   UPDATE_COMMON_PARAMS(robot_length)
   UPDATE_COMMON_PARAMS(robot_width)
@@ -244,7 +242,6 @@ void RmpPlugin::publishVisualizations() {
       // Metric
       {
         visualization_msgs::Marker marker;
-        // Metric
         // We first need to compute the eigenvectors and eigenvalues (based on supereight atlas)
         Eigen::Vector2d vis_eigenvalues(Eigen::Vector2d::Zero());
         Eigen::Matrix2d vis_eigenvectors(Eigen::Matrix2d::Zero());
@@ -257,16 +254,21 @@ void RmpPlugin::publishVisualizations() {
           ROS_WARN_STREAM("Couldn't compute eigenvectors for metric of acc [" << name << "]");
           continue;
         }
+
         // Create rotation matrix from eigenvectors
+        if (vis_eigenvectors.determinant() < 0) {
+          vis_eigenvectors.col(1) *= -1; // flip the direction of one axis
+        }
+
         Eigen::Matrix3d rot = Eigen::Matrix3d::Identity();
         rot.block(0, 0, 2, 2) = vis_eigenvectors;
+        Quaternion q(rot);
+        q.normalize();
 
         // Create pose from rotation matrix and control point coords
-        Eigen::Isometry3d pose = Eigen::Isometry3d::Identity();
-        pose.translate(Eigen::Vector3d(cp.position(0), cp.position(1), 0.0));
-        pose.rotate(rot);
-        geometry_msgs::Pose metric_pose;
-        tf::poseEigenToMsg(pose, metric_pose);
+        Pose3 pose(Rot3(q), Vector3(cp.position(0), cp.position(1), 0.0));
+        Eigen::Isometry3d eigen_pose(pose.matrix());
+        geometry_msgs::Pose metric_pose = tf2::toMsg(eigen_pose);
 
         marker.header.stamp = ros::Time::now();
         marker.header.frame_id = BasePlugin::base_frame_;
@@ -275,9 +277,18 @@ void RmpPlugin::publishVisualizations() {
         marker.type = visualization_msgs::Marker::SPHERE;
         marker.action = visualization_msgs::Marker::ADD;
         marker.pose = metric_pose;
-        marker.scale.x = sqrt(vis_eigenvalues[0]) * 1.0;
-        marker.scale.y = sqrt(vis_eigenvalues[1]) * 1.0;
-        marker.scale.z = 0.1;
+
+        double s1 = std::sqrt(vis_eigenvalues[0]);
+        double s2 = std::sqrt(vis_eigenvalues[1]);
+        s1 = std::isfinite(s1) ? s1 : 0.1;
+        s2 = std::isfinite(s2) ? s2 : 0.1;
+        double normalizer = 1.0;  // std::max(s1, s2);
+        s1 = std::max(s1 / normalizer, 0.1);
+        s2 = std::max(s2 / normalizer, 0.1);
+
+        marker.scale.x = s1;
+        marker.scale.y = s2;
+        marker.scale.z = 0.02;
         marker.color.r = policy.color()(0);
         marker.color.g = policy.color()(1);
         marker.color.b = policy.color()(2);

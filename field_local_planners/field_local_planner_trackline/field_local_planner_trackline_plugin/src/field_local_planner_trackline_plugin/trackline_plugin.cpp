@@ -12,7 +12,6 @@ TracklinePlugin::TracklinePlugin() : BasePlugin() {
 void TracklinePlugin::loadParameters(ros::NodeHandle& nh) {
   Trackline::Parameters p;
   p.requires_sensing = utils::getParameter<bool>(nh, "requires_sensing");
-  p.base_inverted = utils::getParameter<bool>(nh, "base_inverted");
   p.differential_mode = utils::getParameter<bool>(nh, "differential_mode");
   p.control_rate = utils::getParameter<double>(nh, "control_rate");
   p.robot_length = utils::getParameter<double>(nh, "robot_length");
@@ -39,7 +38,6 @@ void TracklinePlugin::dynamicReconfigureCallback(TracklineConfig& config, uint32
   Trackline::Parameters p = std::dynamic_pointer_cast<Trackline>(local_planner_)->getParameters();
 
   // Trackline parameters
-  UPDATE_COMMON_PARAMS(base_inverted)
   UPDATE_COMMON_PARAMS(differential_mode)
   UPDATE_COMMON_PARAMS(robot_length)
   UPDATE_COMMON_PARAMS(robot_width)

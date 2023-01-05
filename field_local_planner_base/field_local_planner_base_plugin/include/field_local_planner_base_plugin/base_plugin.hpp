@@ -9,11 +9,11 @@
 #include <actionlib/server/simple_action_server.h>
 #include <dynamic_reconfigure/server.h>
 #include <ros/ros.h>
-#include <tf/tf.h>
 
 #include <eigen_conversions/eigen_msg.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <grid_map_msgs/GridMap.h>
@@ -28,9 +28,10 @@
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
 
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_listener.h>
-#include <tf_conversions/tf_eigen.h>
+#include <tf2_eigen/tf2_eigen.h>
+#include <tf2_ros/static_transform_broadcaster.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/transform_listener.h>
 #include <grid_map_ros/grid_map_ros.hpp>
 
 #include <memory>
@@ -82,8 +83,11 @@ class BasePlugin {
   // Publishers
   void publishTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
                         const ros::Time& stamp = ros::Time::now());
+  void publishStaticTransform(const Pose3& T_parent_child, const std::string& parent, const std::string& child,
+                              const ros::Time& stamp = ros::Time::now());
 
   void publishCurrentGoal(const Pose3& T_fixed_goal, const ros::Time& stamp = ros::Time::now());
+  void publishCurrentBase(const Pose3& T_fixed_base, const ros::Time& stamp = ros::Time::now());
   void publishPath(const Path& path);
   void publishStatus(const BaseLocalPlanner::Status& status);
   void publishTwist(const Twist& twist, const ros::Time& stamp = ros::Time::now());
@@ -92,15 +96,23 @@ class BasePlugin {
   // Utils
   Pose3 queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp = ros::Time::now());
   bool isValidFrame(const std::string& frame) const;
-  void getPointCloudFromGridMap(const grid_map::GridMap& grid_map, pcl::PointCloud<PointType>::Ptr& cloud, Pose3& T_f_s);
+  void getPointCloudFromGridMap(const grid_map::GridMap& grid_map, const ros::Time& stamp, pcl::PointCloud<PointType>::Ptr& cloud,
+                                Pose3& T_f_s);
   void printStateInfo(const BaseLocalPlanner::State& new_state);
+
+  // Base inversion
+  Pose3 getBaseInversionTransform() const;
+  Pose3 fixBaseInversion(const Pose3& T_f_b, const std::string& frame) const;
+  Twist fixBaseInversion(const Twist& b_v) const;
 
  protected:
   std::shared_ptr<BaseLocalPlanner> local_planner_;  // The actual local planner
 
   // TF
-  tf::TransformListener tf_listener_;
-  tf::TransformBroadcaster tf_broadcaster_;
+  tf2_ros::Buffer tf_buffer_;
+  std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+  tf2_ros::TransformBroadcaster tf_broadcaster_;
+  tf2_ros::StaticTransformBroadcaster tf_static_broadcaster_;
 
   // Subscribers
   ros::Subscriber pose_sub_;
@@ -117,6 +129,7 @@ class BasePlugin {
 
   // Publishers
   ros::Publisher current_goal_pub_;
+  ros::Publisher current_base_pub_;
   ros::Publisher output_twist_pub_;
   ros::Publisher path_pub_;
   ros::Publisher status_pub_;
@@ -129,6 +142,7 @@ class BasePlugin {
   field_local_planner_msgs::MoveToFeedback feedback_;
 
   // Frames
+  bool base_inverted_;       // To invert the base 180 deg
   std::string fixed_frame_;  // usually 'odom' frame
   std::string base_frame_;   // usually 'base' frame
   std::vector<std::string> valid_goal_frames_;

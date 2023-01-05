@@ -27,8 +27,9 @@ set(CATKIN_PACKAGE_LIST
   pcl_conversions
   pcl_ros
   roscpp
-  tf
-  tf_conversions
+  tf2
+  tf2_eigen
+  tf2_ros
 )
 
 find_package(catkin REQUIRED COMPONENTS

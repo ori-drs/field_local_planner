@@ -13,7 +13,6 @@ void FalcoPlugin::loadParameters(ros::NodeHandle& nh) {
   // Load parameters from parameter server
   Falco::Parameters p;
   p.requires_sensing = utils::getParameter<bool>(nh, "requires_sensing");
-  p.base_inverted = utils::getParameter<bool>(nh, "base_inverted");
   p.differential_mode = utils::getParameter<bool>(nh, "differential_mode");
   p.control_rate = utils::getParameter<double>(nh, "control_rate");
   p.robot_length = utils::getParameter<double>(nh, "robot_length");
@@ -62,7 +61,6 @@ void FalcoPlugin::dynamicReconfigureCallback(FalcoConfig& config, uint32_t level
   Falco::Parameters p = std::dynamic_pointer_cast<Falco>(local_planner_)->getParameters();
 
   // Falco parameters
-  UPDATE_COMMON_PARAMS(base_inverted)
   UPDATE_COMMON_PARAMS(differential_mode)
   UPDATE_COMMON_PARAMS(robot_length)
   UPDATE_COMMON_PARAMS(robot_width)
