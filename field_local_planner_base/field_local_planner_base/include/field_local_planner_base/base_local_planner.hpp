@@ -70,19 +70,15 @@ class BaseLocalPlanner {
   // Check failure - it may depend on the method
   bool checkFailure();
 
- public:
   // Constructor
   BaseLocalPlanner();
 
-  // Initializer
-  void setParameters(const Parameters& parameters);
+  // Parameters
+  void setBaseParameters(const Parameters& parameters);
+  Parameters getBaseParameters() const;
 
   // Main method to execute the local planner
   bool execute(const Time& ts, Output& output);
-
-  // Other steps
-  State checkState();
-  void computeDistanceAndOrientationToGoal();
 
   // Interfaces for external data
   void setImageRgb(const cv::Mat& img, const Pose3& T_f_s, const Time& ts);
@@ -99,10 +95,16 @@ class BaseLocalPlanner {
   void setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, const Time& ts);
 
   std::string stateToStr(State state);
+  Twist limitTwist(const Twist& twist);
+
+ private:
+  // Other steps
+  State checkState();
+  void computeDistanceAndOrientationToGoal();
 
  public:
   // Parameters
-  Parameters parameters_;
+  Parameters base_parameters_;
 
  protected:
   State state_;

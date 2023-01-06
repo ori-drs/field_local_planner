@@ -4,7 +4,8 @@
 
 namespace field_local_planner {
 
-Trackline::Trackline() : BaseLocalPlanner(), state_(State::UNKNOWN) {}
+Trackline::Trackline() : BaseLocalPlanner(), state_(State::UNKNOWN) {
+}
 
 void Trackline::setParameters(const Trackline::Parameters& p) {
   parameters_ = p;
@@ -16,9 +17,9 @@ Trackline::Parameters Trackline::getParameters() const {
 
 Twist Trackline::computeTwist() {
   // Check states
-  if (BaseLocalPlanner::distance_to_goal_ > parameters_.distance_to_goal_thr) {
+  if (BaseLocalPlanner::distance_to_goal_ > base_parameters_.distance_to_goal_thr) {
     // If the robot is far from the goal, check heading towards goal
-    if (std::fabs(BaseLocalPlanner::heading_towards_goal_) > parameters_.orientation_to_goal_thr) {
+    if (std::fabs(BaseLocalPlanner::heading_towards_goal_) > base_parameters_.orientation_to_goal_thr) {
       // If it's not pointing towards the goal, correct heading
       // std::cout << "Trackline: TURN_TO_GOAL" << std::endl;
       stateTurnToGoal();
@@ -39,8 +40,8 @@ Twist Trackline::computeTwist() {
   double output_linvel_x = goal_linvel_x_ + trackline_linvel_x_;
   double output_linvel_y = goal_linvel_y_ + trackline_linvel_y_;
 
-  double max_forward_linear_velocity_now = parameters_.max_linear_velocity_x;
-  double max_lateral_linear_velocity_now = parameters_.max_linear_velocity_y;
+  double max_forward_linear_velocity_now = base_parameters_.max_linear_velocity_x;
+  double max_lateral_linear_velocity_now = base_parameters_.max_linear_velocity_y;
 
   double ratio_x = fabs(output_linvel_x) / max_forward_linear_velocity_now;
   if (ratio_x < 1) ratio_x = 1;
@@ -60,7 +61,7 @@ Twist Trackline::computeTwist() {
   twist(1) = 0.0;              // Angular y
   twist(2) = goal_angvel_z_;   // Angular z
   twist(3) = output_linvel_x;  // Linear x
-  twist(4) = parameters_.differential_mode? 0.0 : output_linvel_y;  // Linear y
+  twist(4) = base_parameters_.differential_mode? 0.0 : output_linvel_y;  // Linear y
   twist(5) = 0.0;              // Linear z
 
   return twist;
@@ -82,17 +83,17 @@ Path Trackline::computePath() {
 }
 
 void Trackline::stateTurnToGoal() {
-  goal_angvel_z_ = utils::clipValue(heading_towards_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
-  goal_linvel_x_ = 0.0; //std::cos(orientation_to_start_) * parameters_.max_linear_velocity_x;  // m/s
+  goal_angvel_z_ = utils::clipValue(heading_towards_goal_ * parameters_.angular_gain_p, base_parameters_.max_angular_velocity_z);
+  goal_linvel_x_ = 0.0; //std::cos(orientation_to_start_) * base_parameters_.max_linear_velocity_x;  // m/s
   goal_linvel_y_ = 0.0; //std::sin(orientation_to_start_) * parameters_.max_linear_velocity_y;  // m/s
   trackline_linvel_x_ = 0;
   trackline_linvel_y_ = 0;
 }
 
 void Trackline::stateForward() {
-  goal_angvel_z_ = utils::clipValue(heading_towards_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
-  goal_linvel_x_ = cos(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
-  goal_linvel_y_ = sin(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
+  goal_angvel_z_ = utils::clipValue(heading_towards_goal_ * parameters_.angular_gain_p, base_parameters_.max_angular_velocity_z);
+  goal_linvel_x_ = cos(heading_towards_goal_) * base_parameters_.max_linear_velocity_x;  // m/s
+  goal_linvel_y_ = sin(heading_towards_goal_) * base_parameters_.max_linear_velocity_x;  // m/s
 
   // How far is the robot from the trackline?
   // Create an x/y base velocity term proportional to that distance
@@ -122,18 +123,18 @@ void Trackline::stateForward() {
 
   // Create velocity command proportional to error
   double trackline_velocity = trackline_distance_error * parameters_.linear_gain_p;
-  if (trackline_velocity > parameters_.max_linear_velocity_x) trackline_velocity = parameters_.max_linear_velocity_x;
-  if (trackline_velocity < -parameters_.max_linear_velocity_x) trackline_velocity = -parameters_.max_linear_velocity_x;
+  if (trackline_velocity > base_parameters_.max_linear_velocity_x) trackline_velocity = base_parameters_.max_linear_velocity_x;
+  if (trackline_velocity < -base_parameters_.max_linear_velocity_x) trackline_velocity = -base_parameters_.max_linear_velocity_x;
 
   trackline_linvel_x_ = trackline_velocity * sin(projection_angle);
   trackline_linvel_y_ = trackline_velocity * cos(projection_angle);
 }
 
 void Trackline::stateTurnToDestination() {
-  goal_angvel_z_ = utils::clipValue(orientation_to_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
+  goal_angvel_z_ = utils::clipValue(orientation_to_goal_ * parameters_.angular_gain_p, base_parameters_.max_angular_velocity_z);
 
-  goal_linvel_x_ = 0.0; //cos(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
-  goal_linvel_y_ = 0.0; //sin(heading_towards_goal_) * parameters_.max_linear_velocity_x;  // m/s
+  goal_linvel_x_ = 0.0; //cos(heading_towards_goal_) * base_parameters_.max_linear_velocity_x;  // m/s
+  goal_linvel_y_ = 0.0; //sin(heading_towards_goal_) * base_parameters_.max_linear_velocity_x;  // m/s
 
   trackline_linvel_x_ = 0;
   trackline_linvel_y_ = 0;

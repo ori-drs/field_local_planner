@@ -9,6 +9,7 @@ class TracklinePlugin : public BasePlugin {
  public:
   TracklinePlugin();
 
+  std::string getName() { return "trackline"; };
   void loadParameters(ros::NodeHandle& nh);
   void setupRos(ros::NodeHandle& nh);
   void publishVisualizations();
@@ -17,8 +18,10 @@ class TracklinePlugin : public BasePlugin {
 
  private:
   // Dynamic reconfigure
-  dynamic_reconfigure::Server<TracklineConfig> dynamic_reconfigure_server_;
-  dynamic_reconfigure::Server<TracklineConfig>::CallbackType dynamic_reconfigure_callback_;
+  using DynParamServer = dynamic_reconfigure::Server<TracklineConfig>;
+  using DynParamCallback = dynamic_reconfigure::Server<TracklineConfig>::CallbackType;
+  std::shared_ptr<DynParamServer> dynamic_reconfigure_server_;
+  DynParamCallback dynamic_reconfigure_callback_;
 };
 
 }  // namespace field_local_planner

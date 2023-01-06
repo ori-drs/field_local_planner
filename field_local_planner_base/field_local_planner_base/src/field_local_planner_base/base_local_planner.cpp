@@ -1,8 +1,16 @@
-#include <field_local_planner_base/local_planner.hpp>
+#include <field_local_planner_base/base_local_planner.hpp>
 
 namespace field_local_planner {
 
 BaseLocalPlanner::BaseLocalPlanner() : state_(State::FINISHED), sensing_ready_(false), point_cloud_(new pcl::PointCloud<PointType>()) {}
+
+void BaseLocalPlanner::setBaseParameters(const BaseLocalPlanner::Parameters& parameters) {
+  base_parameters_ = parameters;
+}
+
+BaseLocalPlanner::Parameters BaseLocalPlanner::getBaseParameters() const {
+  return base_parameters_;
+}
 
 bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output) {
   // Check distance and orientation to goal
@@ -20,7 +28,7 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   Path path;
 
   if (state_ == State::EXECUTING) {
-    if ((ts - last_ts_) < utils::fromSeconds(1 / parameters_.control_rate)) {
+    if ((ts - last_ts_) < utils::fromSeconds(1 / base_parameters_.control_rate)) {
       return false;
     }
 
@@ -29,6 +37,7 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
 
     // Compute twist - planner specific
     twist = computeTwist();
+    twist = limitTwist(twist);
 
     // Compute path
     path = computePath();
@@ -75,17 +84,17 @@ void BaseLocalPlanner::computeDistanceAndOrientationToGoal() {
 }
 
 BaseLocalPlanner::State BaseLocalPlanner::checkState() {
-  if (parameters_.requires_sensing && !sensing_ready_) {
+  if (base_parameters_.requires_sensing && !sensing_ready_) {
     // std::cout << "BaseLocalPlanner: NOT_READY" << std::endl;
     return State::NOT_READY;
   }
 
-  // printf("BaseLocalPlanner: distance_to_goal_ (%f) < parameters_.distance_to_goal_thr (%f)\n", distance_to_goal_,
-  //  parameters_.distance_to_goal_thr);
-  // printf("BaseLocalPlanner: orientation_to_goal_ (%f) < parameters_.orientation_to_goal_thr (%f)\n", orientation_to_goal_,
-  //  parameters_.orientation_to_goal_thr);
+  // printf("BaseLocalPlanner: distance_to_goal_ (%f) < base_parameters_.distance_to_goal_thr (%f)\n", distance_to_goal_,
+  //  base_parameters_.distance_to_goal_thr);
+  // printf("BaseLocalPlanner: orientation_to_goal_ (%f) < base_parameters_.orientation_to_goal_thr (%f)\n", orientation_to_goal_,
+  //  base_parameters_.orientation_to_goal_thr);
 
-  if (distance_to_goal_ < parameters_.distance_to_goal_thr && std::fabs(orientation_to_goal_) < parameters_.orientation_to_goal_thr) {
+  if (distance_to_goal_ < base_parameters_.distance_to_goal_thr && std::fabs(orientation_to_goal_) < base_parameters_.orientation_to_goal_thr) {
     // std::cout << "BaseLocalPlanner: FINISHED" << std::endl;
     return State::FINISHED;
 
@@ -102,6 +111,19 @@ BaseLocalPlanner::State BaseLocalPlanner::checkState() {
 
 bool BaseLocalPlanner::checkFailure() {
   return false;  // TODO implement proper solution
+}
+
+Twist BaseLocalPlanner::limitTwist(const Twist& twist) {
+  Twist limited = twist;
+
+  // Limit angular Z
+  limited(2) = utils::clipValue(twist(2), base_parameters_.max_angular_velocity_z);
+  // Limit linear X
+  limited(3) = utils::clipValue(twist(3), base_parameters_.max_linear_velocity_x);
+  // Limit linear Y
+  limited(4) = utils::clipValue(twist(4), base_parameters_.max_linear_velocity_y);
+
+  return limited;
 }
 
 // Interfaces for external data

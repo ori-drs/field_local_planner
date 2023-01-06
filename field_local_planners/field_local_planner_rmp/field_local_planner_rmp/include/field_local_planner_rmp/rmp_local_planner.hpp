@@ -1,5 +1,5 @@
 #pragma once
-#include <field_local_planner_base/local_planner.hpp>
+#include <field_local_planner_base/base_local_planner.hpp>
 #include <field_local_planner_base/utils.hpp>
 
 // RMP stuff
@@ -23,7 +23,7 @@ class Rmp : public BaseLocalPlanner {
     double metric_steepness;
   };
 
-  struct Parameters : BaseLocalPlanner::Parameters {
+  struct Parameters {
     double robot_clearance = 0.1;
     double sphere_radius_factor = 1.0;
     double integration_time = 1.0;
@@ -34,10 +34,10 @@ class Rmp : public BaseLocalPlanner {
     std::string id;  // ID of the control point
     double radius;   // Radius for the collision sphere
     double inflated_radius;
-    Vector2 position;                        // Position in the base frame
-    Vector2 point_factor;                    // Factor used to scale the robot size and get the position
-    Vector3 color;                           // color for visualization
-    std::vector<std::string> affected_by;    // RMPs that affect the control point
+    Vector2 position;                       // Position in the base frame
+    Vector2 point_factor;                   // Factor used to scale the robot size and get the position
+    Vector3 color;                          // color for visualization
+    std::vector<std::string> affected_by;   // RMPs that affect the control point
     std::map<std::string, rmp::Rmp3> rmps;  // RMPs used for visualization
   };
 

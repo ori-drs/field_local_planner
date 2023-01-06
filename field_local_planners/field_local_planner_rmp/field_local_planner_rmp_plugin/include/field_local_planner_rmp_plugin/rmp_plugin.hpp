@@ -14,6 +14,7 @@ class RmpPlugin : public BasePlugin {
  public:
   RmpPlugin();
 
+  std::string getName() { return "rmp"; };
   void loadParameters(ros::NodeHandle& nh);
   void setupRos(ros::NodeHandle& nh);
   void publishVisualizations();
@@ -22,8 +23,10 @@ class RmpPlugin : public BasePlugin {
 
  private:
   // Dynamic reconfigure
-  dynamic_reconfigure::Server<RmpConfig> dynamic_reconfigure_server_;
-  dynamic_reconfigure::Server<RmpConfig>::CallbackType dynamic_reconfigure_callback_;
+  using DynParamServer = dynamic_reconfigure::Server<RmpConfig>;
+  using DynParamCallback = dynamic_reconfigure::Server<RmpConfig>::CallbackType;
+  std::shared_ptr<DynParamServer> dynamic_reconfigure_server_;
+  DynParamCallback dynamic_reconfigure_callback_;
 
   // Visualization publisher
   ros::Publisher control_points_pub_;

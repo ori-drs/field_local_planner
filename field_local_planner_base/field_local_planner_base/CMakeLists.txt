@@ -70,7 +70,7 @@ include_directories(
 
 ## Declare planners library
 add_library(${PROJECT_NAME} 
-              src/field_local_planner_base/local_planner.cpp
+              src/field_local_planner_base/base_local_planner.cpp
               src/field_local_planner_base/profiler.cpp
               src/field_local_planner_base/timer.cpp
 )

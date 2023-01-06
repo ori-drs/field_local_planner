@@ -2,19 +2,20 @@
 #include <pcl/common/transforms.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/io/pcd_io.h>
-#include <field_local_planner_falco/falco.hpp>
+#include <field_local_planner_falco/falco_local_planner.hpp>
 
 namespace field_local_planner {
 
 Falco::Falco() : BaseLocalPlanner() {}
 
 void Falco::setParameters(const Falco::Parameters& p) {
+  if (p.config_folder != parameters_.config_folder) {
+    loadPathsFromFile(p.config_folder);
+  }
   parameters_ = p;
 
-  loadPathsFromFile(parameters_.config_folder);
-
   // Precompute robot diameters
-  robot_diameter_ = std::sqrt(std::pow(parameters_.robot_length, 2) + std::pow(parameters_.robot_width, 2));
+  robot_diameter_ = std::sqrt(std::pow(base_parameters_.robot_length, 2) + std::pow(base_parameters_.robot_width, 2));
 }
 
 Falco::Parameters Falco::getParameters() const {
@@ -44,22 +45,22 @@ Twist Falco::computeTwist() {
   if (parameters_.look_ahead_distance < distance_to_goal_) {
     // Track the carrot
     // Angular
-    twist(2) = utils::clipValue(heading_to_carrot * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
+    twist(2) = utils::clipValue(heading_to_carrot * parameters_.angular_gain_p, base_parameters_.max_linear_velocity_x);
     // Linear X
-    twist(3) = cos(heading_to_carrot) * parameters_.max_linear_velocity_x;
+    twist(3) = cos(heading_to_carrot) * base_parameters_.max_linear_velocity_x;
     // Linear Y
-    twist(4) = sin(heading_to_carrot) * parameters_.max_linear_velocity_x;
+    twist(4) = sin(heading_to_carrot) * base_parameters_.max_linear_velocity_x;
   } else {
     // Get close to goal
     // Angular
-    twist(2) = utils::clipValue(orientation_to_goal_ * parameters_.angular_gain_p, parameters_.max_angular_velocity_z);
+    twist(2) = utils::clipValue(orientation_to_goal_ * parameters_.angular_gain_p, base_parameters_.max_linear_velocity_x);
     // Linear X
-    twist(3) = cos(heading_towards_goal_) * parameters_.max_linear_velocity_x * distance_to_goal_;
+    twist(3) = cos(heading_towards_goal_) * base_parameters_.max_linear_velocity_x * distance_to_goal_;
     // Linear Y
-    twist(4) = sin(heading_towards_goal_) * parameters_.max_linear_velocity_x * distance_to_goal_;
+    twist(4) = sin(heading_towards_goal_) * base_parameters_.max_linear_velocity_x * distance_to_goal_;
   }
 
-  if (parameters_.differential_mode) {
+  if (base_parameters_.differential_mode) {
     // Remove twist in Y direction
     twist(4) = 0.0;
   }
@@ -191,7 +192,7 @@ void Falco::computeMapCollisions() {
     // Check if the point collides with the robot diameter
     if (parameters_.check_rotational_collisions && !is_traversable) {
       if ((distance_to_obstacle < robot_diameter_ / path_scale_) &&
-          ((fabs(x) < parameters_.robot_length / path_scale_ / 2.0) || (fabs(y) < parameters_.robot_width / path_scale_ / 2.0))) {
+          ((fabs(x) < base_parameters_.robot_length / path_scale_ / 2.0) || (fabs(y) < base_parameters_.robot_width / path_scale_ / 2.0))) {
         // TODO
       }
     }  // Check rotational collisions
@@ -222,7 +223,7 @@ void Falco::computePathScores() {
       // If the vehicle is a differential drive, the most probable paths should be in front or the back of the robot
       // Modeled as a mixture of Von Mises
       float differential_mode_probability = 1.0;
-      // if(parameters_.differential_mode){
+      // if(base_parameters_.differential_mode){
       //   differential_mode_probability = 0.5*(utils::vonMises(rot_ang, 0, parameters_.differential_mode_cost) + utils::vonMises(rot_ang,
       //   M_PI, parameters_.differential_mode_cost));
       // }

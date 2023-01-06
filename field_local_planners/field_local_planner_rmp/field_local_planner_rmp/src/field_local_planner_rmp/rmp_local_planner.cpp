@@ -42,12 +42,16 @@ Twist Rmp::computeTwist() {
   optimal_twist_(4) = optimal_velocity_.y();
   optimal_twist_(5) = 0.0;  // Linear z
 
+  // Apply limits. We need to add it here (even though the base local planner already does it)
+  // or the path will not be computed correctly
+  optimal_twist_ = limitTwist(optimal_twist_);
+
   return optimal_twist_;
 }
 
 Path Rmp::computePath() {
   double time_horizon = 0.5;  // seconds
-  double dt = 0.1;          // seconds
+  double dt = 0.1;            // seconds
 
   Path path;
   for (double t = 0.0; t <= time_horizon; t += dt) {
@@ -92,7 +96,7 @@ void Rmp::computeOptimalAcceleration() {
   DifferentialModel motion_model(0.0);
   rmp::DifferentialModel_ motion_model_(motion_model);
 
-  if (parameters_.differential_mode) {
+  if (base_parameters_.differential_mode) {
     acc_se2 = rmp::pullback(motion_model_, acc_diff);
   }
 
@@ -161,7 +165,7 @@ void Rmp::computeOptimalAcceleration() {
   Values solution;
   bool valid_solution = true;
   try {
-    if (parameters_.differential_mode) {
+    if (base_parameters_.differential_mode) {
       solution = problem.solve(initial_diff_acc, true);
     } else {
       solution = problem.solve(initial_se2_acc, true);
@@ -176,7 +180,7 @@ void Rmp::computeOptimalAcceleration() {
   optimal_metric_ = Matrix3::Identity();
 
   if (valid_solution) {
-    if (parameters_.differential_mode) {
+    if (base_parameters_.differential_mode) {
       Vector2 optimal_acc_diff = solution.at<Vector2>(acc_diff_key);
       Matrix22 optimal_metric_diff = problem.metric();
 

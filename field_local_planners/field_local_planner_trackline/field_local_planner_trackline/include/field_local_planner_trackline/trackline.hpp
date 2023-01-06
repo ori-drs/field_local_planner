@@ -1,11 +1,11 @@
 #pragma once
-#include <field_local_planner_base/local_planner.hpp>
+#include <field_local_planner_base/base_local_planner.hpp>
 
 namespace field_local_planner {
 
 class Trackline : public BaseLocalPlanner {
  public:
-  struct Parameters : BaseLocalPlanner::Parameters {
+  struct Parameters {
     double angular_gain_p;
     double linear_gain_p;
   };

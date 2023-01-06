@@ -39,7 +39,7 @@ rmp:
   # RMP computes an optimal acceleration (force) that
   # Must be integrated to get a velocity
   # This basically scales the acceleration
-  integration_time: 0.1
+  integration_time: 1.0
   
   # Control points define the points where the accelerations are exerted on the body
   control_points:

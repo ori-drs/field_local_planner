@@ -3,14 +3,14 @@
 #include <pcl/point_types.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <field_local_planner_base/local_planner.hpp>
+#include <field_local_planner_base/base_local_planner.hpp>
 #include <field_local_planner_base/utils.hpp>
 
 namespace field_local_planner {
 
 class Falco : public BaseLocalPlanner {
  public:
-  struct Parameters : BaseLocalPlanner::Parameters {
+  struct Parameters {
     std::string config_folder = "config/";  // pathFolder
 
     double goal_clearance = 0.1;  // goalClearRange

@@ -3,17 +3,26 @@
 namespace field_local_planner {
 
 void BasePlugin::initialize(ros::NodeHandle& nh) {
+  // Initialie privete node handle 
+  nh_local_planner_ = ros::NodeHandle("~" + getName());
+
   // Load basic parameters
+  ROS_INFO("Loading base parameters...");
   loadBaseParameters(nh);
 
   // Load local planner parameters
-  loadParameters(nh);
+  ROS_INFO("Loading specific parameters...");
+  loadParameters(nh_local_planner_);
 
   // Setup ROS publishers and subscribers
+  ROS_INFO("Setup base ROS...");
   setupBaseRos(nh);
-  setupRos(nh);
+
+  ROS_INFO("Setup specific ROS...");
+  setupRos(nh_local_planner_);
 
   // Spin
+  ROS_INFO("Ready!");
   ros::spin();
 }
 
@@ -43,6 +52,21 @@ void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
   } else {
     base_frame_ = base_frame;
   }
+
+  BaseLocalPlanner::Parameters p;
+  p.requires_sensing = utils::getParameter<bool>(nh, "requires_sensing");
+  p.differential_mode = utils::getParameter<bool>(nh, "differential_mode");
+  p.control_rate = utils::getParameter<double>(nh, "control_rate");
+  p.robot_length = utils::getParameter<double>(nh, "robot_length");
+  p.robot_width = utils::getParameter<double>(nh, "robot_width");
+  p.robot_height = utils::getParameter<double>(nh, "robot_height");
+  p.distance_to_goal_thr = utils::getParameter<double>(nh, "distance_to_goal_thr");
+  p.orientation_to_goal_thr = utils::getParameter<double>(nh, "orientation_to_goal_thr");
+  p.max_linear_velocity_x = utils::getParameter<double>(nh, "max_linear_velocity_x");
+  p.max_linear_velocity_y = utils::getParameter<double>(nh, "max_linear_velocity_y");
+  p.max_angular_velocity_z = utils::getParameter<double>(nh, "max_angular_velocity_z");
+  
+  local_planner_->setBaseParameters(p);
 }
 
 void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
@@ -133,6 +157,10 @@ void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
   action_server_->registerGoalCallback(boost::bind(&BasePlugin::moveToRequestActionHandler, this));
   action_server_->registerPreemptCallback(boost::bind(&BasePlugin::preemptActionHandler, this));
   action_server_->start();
+
+  // Dynamic reconfigure
+  dynamic_reconfigure_callback_ = boost::bind(&BasePlugin::dynamicReconfigureCallback, this, _1, _2);
+  dynamic_reconfigure_server_.setCallback(dynamic_reconfigure_callback_);
 }
 
 bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg, nav_msgs::Path& path_msg,
@@ -262,6 +290,23 @@ void BasePlugin::preemptActionHandler() {
   action_server_->setPreempted();
 
   publishZeroTwist();
+}
+
+void BasePlugin::dynamicReconfigureCallback(BaseConfig& config, uint32_t level) {
+  BaseLocalPlanner::Parameters p = local_planner_->getBaseParameters();
+
+  // Trackline parameters
+  UPDATE_COMMON_PARAMS(differential_mode)
+  UPDATE_COMMON_PARAMS(robot_length)
+  UPDATE_COMMON_PARAMS(robot_width)
+  UPDATE_COMMON_PARAMS(robot_height)
+  UPDATE_COMMON_PARAMS(distance_to_goal_thr)
+  UPDATE_COMMON_PARAMS(orientation_to_goal_thr)
+  UPDATE_COMMON_PARAMS(max_linear_velocity_x)
+  UPDATE_COMMON_PARAMS(max_linear_velocity_y)
+  UPDATE_COMMON_PARAMS(max_angular_velocity_z)
+
+  local_planner_->setBaseParameters(p);
 }
 
 void BasePlugin::pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg) {

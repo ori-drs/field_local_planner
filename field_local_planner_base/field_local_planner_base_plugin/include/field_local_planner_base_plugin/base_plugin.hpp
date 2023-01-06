@@ -1,8 +1,9 @@
 #pragma once
+#include <field_local_planner_base_plugin/BaseConfig.h>
 #include <field_local_planner_msgs/MoveToAction.h>
 #include <field_local_planner_msgs/Status.h>
+#include <field_local_planner_base/base_local_planner.hpp>
 #include <field_local_planner_base/basic_types.hpp>
-#include <field_local_planner_base/local_planner.hpp>
 #include <field_local_planner_base/utils.hpp>
 #include <field_local_planner_base_plugin/utils.hpp>
 
@@ -44,6 +45,7 @@ class BasePlugin {
 
  public:
   // This method needs to be defined by the other plugins
+  virtual std::string getName() = 0;
   virtual void loadParameters(ros::NodeHandle& nh) = 0;
   virtual void setupRos(ros::NodeHandle& nh) = 0;
   virtual void publishVisualizations() = 0;
@@ -71,6 +73,7 @@ class BasePlugin {
   void joyTwistCallback(const geometry_msgs::TwistConstPtr& twist_msg);
   void moveToRequestActionHandler();
   void preemptActionHandler();
+  void dynamicReconfigureCallback(BaseConfig& config, uint32_t level);
 
   // Sensor callbacks
   void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg);
@@ -107,6 +110,7 @@ class BasePlugin {
 
  protected:
   std::shared_ptr<BaseLocalPlanner> local_planner_;  // The actual local planner
+  ros::NodeHandle nh_local_planner_;
 
   // TF
   tf2_ros::Buffer tf_buffer_;
@@ -140,6 +144,10 @@ class BasePlugin {
   std::shared_ptr<ActionServer> action_server_;
   field_local_planner_msgs::MoveToResult result_;
   field_local_planner_msgs::MoveToFeedback feedback_;
+
+  // Dynamic reconfigure
+  dynamic_reconfigure::Server<BaseConfig> dynamic_reconfigure_server_;
+  dynamic_reconfigure::Server<BaseConfig>::CallbackType dynamic_reconfigure_callback_;
 
   // Frames
   bool base_inverted_;       // To invert the base 180 deg
