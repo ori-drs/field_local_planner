@@ -58,6 +58,7 @@ grid_map_filters:
     params:
       output_layer: traversability
       expression: (0.5 * (1.0 - (slope / 0.6)) + 0.5 * height_traversability) .* (1.0 - unknown_space)
+      # expression: (0.5 * (1.0 - (slope / 0.6)) + 0.5 * height_traversability)
   
   # Compute 2D Signed Distance Field
   - name: sdf
@@ -77,4 +78,4 @@ grid_map_filters:
       attractor_topic: /field_local_planner/current_goal
       threshold: 0.1 # to be applied to the input layer
       use_field_smoothing: false
-      field_smoothing_radius: 0.05 # m
+      field_smoothing_radius: 0.1 # m

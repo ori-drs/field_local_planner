@@ -1055,6 +1055,26 @@ Visualization Manager:
           Name: FALCO
         - Class: rviz/Group
           Displays:
+            - Class: rviz/MarkerArray
+              Enabled: true
+              Marker Topic: /field_local_planner/rmp/control_points
+              Name: Control Points
+              Namespaces:
+                acc_damping: true
+                acc_geodesic_goal: true
+                acc_geodesic_heading: true
+                acc_goal_orientation: true
+                acc_goal_position: true
+                acc_sdf_obstacle: true
+                control_point: true
+                metric_damping: true
+                metric_geodesic_goal: true
+                metric_geodesic_heading: true
+                metric_goal_orientation: true
+                metric_goal_position: true
+                metric_sdf_obstacle: true
+              Queue Size: 100
+              Value: true
             - Alpha: 1
               Autocompute Intensity Bounds: true
               Class: grid_map_rviz_plugin/GridMap
@@ -1097,30 +1117,18 @@ Visualization Manager:
               Max Intensity: 5
               Min Color: 0; 0; 0
               Min Intensity: 0
-              Name: RMP Geodesic Field
+              Name: Geodesic Field
               Show Grid Lines: false
               Topic: /elevation_mapping/elevation_map_filtered
               Unreliable: false
               Use ColorMap: true
               Value: true
-            - Class: rviz/MarkerArray
+            - Class: rviz/Marker
               Enabled: true
-              Marker Topic: /field_local_planner/rmp/control_points
-              Name: RMP Control Points
+              Marker Topic: /grid_map_visualization/geodesic_gradient
+              Name: Geodesic Gradient
               Namespaces:
-                acc_damping: true
-                acc_geodesic_goal: true
-                acc_geodesic_heading: true
-                acc_goal_orientation: true
-                acc_goal_position: true
-                acc_sdf_obstacle: true
-                control_point: true
-                metric_damping: true
-                metric_geodesic_goal: true
-                metric_geodesic_heading: true
-                metric_goal_orientation: true
-                metric_goal_position: true
-                metric_sdf_obstacle: true
+                vector: true
               Queue Size: 100
               Value: true
             - Alpha: 0.699999988079071
@@ -1253,6 +1261,30 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: Field Local Planner
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Class: grid_map_rviz_plugin/GridMap
+      Color: 200; 200; 200
+      Color Layer: geodesic_free_space
+      Color Transformer: GridMapLayer
+      ColorMap: default
+      Enabled: false
+      Grid Cell Decimation: 1
+      Grid Line Thickness: 0.10000000149011612
+      Height Layer: geodesic_free_space
+      Height Transformer: GridMapLayer
+      History Length: 1
+      Invert ColorMap: false
+      Max Color: 255; 255; 255
+      Max Intensity: 10
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: GridMap
+      Show Grid Lines: true
+      Topic: /elevation_mapping/elevation_map_filtered
+      Unreliable: false
+      Use ColorMap: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -1281,7 +1313,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 2.9669253826141357
+      Distance: 6.204117774963379
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1297,9 +1329,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7597964406013489
+      Pitch: 0.6697965860366821
       Target Frame: base
-      Yaw: 3.082200050354004
+      Yaw: 3.2272019386291504
     Saved: ~
 Window Geometry:
   Displays:
