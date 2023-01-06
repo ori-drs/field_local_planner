@@ -1,7 +1,0 @@
-<launch>
-  <arg name="rviz_config"       default="debug.rviz" />
-  <arg name="name"              default="rviz_locally_reactive_controller" />
-
-  <!-- Use RViz-->
-    <node name="$(arg name)" pkg="rviz" type="rviz" args="-d $(find locally_reactive_controller)/config/rviz/$(arg rviz_config)"/>
-</launch>

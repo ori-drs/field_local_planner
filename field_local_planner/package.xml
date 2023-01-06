@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>field_local_planner</name>
+  <version>0.0.0</version>
+
+  <description>Meta package for field_local_planner</description>
+
+  <maintainer email="matias@robots.ox.ac.uk">Matias Mattamala</maintainer>
+  <author email="matias@robots.ox.ac.uk">Matias Mattamala</author>
+
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- ROS stuff -->
+  <exec_depend>field_local_planner_msgs</exec_depend>
+  <exec_depend>field_local_planner_benchmarking</exec_depend>
+  <exec_depend>field_local_planner_ros</exec_depend>
+
+  <!-- Base Local Planner -->
+  <exec_depend>field_local_planner_base</exec_depend>
+  <exec_depend>field_local_planner_base_plugin</exec_depend>
+
+  <!-- Local planners -->
+  <!-- Potential fields -->
+  <exec_depend>field_local_planner_apf_plugin</exec_depend>
+
+  <!-- FALCO -->
+  <exec_depend>field_local_planner_falco</exec_depend>
+  <exec_depend>field_local_planner_falco_plugin</exec_depend>
+  
+  <!-- Trackline -->
+  <exec_depend>field_local_planner_trackline</exec_depend>
+  <exec_depend>field_local_planner_trackline_plugin</exec_depend>
+  
+  <!-- RMP -->
+  <exec_depend>field_local_planner_rmp</exec_depend>
+  <exec_depend>field_local_planner_rmp_plugin</exec_depend>
+
+  <export>
+    <metapackage />
+  </export>
+
+</package>
