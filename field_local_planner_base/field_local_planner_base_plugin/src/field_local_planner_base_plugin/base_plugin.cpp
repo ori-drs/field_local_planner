@@ -430,7 +430,7 @@ void BasePlugin::publishZeroTwist() {
 Pose3 BasePlugin::queryTransform(const std::string& parent, const std::string& child, const ros::Time& stamp) {
   Eigen::Isometry3d eigen_T_parent_child = Eigen::Isometry3d::Identity();
   try {
-    geometry_msgs::TransformStamped T_parent_child = tf_buffer_.lookupTransform(parent, child, stamp);
+    geometry_msgs::TransformStamped T_parent_child = tf_buffer_.lookupTransform(parent, child, stamp, ros::Duration(1.0));
     eigen_T_parent_child = tf2::transformToEigen(T_parent_child);
 
   } catch (tf2::TransformException& ex) {
