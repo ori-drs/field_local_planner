@@ -19,6 +19,8 @@ set(CATKIN_PACKAGE_LIST
   roscpp
 )
 
+find_package(GTSAM REQUIRED)
+
 find_package(catkin REQUIRED
   COMPONENTS
     ${CATKIN_PACKAGE_LIST}
@@ -37,6 +39,7 @@ catkin_package(
 include_directories(
   SYSTEM
     ${catkin_INCLUDE_DIRS}
+    ${GTSAM_INCLUDE_DIR}
 )
 
 # Declare node
@@ -45,6 +48,7 @@ add_executable(field_local_planner_node
 
 target_link_libraries(field_local_planner_node
                       ${catkin_LIBRARIES}
+                      gtsam
 )
 
 #############

@@ -32,7 +32,7 @@ include_directories(
   test
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
-  ${gtsam_INCLUDE_DIRS}
+  ${GTSAM_INCLUDE_DIR}
 )
 
 ######################################################

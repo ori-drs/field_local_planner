@@ -51,7 +51,7 @@ catkin_package(
 include_directories(
   include
   SYSTEM
-    ${gtsam_INCLUDE_DIRS}
+    ${GTSAM_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
 )
 
@@ -62,13 +62,13 @@ add_library(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
   SYSTEM PUBLIC
-    ${gtsam_INCLUDE_DIRS}
+    ${GTSAM_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
-  ${gtsam_LIBRARIES}
+  ${GTSAM_LIBRARIES}
 )
 
 add_dependencies(${PROJECT_NAME}

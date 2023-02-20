@@ -32,7 +32,7 @@ find_package(OpenCV REQUIRED)
 
 # GTSAM
 find_package(GTSAMCMakeTools REQUIRED)
-set(GTSAM_BUILD_WITH_MARCH_NATIVE OFF CACHE BOOL "Enable/Disable building with all instructions supported by native architecture (binary may not be portable!)" FORCE)
+#set(GTSAM_BUILD_WITH_MARCH_NATIVE OFF CACHE BOOL "Enable/Disable building with all instructions supported by native architecture (binary may not be portable!)" FORCE)
 find_package(GTSAM REQUIRED)
 
 # PCL
@@ -65,7 +65,7 @@ catkin_package(
 include_directories(
   include
   SYSTEM
-    ${gtsam_INCLUDE_DIRS}
+    ${GTSAM_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
     ${PCL_INCLUDE_DIRS}
 )
@@ -75,11 +75,16 @@ add_library(${PROJECT_NAME}
                 src/field_local_planner_rmp/rmp_local_planner.cpp
 )
 
+#target_include_directories(${PROJECT_NAME}
+#  SYSTEM PUBLIC
+#    ${GTSAM_INCLUDE_DIR}
+#)
+
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
   ${PCL_LIBRARIES}
-  gtsam
+  ${GTSAM_LIBRARIES}
   ${YAML_CPP_LIBRARIES}
 )
 

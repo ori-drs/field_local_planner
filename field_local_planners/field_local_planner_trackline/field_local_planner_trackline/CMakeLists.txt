@@ -64,7 +64,7 @@ catkin_package(
 include_directories(
   include
   SYSTEM
-    ${gtsam_INCLUDE_DIRS}
+    ${GTSAM_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
     ${PCL_INCLUDE_DIRS}
 )
