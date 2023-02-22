@@ -104,7 +104,7 @@ BaseLocalPlanner::State BaseLocalPlanner::checkState() {
     // If the robot is close enough to the goal, then it must have finished
     return State::FINISHED;
 
-  } else if (checkFailure()) {
+  } else if (state_ != State::FINISHED && checkFailure()) {
     // If the robot doesn't make enough process, then we report failure
     return State::FAILURE;
 
