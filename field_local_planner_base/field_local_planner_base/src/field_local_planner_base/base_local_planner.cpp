@@ -13,6 +13,18 @@ BaseLocalPlanner::Parameters BaseLocalPlanner::getBaseParameters() const {
 }
 
 bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output) {
+  if ((ts - last_ts_) < utils::fromSeconds(1 / base_parameters_.control_rate)) {
+    output.status.state = state_;
+    output.status.progress = progress_;
+    output.status.progress_delta = progress_delta_;
+    output.status.distance_to_goal = distance_to_goal_;
+    output.status.orientation_to_goal = orientation_to_goal_;
+    return false;
+  }
+
+  // Save current timestamp
+  last_ts_ = ts;
+
   // Check distance and orientation to goal
   computeDistanceAndOrientationToGoal();
 
@@ -22,6 +34,7 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   // Fill state
   output.status.state = state_;
   output.status.progress = progress_;
+  output.status.progress_delta = progress_delta_;
   output.status.distance_to_goal = distance_to_goal_;
   output.status.orientation_to_goal = orientation_to_goal_;
 
@@ -29,12 +42,12 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   Path path;
 
   if (state_ == State::EXECUTING) {
-    if ((ts - last_ts_) < utils::fromSeconds(1 / base_parameters_.control_rate)) {
-      return false;
-    }
+    // if ((ts - last_ts_) < utils::fromSeconds(1 / base_parameters_.control_rate)) {
+    //   return false;
+    // }
 
-    // Save current timestamp
-    last_ts_ = ts;
+    // // Save current timestamp
+    // last_ts_ = ts;
 
     // Compute twist - planner specific
     twist = computeTwist();
@@ -115,18 +128,19 @@ BaseLocalPlanner::State BaseLocalPlanner::checkState() {
 }
 
 bool BaseLocalPlanner::checkFailure() {
-  // Compute delta progress
-  double delta_progress = progress_ - last_progress_;
-  // std::cout << "delta_progress: " << delta_progress << std::endl;
-
-  // Update last progress
-  last_progress_ = progress_;
-
   // current time
   Time ts = ts_T_f_b_;
 
+  // Compute delta progress
+  progress_delta_ = (progress_ - last_progress_);
+  // std::cout << "progress_delta_: " << progress_delta_ << std::endl;
+
+  // Update last progress
+  last_progress_ = progress_;
+  ts_last_progress_ = ts;
+
   // Check if progress is close to zero
-  if (std::fabs(delta_progress) < base_parameters_.progress_threshold) {
+  if (std::fabs(progress_delta_) < base_parameters_.progress_threshold) {
     // std::cout << "Failure timeout: : " << (ts - ts_failure_) << " / " << utils::fromSeconds(base_parameters_.failure_timeout_sec)
     // << std::endl;
     if ((ts - ts_failure_) > utils::fromSeconds(base_parameters_.failure_timeout_sec)) {
@@ -206,6 +220,8 @@ void BaseLocalPlanner::setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, co
 
   // Reset failure timer
   ts_failure_ = ts_T_f_b_;
+  last_progress_ = 0.0;
+  ts_last_progress_ = ts_T_f_b_;
 
   state_ = State::EXECUTING;
 }

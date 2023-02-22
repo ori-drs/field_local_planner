@@ -53,6 +53,7 @@ class BaseLocalPlanner {
   struct Status {
     State state;
     double progress;
+    double progress_delta;
     double distance_to_goal;
     double orientation_to_goal;
   };
@@ -146,7 +147,10 @@ class BaseLocalPlanner {
 
   // Progress
   double progress_;
+  double progress_delta_;
   double last_progress_;
+  Time ts_last_progress_;
+
   Time ts_failure_;
 
   // Helpers
