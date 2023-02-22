@@ -65,6 +65,8 @@ void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
   p.max_linear_velocity_x = utils::getParameter<double>(nh, "max_linear_velocity_x");
   p.max_linear_velocity_y = utils::getParameter<double>(nh, "max_linear_velocity_y");
   p.max_angular_velocity_z = utils::getParameter<double>(nh, "max_angular_velocity_z");
+  p.progress_threshold = utils::getParameter<double>(nh, "progress_threshold");
+  p.failure_timeout_sec = utils::getParameter<double>(nh, "failure_timeout_sec");
   
   local_planner_->setBaseParameters(p);
 }
@@ -305,6 +307,8 @@ void BasePlugin::dynamicReconfigureCallback(BaseConfig& config, uint32_t level) 
   UPDATE_COMMON_PARAMS(max_linear_velocity_x)
   UPDATE_COMMON_PARAMS(max_linear_velocity_y)
   UPDATE_COMMON_PARAMS(max_angular_velocity_z)
+  UPDATE_COMMON_PARAMS(progress_threshold)
+  UPDATE_COMMON_PARAMS(failure_timeout_sec)
 
   local_planner_->setBaseParameters(p);
 }

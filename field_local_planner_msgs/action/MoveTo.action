@@ -4,10 +4,9 @@ geometry_msgs/PoseWithCovarianceStamped goal
 ---
 
 ## Result
-
+field_local_planner_msgs/Status status
 
 ---
 
 ## Feedback
-# Distance to the goal
-float64 distance_to_goal
+field_local_planner_msgs/Status status

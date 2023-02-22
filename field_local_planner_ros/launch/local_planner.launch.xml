@@ -22,16 +22,22 @@
 
   <!-- Carrot -->
   <arg name="real_carrot"          default="true"/>
+
+  <!-- Action client -->
+  <arg name="action_client"        default="false"/>
   
   <!-- Launch nodes -->
   <!-- Local planner -->
   <node pkg="field_local_planner_ros" type="field_local_planner_node" name="field_local_planner" output="screen" launch-prefix="$(arg launch_prefix)">
+    <param if="$(arg action_client)"     name="goal_topic"  value="/manual_goal"/>
+    <param unless="$(arg action_client)" name="goal_topic"  value="$(arg goal_topic)"/>
+
     <param name="pose_topic"         value="$(arg pose_topic)"/>
     <param name="twist_topic"        value="$(arg twist_topic)"/>
     <param name="odometry_topic"     value="$(arg odometry_topic)"/>
     <param name="point_cloud_topic"  value="$(arg point_cloud_topic)"/>
     <param name="grid_map_topic"     value="$(arg grid_map_topic)"/>
-    <param name="goal_topic"         value="$(arg goal_topic)"/>
+    
     <param name="joy_twist_topic"    value="$(arg joy_twist_topic)"/>
     <param name="output_twist_type"  value="$(arg output_twist_type)"/>
     <param name="output_twist_topic" value="$(arg output_twist_topic)"/>
@@ -39,5 +45,11 @@
 
   <!-- Real carrot -->
   <node if="$(arg real_carrot)" pkg="field_local_planner_ros" type="carrot_publisher.py" name="field_local_planner_carrot" output="screen"/>
+
+  <!-- Action client -->
+  <node if="$(arg action_client)" pkg="field_local_planner_ros" type="action_client.py" name="field_local_planner_action_client" output="screen">
+    <param name="goal_topic"  value="$(arg goal_topic)"/>
+  </node>
+
 
 </launch>

@@ -102,6 +102,7 @@ static inline Twist toTwist(const geometry_msgs::Twist& twist_msg) {
 }
 
 static inline Time toTimeStamp(const ros::Time& t) {
+  // Convert to microseconds
   return (int64_t)floor(t.toNSec() / 1000);
 }
 

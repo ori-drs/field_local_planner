@@ -38,6 +38,8 @@ class BaseLocalPlanner {
     double max_linear_velocity_x = 1.0;    // m/s
     double max_linear_velocity_y = 1.0;    // m/s
     double max_angular_velocity_z = 1.0;   // rad/s
+    double progress_threshold = 0.1;
+    double failure_timeout_sec = 10;          // seconds
   };
 
   // Possible local planner states
@@ -142,14 +144,20 @@ class BaseLocalPlanner {
   Time ts_b_v_;
   Time ts_T_f_g_;
 
+  // Progress
+  double progress_;
+  double last_progress_;
+  Time ts_failure_;
+
   // Helpers
-  Pose3 dT_b_g_;                 // Pose difference w.r.t goal
-  Pose3 dT_b_start_;             // Pose differente w.r.t pose when goal was set
-  double distance_to_goal_;      // distance w.r.t target position
-  double orientation_to_goal_;   // orientation w.r.t target orientation
-  double distance_to_start_;     // distance w.r.t starting position when goal was set
-  double orientation_to_start_;  // orientation w.r.t starting orientation when goal was set
-  double heading_towards_goal_;  // How much the robot should rotate to point towards the goal
+  Pose3 dT_b_g_;                  // Pose difference w.r.t goal
+  Pose3 dT_b_start_;              // Pose differente w.r.t pose when goal was set
+  double distance_to_goal_;       // distance w.r.t target position
+  double orientation_to_goal_;    // orientation w.r.t target orientation
+  double distance_to_start_;      // distance w.r.t starting position when goal was set
+  double distance_start_to_goal_; // distance from the starting position to the goal
+  double orientation_to_start_;   // orientation w.r.t starting orientation when goal was set
+  double heading_towards_goal_;   // How much the robot should rotate to point towards the goal
 
   // Other flags
   bool sensing_ready_;

@@ -21,6 +21,7 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
 
   // Fill state
   output.status.state = state_;
+  output.status.progress = progress_;
   output.status.distance_to_goal = distance_to_goal_;
   output.status.orientation_to_goal = orientation_to_goal_;
 
@@ -89,28 +90,58 @@ BaseLocalPlanner::State BaseLocalPlanner::checkState() {
     return State::NOT_READY;
   }
 
+  // Compute progress
+  progress_ = 100.0 * (1.0 - distance_to_goal_ / distance_start_to_goal_);
+
   // printf("BaseLocalPlanner: distance_to_goal_ (%f) < base_parameters_.distance_to_goal_thr (%f)\n", distance_to_goal_,
   //  base_parameters_.distance_to_goal_thr);
   // printf("BaseLocalPlanner: orientation_to_goal_ (%f) < base_parameters_.orientation_to_goal_thr (%f)\n", orientation_to_goal_,
   //  base_parameters_.orientation_to_goal_thr);
 
-  if (distance_to_goal_ < base_parameters_.distance_to_goal_thr && std::fabs(orientation_to_goal_) < base_parameters_.orientation_to_goal_thr) {
-    // std::cout << "BaseLocalPlanner: FINISHED" << std::endl;
+  if (distance_to_goal_ < base_parameters_.distance_to_goal_thr                      // If the robot is close enough
+      && std::fabs(orientation_to_goal_) < base_parameters_.orientation_to_goal_thr  // And the orientation is also close
+  ) {
+    // If the robot is close enough to the goal, then it must have finished
     return State::FINISHED;
 
   } else if (checkFailure()) {
-    // std::cout << "BaseLocalPlanner: FAILURE" << std::endl;
+    // If the robot doesn't make enough process, then we report failure
     return State::FAILURE;
 
   } else {
     // All good, it must be working
-    // std::cout << "BaseLocalPlanner: same state (" << stateToStr(state_) << ")" << std::endl;
     return state_;
   }
 }
 
 bool BaseLocalPlanner::checkFailure() {
-  return false;  // TODO implement proper solution
+  // Compute delta progress
+  double delta_progress = progress_ - last_progress_;
+  // std::cout << "delta_progress: " << delta_progress << std::endl;
+
+  // Update last progress
+  last_progress_ = progress_;
+
+  // current time
+  Time ts = ts_T_f_b_;
+
+  // Check if progress is close to zero
+  if (std::fabs(delta_progress) < base_parameters_.progress_threshold) {
+    // std::cout << "Failure timeout: : " << (ts - ts_failure_) << " / " << utils::fromSeconds(base_parameters_.failure_timeout_sec)
+    // << std::endl;
+    if ((ts - ts_failure_) > utils::fromSeconds(base_parameters_.failure_timeout_sec)) {
+      return true;  // Report failure
+    }
+
+  } else {
+    ts_failure_ = ts_T_f_b_;  // Reset timer
+  }
+
+  // if (potential_failure_ && (ts - ts_failure_) > utils::fromSeconds(base_parameters_.failure_timeout_sec)) {
+  //   return true;  // Report failure
+  // }
+
+  return false;
 }
 
 Twist BaseLocalPlanner::limitTwist(const Twist& twist) {
@@ -169,6 +200,13 @@ void BaseLocalPlanner::setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, co
   ts_T_f_g_ = ts;
   sensing_ready_ = true;
 
+  // Compute distance from goal to start
+  Pose3 dT_start_goal = T_f_b_start_.inverse() * T_f_g_;
+  distance_start_to_goal_ = std::hypot(dT_start_goal.translation().y(), dT_start_goal.translation().x());
+
+  // Reset failure timer
+  ts_failure_ = ts_T_f_b_;
+
   state_ = State::EXECUTING;
 }
 
@@ -180,7 +218,7 @@ void BaseLocalPlanner::setPoseInFixed(const Pose3& T_f_b, const Time& ts) {
 }
 
 void BaseLocalPlanner::setVelocityInBase(const Twist& b_v, const Time& ts) {
-  b_v_ = b_v_;
+  b_v_ = b_v;
   ts_b_v_ = ts;
   sensing_ready_ = true;
 }

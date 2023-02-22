@@ -30,6 +30,11 @@ Twist Rmp::computeTwist() {
   T_m_b_SE2_ = utils::toSE2(T_m_b_);
   T_f_g_SE2_ = utils::toSE2(T_f_g_);
 
+  // Fill velocity 2d
+  velocity_2d_(0) = b_v_(3);
+  velocity_2d_(1) = b_v_(4);
+  velocity_2d_(2) = b_v_(2);
+
   // Compute RMPs
   computeOptimalAcceleration();
 
