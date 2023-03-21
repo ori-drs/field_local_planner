@@ -1,5 +1,4 @@
 #include <math.h>
-#include <field_local_planner_base/utils.hpp>
 #include <field_local_planner_trackline/trackline.hpp>
 
 namespace field_local_planner {

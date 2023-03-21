@@ -1,10 +1,11 @@
 #pragma once
+#include <field_local_planner_base/base_local_planner.hpp>
+#include <field_local_planner_base/utils.hpp>
+
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <field_local_planner_base/base_local_planner.hpp>
-#include <field_local_planner_base/utils.hpp>
 
 namespace field_local_planner {
 
