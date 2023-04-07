@@ -347,7 +347,7 @@ rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
 
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
-  Vector2 acc = rmp::MotionPolicy::makeObstaclePolicy(grad_in_base, distance, params.gain);
+  Vector2 acc = rmp::MotionPolicy::makeObstaclePolicy(grad_in_base, velocity, distance, params.gain);
   Matrix2 metric = rmp::Metric2::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, grad_in_base);
 
   // Return Riemannian Motion Policy

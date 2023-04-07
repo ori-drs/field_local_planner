@@ -87,9 +87,11 @@ class MotionPolicy {
     return -gain * velocity;
   }
 
-  static Vector2 makeObstaclePolicy(const Vector2& gradient, double distance, double gain) {
+  static Vector2 makeObstaclePolicy(const Vector2& gradient, const Vector2& velocity, double distance, double gain) {
     double d = std::max(distance, 0.01);
-    return -(gain / d) * gradient;
+    Vector2 unit_gradient = gradient / gradient.norm();
+    double velocity_alignment_gain = unit_gradient.dot(velocity);
+    return -(gain / d) * velocity_alignment_gain * unit_gradient;
   }
 };
 
