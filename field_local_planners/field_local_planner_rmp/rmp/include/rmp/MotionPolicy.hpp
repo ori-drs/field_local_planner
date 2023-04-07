@@ -93,6 +93,12 @@ class MotionPolicy {
     double velocity_alignment_gain = unit_gradient.dot(velocity);
     return -(gain / d) * velocity_alignment_gain * unit_gradient;
   }
+
+  static Vector2 makeObstacleDampingPolicy(const Vector2& gradient, const Vector2& velocity, double distance, double gain) {
+    double d = std::max(distance, 0.01);
+    Vector2 unit_gradient = gradient / gradient.norm();
+    return -(gain / d) * unit_gradient;
+  }
 };
 
 }  // namespace rmp

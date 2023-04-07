@@ -16,7 +16,7 @@ The implementation follows a similar approach to the [ROS navigation stack](http
 
 ## Dependencies
 - [`grid_map_filters_drs`](https://github.com/ori-drs/grid_map_filters_drs): required by `field_local_planner_rmp` to generate the grid map fields.
-- ['teleop_twist_joy']: `sudo apt install ros-noetic-teleop-twist-joy`. Required if you want to use the controller using twists as input.
+- [`teleop_twist_joy`]: `sudo apt install ros-noetic-teleop-twist-joy`. Required if you want to use the controller using twists as input.
 
 ## Running the planner
 The `field_local_planners_ros` package has all the interfaces to launch the nodes. Each `field_local_planner_<planner>_plugin` package has the parameters required for each planner.
@@ -65,9 +65,8 @@ As a reference, please check:
 ## Citing
 If you use this repository in academic work, please cite:
 
-```
-M. Mattamala, N. Chebrolu and M. Fallon, "An Efficient Locally Reactive Controller for Safe Navigation in Visual Teach and Repeat Missions," in IEEE Robotics and Automation Letters, vol. 7, no. 2, pp. 2353-2360, April 2022, doi: 10.1109/LRA.2022.3143196.
-```
+> M. Mattamala, N. Chebrolu and M. Fallon, "An Efficient Locally Reactive Controller for Safe Navigation in Visual Teach and Repeat Missions," in IEEE Robotics and Automation Letters, vol. 7, no. 2, pp. 2353-2360, April 2022, doi: 10.1109/LRA.2022.3143196.
+
 
 ```bibtex
 @ARTICLE{Mattamala2022,
@@ -82,9 +81,7 @@ M. Mattamala, N. Chebrolu and M. Fallon, "An Efficient Locally Reactive Controll
 ```
 
 If additionally you also use the FALCO local planner, cite:
-```
-Zhang, J, Hu, C, Chadha, RG, Singh, S. Falco: Fast likelihood-based collision avoidance with extension to human-guided navigation. J Field Robotics. 2020; 37: 1300– 1313.
-```
+> Zhang, J, Hu, C, Chadha, RG, Singh, S. Falco: Fast likelihood-based collision avoidance with extension to human-guided navigation. J Field Robotics. 2020; 37: 1300– 1313.
 
 ```bibtex
 @article{Zhang2020,
