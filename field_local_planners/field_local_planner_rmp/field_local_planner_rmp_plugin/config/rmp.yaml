@@ -141,6 +141,14 @@ rmp:
         type: projector_invlogistic
         offset: 0.2
         steepness: 1.0
+    sdf_obstacle_damping:
+      weight: 1.0 # 1.0
+      gain: 0.1
+      color: [1.0, 0.0, 0.0] # red
+      metric:
+        type: projector_invlogistic
+        offset: 0.2
+        steepness: 1.0
     regularization:
       weight: 0.0 # 1.0
       gain: 0.001

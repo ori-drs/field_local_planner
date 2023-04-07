@@ -67,8 +67,8 @@ Path Rmp::computePath() {
 }
 
 std::vector<std::string> Rmp::getAvailableRmps() {
-  return std::vector<std::string>{"geodesic_goal",    "geodesic_heading", "goal_position", "goal_orientation",
-                                  "velocity_heading", "damping",          "sdf_obstacle",  "regularization"};
+  return std::vector<std::string>{"geodesic_goal", "geodesic_heading", "goal_position",        "goal_orientation", "velocity_heading",
+                                  "damping",       "sdf_obstacle",     "sdf_obstacle_damping", "regularization"};
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -147,6 +147,11 @@ void Rmp::computeOptimalAcceleration() {
 
       } else if (rmp_name == "sdf_obstacle") {
         rmp::Rmp2 policy = makeSdfObstaclePolicy(cp);
+        problem.addRmp(rmp::pullback(cp_, acc_se2), policy);
+        cp.rmps[rmp_name] = convertToRmp3(policy);
+
+      } else if (rmp_name == "sdf_obstacle_damping") {
+        rmp::Rmp2 policy = makeSdfObstacleDampingPolicy(cp);
         problem.addRmp(rmp::pullback(cp_, acc_se2), policy);
         cp.rmps[rmp_name] = convertToRmp3(policy);
 
@@ -348,6 +353,30 @@ rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector2 acc = rmp::MotionPolicy::makeObstaclePolicy(grad_in_base, velocity, distance, params.gain);
+  Matrix2 metric = rmp::Metric2::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, grad_in_base);
+
+  // Return Riemannian Motion Policy
+  return rmp::Rmp2(acc, metric, params.weight, rmp_name, params.color);
+}
+
+rmp::Rmp2 Rmp::makeSdfObstacleDampingPolicy(ControlPoint& cp) {
+  const std::string rmp_name = "sdf_obstacle_damping";
+
+  // Get the pose of the control point in the map frame
+  Pose2 T_m_cp_SE2_ = T_m_b_SE2_ * Pose2(0.0, cp.position);
+
+  // This RMP is annoying since it requires 2d data
+  Vector2 velocity = velocity_2d_.head<2>();
+
+  // Get gradients
+  double distance = 0;
+  Vector2 grad_in_base;
+  getGradientsFromGridMap("sdf", T_m_cp_SE2_, distance, grad_in_base);
+  distance = distance - cp.inflated_radius;
+
+  // Create RMP
+  RmpParameters params = parameters_.rmp_parameters[rmp_name];
+  Vector2 acc = rmp::MotionPolicy::makeObstacleDampingPolicy(grad_in_base, velocity, distance, params.gain);
   Matrix2 metric = rmp::Metric2::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, grad_in_base);
 
   // Return Riemannian Motion Policy

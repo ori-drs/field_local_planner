@@ -101,6 +101,7 @@ void RmpPlugin::dynamicReconfigureCallback(RmpConfig& config, uint32_t level) {
   UPDATE_RMP(velocity_heading)
   UPDATE_RMP(damping)
   UPDATE_RMP(sdf_obstacle)
+  UPDATE_RMP(sdf_obstacle_damping)
   UPDATE_RMP(regularization)
 
   // Update control points

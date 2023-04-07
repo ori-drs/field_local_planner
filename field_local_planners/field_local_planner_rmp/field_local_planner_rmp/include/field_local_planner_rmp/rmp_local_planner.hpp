@@ -76,6 +76,7 @@ class Rmp : public BaseLocalPlanner {
   rmp::Rmp3 makeVelocityHeadingPolicy(ControlPoint& cp);
   rmp::Rmp3 makeDampingPolicy(ControlPoint& cp);
   rmp::Rmp2 makeSdfObstaclePolicy(ControlPoint& cp);
+  rmp::Rmp2 makeSdfObstacleDampingPolicy(ControlPoint& cp);
   rmp::Rmp3 makeRegularizationPolicy(ControlPoint& cp);
 
   // Helper to query layers of the grid map
