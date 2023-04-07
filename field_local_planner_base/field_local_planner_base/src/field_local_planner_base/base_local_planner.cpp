@@ -13,6 +13,18 @@ BaseLocalPlanner::Parameters BaseLocalPlanner::getBaseParameters() const {
 }
 
 bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output) {
+  if ((ts - last_ts_) < utils::fromSeconds(1 / base_parameters_.control_rate)) {
+    output.status.state = state_;
+    output.status.progress = progress_;
+    output.status.progress_delta = progress_delta_;
+    output.status.distance_to_goal = distance_to_goal_;
+    output.status.orientation_to_goal = orientation_to_goal_;
+    return false;
+  }
+
+  // Save current timestamp
+  last_ts_ = ts;
+
   // Check distance and orientation to goal
   computeDistanceAndOrientationToGoal();
 
@@ -21,6 +33,8 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
 
   // Fill state
   output.status.state = state_;
+  output.status.progress = progress_;
+  output.status.progress_delta = progress_delta_;
   output.status.distance_to_goal = distance_to_goal_;
   output.status.orientation_to_goal = orientation_to_goal_;
 
@@ -28,12 +42,12 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   Path path;
 
   if (state_ == State::EXECUTING) {
-    if ((ts - last_ts_) < utils::fromSeconds(1 / base_parameters_.control_rate)) {
-      return false;
-    }
+    // if ((ts - last_ts_) < utils::fromSeconds(1 / base_parameters_.control_rate)) {
+    //   return false;
+    // }
 
-    // Save current timestamp
-    last_ts_ = ts;
+    // // Save current timestamp
+    // last_ts_ = ts;
 
     // Compute twist - planner specific
     twist = computeTwist();
@@ -48,6 +62,10 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   output.path = path;
 
   return state_ == State::EXECUTING;
+}
+
+void BaseLocalPlanner::stop() {
+  state_ = State::FINISHED;
 }
 
 // Other steps
@@ -89,28 +107,59 @@ BaseLocalPlanner::State BaseLocalPlanner::checkState() {
     return State::NOT_READY;
   }
 
+  // Compute progress
+  progress_ = 100.0 * (1.0 - distance_to_goal_ / distance_start_to_goal_);
+
   // printf("BaseLocalPlanner: distance_to_goal_ (%f) < base_parameters_.distance_to_goal_thr (%f)\n", distance_to_goal_,
   //  base_parameters_.distance_to_goal_thr);
   // printf("BaseLocalPlanner: orientation_to_goal_ (%f) < base_parameters_.orientation_to_goal_thr (%f)\n", orientation_to_goal_,
   //  base_parameters_.orientation_to_goal_thr);
 
-  if (distance_to_goal_ < base_parameters_.distance_to_goal_thr && std::fabs(orientation_to_goal_) < base_parameters_.orientation_to_goal_thr) {
-    // std::cout << "BaseLocalPlanner: FINISHED" << std::endl;
+  if (distance_to_goal_ < base_parameters_.distance_to_goal_thr                      // If the robot is close enough
+      && std::fabs(orientation_to_goal_) < base_parameters_.orientation_to_goal_thr  // And the orientation is also close
+  ) {
+    // If the robot is close enough to the goal, then it must have finished
     return State::FINISHED;
 
-  } else if (checkFailure()) {
-    // std::cout << "BaseLocalPlanner: FAILURE" << std::endl;
+  } else if (state_ != State::FINISHED && checkFailure()) {
+    // If the robot doesn't make enough process, then we report failure
     return State::FAILURE;
 
   } else {
     // All good, it must be working
-    // std::cout << "BaseLocalPlanner: same state (" << stateToStr(state_) << ")" << std::endl;
     return state_;
   }
 }
 
 bool BaseLocalPlanner::checkFailure() {
-  return false;  // TODO implement proper solution
+  // current time
+  Time ts = ts_T_f_b_;
+
+  // Compute delta progress
+  progress_delta_ = (progress_ - last_progress_);
+  // std::cout << "progress_delta_: " << progress_delta_ << std::endl;
+
+  // Update last progress
+  last_progress_ = progress_;
+  ts_last_progress_ = ts;
+
+  // Check if progress is close to zero
+  if (std::fabs(progress_delta_) < base_parameters_.progress_threshold) {
+    // std::cout << "Failure timeout: : " << (ts - ts_failure_) << " / " << utils::fromSeconds(base_parameters_.failure_timeout_sec)
+    // << std::endl;
+    if ((ts - ts_failure_) > utils::fromSeconds(base_parameters_.failure_timeout_sec)) {
+      return true;  // Report failure
+    }
+
+  } else {
+    ts_failure_ = ts_T_f_b_;  // Reset timer
+  }
+
+  // if (potential_failure_ && (ts - ts_failure_) > utils::fromSeconds(base_parameters_.failure_timeout_sec)) {
+  //   return true;  // Report failure
+  // }
+
+  return false;
 }
 
 Twist BaseLocalPlanner::limitTwist(const Twist& twist) {
@@ -169,6 +218,15 @@ void BaseLocalPlanner::setGoalInFixed(const Pose3& T_f_g, const Pose3& T_f_b, co
   ts_T_f_g_ = ts;
   sensing_ready_ = true;
 
+  // Compute distance from goal to start
+  Pose3 dT_start_goal = T_f_b_start_.inverse() * T_f_g_;
+  distance_start_to_goal_ = std::hypot(dT_start_goal.translation().y(), dT_start_goal.translation().x());
+
+  // Reset failure timer
+  ts_failure_ = ts_T_f_b_;
+  last_progress_ = 0.0;
+  ts_last_progress_ = ts_T_f_b_;
+
   state_ = State::EXECUTING;
 }
 
@@ -180,7 +238,7 @@ void BaseLocalPlanner::setPoseInFixed(const Pose3& T_f_b, const Time& ts) {
 }
 
 void BaseLocalPlanner::setVelocityInBase(const Twist& b_v, const Time& ts) {
-  b_v_ = b_v_;
+  b_v_ = b_v;
   ts_b_v_ = ts;
   sensing_ready_ = true;
 }

@@ -102,6 +102,7 @@ static inline Twist toTwist(const geometry_msgs::Twist& twist_msg) {
 }
 
 static inline Time toTimeStamp(const ros::Time& t) {
+  // Convert to microseconds
   return (int64_t)floor(t.toNSec() / 1000);
 }
 
@@ -136,6 +137,7 @@ static inline field_local_planner_msgs::Status toStatusMsg(const BaseLocalPlanne
   field_local_planner_msgs::Status status_msg;
   status_msg.state = status.state;
   status_msg.progress = status.progress;
+  status_msg.progress_delta = status.progress_delta;
   status_msg.distance_to_goal = status.distance_to_goal;
   status_msg.orientation_to_goal = status.orientation_to_goal;
   status_msg.goal_reached = status.state == BaseLocalPlanner::State::FINISHED;

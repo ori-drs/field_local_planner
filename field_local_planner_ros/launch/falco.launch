@@ -7,15 +7,16 @@
   <!-- Debugging flags -->
   <arg name="debug"          default="false"/>
   <arg name="real_carrot"    default="true"/>
+  <arg name="action_client"  default="false"/>
 
   <arg name="elevation_map_topic"           default="/elevation_mapping/elevation_map_raw"/>
   <arg name="elevation_map_filtered_topic"  default="/elevation_mapping/elevation_map_filtered"/>
-
 
   <!-- Include common launch -->
   <include file="$(find field_local_planner_ros)/launch/local_planner.launch.xml">
     <arg name="debug"              value="$(arg debug)"/>
     <arg name="real_carrot"        value="$(arg real_carrot)"/>
+    <arg name="action_client"      value="$(arg action_client)"/>
     <arg name="pose_topic"         value="/state_estimator/pose_in_odom"/>
     <arg name="twist_topic"        value="/state_estimator/twist"/>
     <arg name="grid_map_topic"     value="$(arg elevation_map_filtered_topic)"/>

@@ -30,6 +30,11 @@ Twist Rmp::computeTwist() {
   T_m_b_SE2_ = utils::toSE2(T_m_b_);
   T_f_g_SE2_ = utils::toSE2(T_f_g_);
 
+  // Fill velocity 2d
+  velocity_2d_(0) = b_v_(3);
+  velocity_2d_(1) = b_v_(4);
+  velocity_2d_(2) = b_v_(2);
+
   // Compute RMPs
   computeOptimalAcceleration();
 
@@ -342,7 +347,7 @@ rmp::Rmp2 Rmp::makeSdfObstaclePolicy(ControlPoint& cp) {
 
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
-  Vector2 acc = rmp::MotionPolicy::makeObstaclePolicy(grad_in_base, distance, params.gain);
+  Vector2 acc = rmp::MotionPolicy::makeObstaclePolicy(grad_in_base, velocity, distance, params.gain);
   Matrix2 metric = rmp::Metric2::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, grad_in_base);
 
   // Return Riemannian Motion Policy

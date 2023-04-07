@@ -15,6 +15,8 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWitDebInfo)
 endif()
 
+find_package(Eigen3 REQUIRED)
+
 ###################################
 ## Catkin Specific Configuration ##
 ###################################
@@ -32,7 +34,7 @@ include_directories(
   test
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
-  ${gtsam_INCLUDE_DIRS}
+  ${GTSAM_INCLUDE_DIRS}
 )
 
 ######################################################

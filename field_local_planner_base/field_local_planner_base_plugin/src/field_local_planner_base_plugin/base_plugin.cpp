@@ -3,7 +3,7 @@
 namespace field_local_planner {
 
 void BasePlugin::initialize(ros::NodeHandle& nh) {
-  // Initialie privete node handle 
+  // Initialie privete node handle
   nh_local_planner_ = ros::NodeHandle("~" + getName());
 
   // Load basic parameters
@@ -65,7 +65,9 @@ void BasePlugin::loadBaseParameters(ros::NodeHandle& nh) {
   p.max_linear_velocity_x = utils::getParameter<double>(nh, "max_linear_velocity_x");
   p.max_linear_velocity_y = utils::getParameter<double>(nh, "max_linear_velocity_y");
   p.max_angular_velocity_z = utils::getParameter<double>(nh, "max_angular_velocity_z");
-  
+  p.progress_threshold = utils::getParameter<double>(nh, "progress_threshold");
+  p.failure_timeout_sec = utils::getParameter<double>(nh, "failure_timeout_sec");
+
   local_planner_->setBaseParameters(p);
 }
 
@@ -288,7 +290,7 @@ void BasePlugin::moveToRequestActionHandler() {
 void BasePlugin::preemptActionHandler() {
   ROS_INFO_STREAM("[BasePlugin] Action Server - Stop");
   action_server_->setPreempted();
-
+  local_planner_->stop();
   publishZeroTwist();
 }
 
@@ -305,6 +307,8 @@ void BasePlugin::dynamicReconfigureCallback(BaseConfig& config, uint32_t level) 
   UPDATE_COMMON_PARAMS(max_linear_velocity_x)
   UPDATE_COMMON_PARAMS(max_linear_velocity_y)
   UPDATE_COMMON_PARAMS(max_angular_velocity_z)
+  UPDATE_COMMON_PARAMS(progress_threshold)
+  UPDATE_COMMON_PARAMS(failure_timeout_sec)
 
   local_planner_->setBaseParameters(p);
 }
@@ -404,6 +408,11 @@ void BasePlugin::publishPath(const Path& path) {
 void BasePlugin::publishStatus(const BaseLocalPlanner::Status& status) {
   field_local_planner_msgs::Status status_msg = utils::toStatusMsg(status);
   status_pub_.publish(status_msg);
+
+  if (action_server_->isActive()) {
+    feedback_.status = status_msg;
+    action_server_->publishFeedback(feedback_);
+  }
 }
 
 void BasePlugin::publishTwist(const Twist& twist, const ros::Time& stamp) {
