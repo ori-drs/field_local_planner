@@ -64,6 +64,10 @@ bool BaseLocalPlanner::execute(const Time& ts, BaseLocalPlanner::Output& output)
   return state_ == State::EXECUTING;
 }
 
+void BaseLocalPlanner::stop() {
+  state_ = State::FINISHED;
+}
+
 // Other steps
 void BaseLocalPlanner::computeDistanceAndOrientationToGoal() {
   // Note: All these are computed assuming planar SE(2) motion

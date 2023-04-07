@@ -290,7 +290,7 @@ void BasePlugin::moveToRequestActionHandler() {
 void BasePlugin::preemptActionHandler() {
   ROS_INFO_STREAM("[BasePlugin] Action Server - Stop");
   action_server_->setPreempted();
-
+  local_planner_->stop();
   publishZeroTwist();
 }
 
