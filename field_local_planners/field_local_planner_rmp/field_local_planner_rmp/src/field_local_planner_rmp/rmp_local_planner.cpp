@@ -253,7 +253,8 @@ rmp::Rmp3 Rmp::makeGeodesicGoalPolicy(ControlPoint& cp) {
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGradientPositionPolicy(grad_in_base, params.gain);
-  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_);
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_);
 
   // Hack: decrease contribution of angular component in metric
   metric(2, 2) = 1e-3;
@@ -273,7 +274,8 @@ rmp::Rmp3 Rmp::makeGeodesicHeadingPolicy(ControlPoint& cp) {
   // Create RMP
   RmpParameters params = parameters_.rmp_parameters[rmp_name];
   Vector3 acc = rmp::MotionPolicy::makeGradientOrientationPolicy(grad_in_base, params.gain);
-  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness, distance, velocity_2d_);
+  Matrix3 metric = rmp::Metric3::make(params.metric_type, params.metric_offset, params.metric_steepness,
+                                      BaseLocalPlanner::distance_to_goal_, velocity_2d_);
 
   // Hack: decrease contribution of translational component in metric
   metric(0, 0) = 1e-3;

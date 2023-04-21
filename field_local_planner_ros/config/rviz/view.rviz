@@ -5,10 +5,9 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Field Local Planner1
-        - /Field Local Planner1/RMP1
-        - /Field Local Planner1/RMP1/Control Points1/Namespaces1
-      Splitter Ratio: 0.8265895843505859
-    Tree Height: 814
+        - /Field Local Planner1/RMP1/Control Points1
+      Splitter Ratio: 0.6907514333724976
+    Tree Height: 784
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -26,7 +25,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Falco Free Paths
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -996,7 +995,7 @@ Visualization Manager:
         - Class: rviz/Group
           Displays:
             - Alpha: 1
-              Autocompute Intensity Bounds: true
+              Autocompute Intensity Bounds: false
               Autocompute Value Bounds:
                 Max Value: 10
                 Min Value: -10
@@ -1010,7 +1009,9 @@ Visualization Manager:
               Enabled: true
               Invert Rainbow: false
               Max Color: 40; 87; 244
+              Max Intensity: 1
               Min Color: 239; 41; 41
+              Min Intensity: 0
               Name: Falco Collision Map
               Position Transformer: XYZ
               Queue Size: 10
@@ -1044,14 +1045,14 @@ Visualization Manager:
               Queue Size: 10
               Selectable: true
               Size (Pixels): 3
-              Size (m): 0.019999999552965164
+              Size (m): 0.03999999910593033
               Style: Spheres
               Topic: /field_local_planner/falco/free_paths
               Unreliable: false
               Use Fixed Frame: true
               Use rainbow: false
               Value: true
-          Enabled: true
+          Enabled: false
           Name: FALCO
         - Class: rviz/Group
           Displays:
@@ -1060,19 +1061,7 @@ Visualization Manager:
               Marker Topic: /field_local_planner/rmp/control_points
               Name: Control Points
               Namespaces:
-                acc_damping: true
-                acc_geodesic_goal: true
-                acc_geodesic_heading: true
-                acc_goal_orientation: true
-                acc_goal_position: true
-                acc_sdf_obstacle: true
                 control_point: true
-                metric_damping: true
-                metric_geodesic_goal: true
-                metric_geodesic_heading: true
-                metric_goal_orientation: true
-                metric_goal_position: true
-                metric_sdf_obstacle: true
               Queue Size: 100
               Value: true
             - Alpha: 1
@@ -1100,36 +1089,52 @@ Visualization Manager:
               Use ColorMap: true
               Value: false
             - Alpha: 1
-              Autocompute Intensity Bounds: false
+              Autocompute Intensity Bounds: true
               Class: grid_map_rviz_plugin/GridMap
               Color: 200; 200; 200
               Color Layer: geodesic
               Color Transformer: GridMapLayer
               ColorMap: plasma
-              Enabled: true
+              Enabled: false
               Grid Cell Decimation: 1
-              Grid Line Thickness: 0.10000000149011612
-              Height Layer: elevation_inpainted
+              Grid Line Thickness: 0.20000000298023224
+              Height Layer: geodesic
               Height Transformer: GridMapLayer
               History Length: 1
               Invert ColorMap: true
               Max Color: 255; 255; 255
-              Max Intensity: 5
+              Max Intensity: 10
               Min Color: 0; 0; 0
               Min Intensity: 0
               Name: Geodesic Field
+              Show Grid Lines: true
+              Topic: /elevation_mapping/elevation_map_filtered
+              Unreliable: false
+              Use ColorMap: true
+              Value: false
+            - Alpha: 1
+              Autocompute Intensity Bounds: true
+              Class: grid_map_rviz_plugin/GridMap
+              Color: 200; 200; 200
+              Color Layer: geodesic
+              Color Transformer: GridMapLayer
+              ColorMap: plasma
+              Enabled: false
+              Grid Cell Decimation: 1
+              Grid Line Thickness: 0.10000000149011612
+              Height Layer: geodesic
+              Height Transformer: Flat
+              History Length: 1
+              Invert ColorMap: true
+              Max Color: 255; 255; 255
+              Max Intensity: 10
+              Min Color: 0; 0; 0
+              Min Intensity: 0
+              Name: Geodesic Field (Projection)
               Show Grid Lines: false
               Topic: /elevation_mapping/elevation_map_filtered
               Unreliable: false
               Use ColorMap: true
-              Value: true
-            - Class: rviz/Marker
-              Enabled: false
-              Marker Topic: /grid_map_visualization/geodesic_gradient
-              Name: Geodesic Gradient
-              Namespaces:
-                {}
-              Queue Size: 100
               Value: false
             - Alpha: 1
               Autocompute Intensity Bounds: false
@@ -1155,6 +1160,14 @@ Visualization Manager:
               Unreliable: false
               Use ColorMap: true
               Value: false
+            - Class: rviz/Marker
+              Enabled: true
+              Marker Topic: /grid_map_visualization/geodesic_gradient
+              Name: Geodesic Gradient
+              Namespaces:
+                vector: true
+              Queue Size: 100
+              Value: true
             - Class: rviz/Marker
               Enabled: false
               Marker Topic: /grid_map_visualization/sdf_gradient
@@ -1739,7 +1752,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 18.377378463745117
+      Distance: 37.682193756103516
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1747,25 +1760,25 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -8.241525650024414
-        Y: -18.287382125854492
+        X: -11.40666675567627
+        Y: -6.058244228363037
         Z: 4.76837158203125e-07
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0597962141036987
+      Pitch: 1.5297963619232178
       Target Frame: world
-      Yaw: 5.350386619567871
+      Yaw: 1.675390362739563
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1043
+  Height: 1013
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000015c000003b9fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f00700065007200740069006500730200000780000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000003b9000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000003b9fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d000003b9000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007380000003efc0100000002fb0000000800540069006d00650000000000000007380000041800fffffffb0000000800540069006d0065010000000000000450000000000000000000000509000003b900000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001e80000039bfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f00700065007200740069006500730200000780000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000039b000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000039bfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000039b000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007380000003efc0100000002fb0000000800540069006d00650000000000000007380000041800fffffffb0000000800540069006d006501000000000000045000000000000000000000038d0000039b00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -1774,6 +1787,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1920
+  Width: 1680
   X: 1920
   Y: 0

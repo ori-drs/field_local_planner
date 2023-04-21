@@ -49,8 +49,6 @@ rmp:
       color: [0.00, 0.00, 0.00]
       radius: 0.35
       affected_by:
-        - geodesic_goal
-        - geodesic_heading
         - goal_position
         - goal_orientation
         - damping
@@ -61,7 +59,6 @@ rmp:
       radius: 0.3
       affected_by:
         - sdf_obstacle
-        - sdf_obstacle_damping
     -
       id: front_right
       point_factor: [0.6, -0.3]
@@ -69,7 +66,6 @@ rmp:
       radius: 0.3
       affected_by: 
         - sdf_obstacle
-        - sdf_obstacle_damping
     -
       id: back_left
       point_factor: [-0.6, 0.3]
@@ -77,7 +73,6 @@ rmp:
       radius: 0.3
       affected_by: 
         - sdf_obstacle
-        - sdf_obstacle_damping
     -
       id: back_right
       point_factor: [-0.6, -0.3]
@@ -85,7 +80,6 @@ rmp:
       radius: 0.3
       affected_by: 
         - sdf_obstacle
-        - sdf_obstacle_damping
       
   # This defines the parameters for the RMPs
   policies:
@@ -110,7 +104,7 @@ rmp:
       gain: 2.0
       color: [1.0, 0.5, 0.0] # orange
       metric:
-        type: invlogistic
+        type: constant
         offset: 0.5
         steepness: 10.0
     goal_orientation:
@@ -118,7 +112,7 @@ rmp:
       gain: 2.0
       color: [1.0, 0.5, 0.0] # orange
       metric:
-        type: invlogistic
+        type: constant
         offset: 0.5
         steepness: 10.0
     velocity_heading:
