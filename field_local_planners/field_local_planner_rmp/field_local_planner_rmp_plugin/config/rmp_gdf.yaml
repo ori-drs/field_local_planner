@@ -54,38 +54,34 @@ rmp:
         - goal_position
         - goal_orientation
         - damping
-    -
-      id: front_left
-      point_factor: [0.6, 0.3]
-      color: [0.00, 0.00, 0.00]
-      radius: 0.3
-      affected_by:
-        - sdf_obstacle
-        - sdf_obstacle_damping
-    -
-      id: front_right
-      point_factor: [0.6, -0.3]
-      color: [0.00, 0.00, 0.00]
-      radius: 0.3
-      affected_by: 
-        - sdf_obstacle
-        - sdf_obstacle_damping
-    -
-      id: back_left
-      point_factor: [-0.6, 0.3]
-      color: [0.00, 0.00, 0.00]
-      radius: 0.3
-      affected_by: 
-        - sdf_obstacle
-        - sdf_obstacle_damping
-    -
-      id: back_right
-      point_factor: [-0.6, -0.3]
-      color: [0.00, 0.00, 0.00]
-      radius: 0.3
-      affected_by: 
-        - sdf_obstacle
-        - sdf_obstacle_damping
+    # -
+    #   id: front_left
+    #   point_factor: [0.6, 0.3]
+    #   color: [0.00, 0.00, 0.00]
+    #   radius: 0.3
+    #   affected_by:
+    #     - geodesic_goal
+    # -
+    #   id: front_right
+    #   point_factor: [0.6, -0.3]
+    #   color: [0.00, 0.00, 0.00]
+    #   radius: 0.3
+    #   affected_by: 
+    #     - geodesic_goal
+    # -
+    #   id: back_left
+    #   point_factor: [-0.6, 0.3]
+    #   color: [0.00, 0.00, 0.00]
+    #   radius: 0.3
+    #   affected_by: 
+    #     - geodesic_goal
+    # -
+    #   id: back_right
+    #   point_factor: [-0.6, -0.3]
+    #   color: [0.00, 0.00, 0.00]
+    #   radius: 0.3
+    #   affected_by: 
+    #     - geodesic_goal
       
   # This defines the parameters for the RMPs
   policies:
@@ -99,7 +95,7 @@ rmp:
         steepness: 10.0
     geodesic_heading:
       weight: 1.0 # 1.0
-      gain: 2.0
+      gain: 10.0
       color: [1.0, 1.0, 0.0] # yellow
       metric:
         type: logistic

@@ -17,8 +17,12 @@ namespace rmp {
 class MotionPolicy {
  public:
   static Vector3 makeGradientPosePolicy(Vector2 gradient, double gain) {
-    Rot2 heading = Rot2::atan2(gradient.y(), gradient.x());
-    return gain * Vector3(gradient.x(), gradient.y(), heading.theta());
+    constexpr float eps = 1e-6;
+    double grad_norm = gradient.norm();
+    Vector2 unit_gradient = grad_norm < eps? gradient : gradient / grad_norm;
+
+    Rot2 heading = Rot2::atan2(unit_gradient.y(), unit_gradient.x());
+    return gain * Vector3(unit_gradient.x(), unit_gradient.y(), heading.theta());
   }
 
   static Vector3 makeGradientPositionPolicy(Vector2 gradient, double gain) {
@@ -89,14 +93,20 @@ class MotionPolicy {
 
   static Vector2 makeObstaclePolicy(const Vector2& gradient, const Vector2& velocity, double distance, double gain) {
     double d = std::max(distance, 0.01);
-    Vector2 unit_gradient = gradient / gradient.norm();
+    constexpr float eps = 1e-6;
+    double grad_norm = gradient.norm();
+    Vector2 unit_gradient = grad_norm < eps? gradient : gradient / grad_norm;
     double velocity_alignment_gain = unit_gradient.dot(velocity);
+    
     return -(gain / d) * velocity_alignment_gain * unit_gradient;
   }
 
   static Vector2 makeObstacleDampingPolicy(const Vector2& gradient, const Vector2& velocity, double distance, double gain) {
     double d = std::max(distance, 0.01);
-    Vector2 unit_gradient = gradient / gradient.norm();
+    constexpr float eps = 1e-6;
+    double grad_norm = gradient.norm();
+    Vector2 unit_gradient = grad_norm < eps? gradient : gradient / grad_norm;
+
     return -(gain / d) * unit_gradient;
   }
 };

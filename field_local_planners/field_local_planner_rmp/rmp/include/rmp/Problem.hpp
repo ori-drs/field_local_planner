@@ -48,12 +48,12 @@ class Problem : public ExpressionFactorGraph {
    */
   template <typename ACC, typename METRIC>
   void addRmp(const Expression<ACC>& variable, const RiemannianMotionPolicy<ACC, METRIC>& rmp) {
-    addExpressionFactor(variable, rmp.acceleration(), noiseModel::Gaussian::Information(rmp.metric()));
+    addExpressionFactor(variable, rmp.acceleration(), noiseModel::Gaussian::Information(rmp.weight() * rmp.metric()));
   }
 
   template <typename ACC, typename METRIC>
-  void addRmp(const Expression<ACC>& variable, const ACC& acc, const METRIC& metric) {
-    addExpressionFactor(variable, acc, noiseModel::Gaussian::Information(metric));
+  void addRmp(const Expression<ACC>& variable, const ACC& acc, const METRIC& metric, double weight = 1.0) {
+    addExpressionFactor(variable, acc, noiseModel::Gaussian::Information(weight * metric));
   }
 
   /**
