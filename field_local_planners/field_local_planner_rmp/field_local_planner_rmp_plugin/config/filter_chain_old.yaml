@@ -2,7 +2,7 @@ grid_map_filters:
 
   - name: buffer_normalizer
     type: gridMapFilters/BufferNormalizerFilter
-
+  
   # Nan Mask
   - name: nan_mask
     type: gridMapFiltersDrs/NanMaskFilter
@@ -40,7 +40,7 @@ grid_map_filters:
     params:
       output_layer: slope
       expression: acos(normal_z)
-
+  
   # Compute base threshold
   - name: height_filter
     type: gridMapFiltersDrs/BaseHeightThresholdFilter
@@ -56,26 +56,46 @@ grid_map_filters:
   - name: traversability
     type: gridMapFilters/MathExpressionFilter
     params:
-      output_layer: geometric_traversability
+      output_layer: traversability
       # expression: (0.5 * (1.0 - (slope / 0.6)) + 0.5 * height_traversability) .* (1.0 - unknown_space)
       expression: (0.5 * (1.0 - (slope / 0.6)) + 0.5 * height_traversability)
 
+  # Inflate traversability
+  - name: inflate_traversability
+    type: gridMapFilters/SlidingWindowMathExpressionFilter
+    params:
+      input_layer: traversability
+      output_layer: traversability
+      expression: minOfFinites(traversability) #minOfFinites(traversability)
+      compute_empty_cells: false
+      edge_handling: empty # options: inside, crop, empty, mean
+      # window_size: 5 # in number of cells (optional, default: 3), make sure to make this compatible with the kernel matrix
+      window_length: 0.3 # instead of window_size, in m
+  
   # Compute 2D Signed Distance Field
   - name: sdf
     type: gridMapFiltersDrs/SignedDistanceField2dFilter
     params:
-      input_layer: geometric_traversability
+      input_layer: traversability
       output_layer: sdf
       normalize_gradients: true
-      threshold: 0.1
-
+      threshold: 0.7
+  
   - name: geodesic
-    type: gridMapFiltersDrs/GeodesicDistanceField2dFilter
+    type: gridMapFiltersDrs/GeodesicFieldFilter
     params:
-      input_layer: geometric_traversability
+      input_layer: traversability
       output_layer: geodesic
       normalize_gradients: true
       attractor_topic: /field_local_planner/current_goal
-      threshold: 0.1 # to be applied to the input layer
-      use_field_smoothing: false
-      field_smoothing_radius: 0.1 # m
+  
+  # - name: geodesic
+  #   type: gridMapFiltersDrs/GeodesicDistanceField2dFilter
+  #   params:
+  #     input_layer: traversability
+  #     output_layer: geodesic
+  #     normalize_gradients: true
+  #     attractor_topic: /field_local_planner/current_goal
+  #     threshold: 0.1 # to be applied to the input layer
+  #     use_field_smoothing: false
+  #     field_smoothing_radius: 0.1 # m
