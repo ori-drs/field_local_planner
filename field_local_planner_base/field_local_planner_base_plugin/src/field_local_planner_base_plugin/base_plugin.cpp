@@ -284,6 +284,7 @@ void BasePlugin::executeActionCB(const field_local_planner_msgs::MoveToGoalConst
   while (last_state_ == BaseLocalPlanner::State::EXECUTING) {
     if (action_server_->isPreemptRequested() || !ros::ok()) {
       ROS_INFO_STREAM("Action preempted!");
+      local_planner_->stop();
       action_server_->setPreempted();
       return;
     }
