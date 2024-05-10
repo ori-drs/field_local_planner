@@ -155,9 +155,7 @@ void BasePlugin::setupBaseRos(ros::NodeHandle& nh) {
   // Setup services
 
   // Setup action server
-  action_server_ = std::make_shared<ActionServer>(nh, "action_server", false);
-  action_server_->registerGoalCallback(boost::bind(&BasePlugin::moveToRequestActionHandler, this));
-  action_server_->registerPreemptCallback(boost::bind(&BasePlugin::preemptActionHandler, this));
+  action_server_ = std::make_shared<ActionServer>(nh, "action_server", boost::bind(&BasePlugin::executeActionCB, this, _1), false);
   action_server_->start();
 
   // Dynamic reconfigure
@@ -276,22 +274,24 @@ void BasePlugin::joyTwistCallback(const geometry_msgs::TwistConstPtr& twist_msg)
   ROS_FATAL("BasePlugin::joyTwistCallback: Not implemented");
 }
 
-// Action server
-void BasePlugin::moveToRequestActionHandler() {
+void BasePlugin::executeActionCB(const field_local_planner_msgs::MoveToGoalConstPtr &goal) {
   ROS_INFO_STREAM("[BasePlugin] Action Server - New goal");
 
-  // Get goal from server
-  geometry_msgs::PoseWithCovarianceStamped goal_msg = action_server_->acceptNewGoal()->goal;
-
-  // Pass goal to the local planner
+  geometry_msgs::PoseWithCovarianceStamped const& goal_msg = goal->goal;
   setGoal(goal_msg.pose.pose, goal_msg.header);
-}
 
-void BasePlugin::preemptActionHandler() {
-  ROS_INFO_STREAM("[BasePlugin] Action Server - Stop");
-  action_server_->setPreempted();
-  local_planner_->stop();
-  publishZeroTwist();
+  ros::Duration sleep_duration {0.2};
+  while (local_planner_->checkState() == BaseLocalPlanner::State::EXECUTING) {
+    if (action_server_->isPreemptRequested() || !ros::ok()) {
+      ROS_INFO_STREAM("Action preempted!");
+      action_server_->setPreempted();
+      return;
+    }
+    sleep_duration.sleep();
+  }
+
+  field_local_planner_msgs::MoveToResult result {};
+  action_server_->setSucceeded(result);
 }
 
 void BasePlugin::dynamicReconfigureCallback(BaseConfig& config, uint32_t level) {

@@ -71,6 +71,7 @@ class BasePlugin {
   // Other callbacks
   void goalCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& goal_msg);
   void joyTwistCallback(const geometry_msgs::TwistConstPtr& twist_msg);
+  void executeActionCB(const field_local_planner_msgs::MoveToGoalConstPtr &goal);
   void moveToRequestActionHandler();
   void preemptActionHandler();
   void dynamicReconfigureCallback(BaseConfig& config, uint32_t level);
