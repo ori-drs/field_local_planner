@@ -104,7 +104,6 @@ class BaseLocalPlanner {
  private:
   // Other steps
   State checkState();
-
   void computeDistanceAndOrientationToGoal();
 
  public:
