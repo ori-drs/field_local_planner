@@ -101,10 +101,10 @@ class BaseLocalPlanner {
   std::string stateToStr(State state);
   Twist limitTwist(const Twist& twist);
 
+ private:
   // Other steps
   State checkState();
 
- private:
   void computeDistanceAndOrientationToGoal();
 
  public:
