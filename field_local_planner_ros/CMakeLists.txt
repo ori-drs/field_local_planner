@@ -79,5 +79,6 @@ install(
 catkin_install_python(PROGRAMS
     scripts/action_client.py
     scripts/carrot_publisher.py
+    scripts/move_base_bridge.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
