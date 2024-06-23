@@ -186,6 +186,8 @@ bool BasePlugin::execute(const ros::Time& stamp, geometry_msgs::Twist& twist_msg
     publishCurrentGoal(T_f_g_);
   }
 
+  status_msg = utils::toStatusMsg(output.status);
+  last_state_ = output.status.state;
   return valid_output;
 }
 
@@ -195,6 +197,7 @@ void BasePlugin::setPose(const geometry_msgs::Pose& pose_msg, const std_msgs::He
 
   // Get transformation if frames do not match: frame_id (auxiliary) in fixed_frame f
   Pose3 T_f_a = queryTransform(fixed_frame_, header.frame_id, header.stamp);
+  last_pose_stamp_ = header.stamp;
 
   // Transform message
   Pose3 T_a_b = utils::toPose3(pose_msg);                       // Transformation of base b in auxiliary frame
@@ -243,16 +246,17 @@ void BasePlugin::setGoal(const geometry_msgs::Pose& goal_msg, const std_msgs::He
   ROS_INFO_STREAM("Setting new goal in frame [" << fixed_frame_ << "] : \n  position: " << T_f_g_.translation().transpose()
                                                 << "\n  orientation (Euler): " << T_f_g_.rotation().rpy().transpose());
   local_planner_->setGoalInFixed(T_f_g_, T_f_b, ts);
+  last_state_ = BaseLocalPlanner::State::EXECUTING;
 }
 
 void BasePlugin::poseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& pose_msg) {
   setPose(pose_msg->pose.pose, pose_msg->header);
 
-  // Execute local planner
-  geometry_msgs::Twist twist;
-  nav_msgs::Path path;
-  field_local_planner_msgs::Status status;
-  execute(pose_msg->header.stamp, twist, path, status);
+  // // Execute local planner
+  // geometry_msgs::Twist twist;
+  // nav_msgs::Path path;
+  // field_local_planner_msgs::Status status;
+  // execute(pose_msg->header.stamp, twist, path, status);
 }
 
 void BasePlugin::twistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr& twist_msg) {
@@ -280,19 +284,29 @@ void BasePlugin::executeActionCB(const field_local_planner_msgs::MoveToGoalConst
   geometry_msgs::PoseWithCovarianceStamped const& goal_msg = goal->goal;
   setGoal(goal_msg.pose.pose, goal_msg.header);
 
+  field_local_planner_msgs::Status status;
   ros::Duration sleep_duration {0.2};
-  while (last_state_ == BaseLocalPlanner::State::EXECUTING) {
+  while (last_state_ == BaseLocalPlanner::State::EXECUTING || last_state_ == BaseLocalPlanner::State::NOT_READY) {
     if (action_server_->isPreemptRequested() || !ros::ok()) {
       ROS_INFO_STREAM("Action preempted!");
       local_planner_->stop();
       action_server_->setPreempted();
       return;
     }
+      // Execute local planner
+      geometry_msgs::Twist twist;
+      nav_msgs::Path path;
+      execute(last_pose_stamp_, twist, path, status);
+   
     sleep_duration.sleep();
   }
-
   field_local_planner_msgs::MoveToResult result {};
-  action_server_->setSucceeded(result);
+  result.status = status;
+  if (last_state_ == BaseLocalPlanner::State::FINISHED){ 
+    action_server_->setSucceeded(result);
+  } else {
+    action_server_->setAborted(result);
+  }
 }
 
 void BasePlugin::dynamicReconfigureCallback(BaseConfig& config, uint32_t level) {
@@ -496,8 +510,6 @@ void BasePlugin::printStateInfo(const BaseLocalPlanner::State& new_state) {
       ROS_WARN("Change to state: FAILURE (%d)", new_state);
     }
   }
-
-  last_state_ = new_state;
 }
 
 Pose3 BasePlugin::getBaseInversionTransform() const {

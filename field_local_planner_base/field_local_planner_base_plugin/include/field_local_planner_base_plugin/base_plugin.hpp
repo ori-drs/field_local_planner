@@ -163,6 +163,7 @@ class BasePlugin {
   double grid_map_to_cloud_filter_size_;
 
   // Output
+  ros::Time last_pose_stamp_;
   BaseLocalPlanner::State last_state_;
   Pose3 T_f_g_;  // Goal in fixed frame
 };
