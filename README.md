@@ -1,12 +1,16 @@
 # Field Local Planner
 
-This package implements SE(2) local planners (i.e, planar motion) for environment-aware navigation.
+This package implements SE(2) local planners (i.e, planar motion) for environment-aware navigation. It includes the reactive RMP-based local planner from [Mattamala et al (RA-L, 2022)](https://ieeexplore.ieee.org/abstract/document/9682571/).
+
+[![Watch the video](assets/field_local_planner.jpg)](https://youtu.be/G_AwNec5AwU?si=sPCNZVwDZJ09qvvU)
+
+
 The implementation follows a similar approach to the [ROS1 navigation stack](https://github.com/ros-planning/navigation), implementing different algorithms as plugins.
 
+**This package only supports ROS1**
+
 ## Disclaimer
-This is research code, and shared as it is. Please be careful when running it in closed-loop with your robot system.
-
-
+This is research code, and shared as it is (see [LICENSE](LICENSE)). Please be careful when running it in closed-loop with your robot system.
 
 ## Repository structure
 - [`field_local_planner`](field_local_planner/) is a meta package to build everything.
@@ -100,3 +104,5 @@ doi = {https://doi.org/10.1002/rob.21952},
 year = {2020}
 }
 ```
+
+The implementation of FALCO was adapted from [ground_based_autonomy_basic](https://github.com/jizhang-cmu/ground_based_autonomy_basic/tree/noetic/src/local_planner)
